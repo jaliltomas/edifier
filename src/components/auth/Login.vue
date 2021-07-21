@@ -256,7 +256,7 @@ export default {
         const request = {
           email: this.email,
           password: this.password,
-          store: 1,
+          store: 3,
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
@@ -282,7 +282,7 @@ export default {
           email: this.email,
           password: this.password,
           code: this.code,
-          store: 1,
+          store: 3,
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");

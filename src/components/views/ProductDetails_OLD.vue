@@ -469,7 +469,7 @@ export default {
       try {
         this.loadingResponse = true;
         const request = {
-          store: 1,
+          store: 3,
           page: 1,
           per_page: 1,
           paginate: false,
@@ -499,7 +499,7 @@ export default {
       try {
         this.loadingResponse = true;
         const request = {
-          store: 1,
+          store: 3,
           page: 1,
           per_page: 1,
           paginate: false,

@@ -3,9 +3,13 @@
     <v-card flat tile width="100%" color="#CBC9BC" class="text-start py-15">
       <v-row class="mx-0 my-0" justify="space-around">
         <v-col cols="12" md="4">
-          <v-img width="250" contain src="@/assets/img/logo_stadio.svg"></v-img>
+          <v-img
+            width="250"
+            contain
+            src="@/assets/img/edifier-logo-color.svg"
+          ></v-img>
           <div class="mt-5">Politica de privacidad - Terminos de uso.</div>
-          <div>© STADIO 2021 Todos los derechos reservados.</div>
+          <div>© EDIFIER 2021 Todos los derechos reservados.</div>
         </v-col>
         <v-col cols="12" md="4">
           <div class="d-flex justify-start justify-md-end">
@@ -30,20 +34,6 @@
           </div>
         </v-col>
       </v-row>
-      <!-- <v-card-text>
-        <div class="pt-7"></div>
-        <h3 class="stadio_title mt-7">STADIO</h3>
-        <div class="d-flex justify-center my-7">
-          <v-icon size="30" class="mx-2" color="#8b8383">mdi-instagram</v-icon>
-          <v-icon size="30" class="mx-2" color="#8b8383">mdi-facebook</v-icon>
-        </div>
-        <p style="color: white; font-size: 16px" class="text-center">
-          Politica de privacidad - Terminos de uso
-        </p>
-        <p style="color: white; font-size: 16px" class="text-center">
-          © STADIO 2021 Todos los derechos reservados.
-        </p>
-      </v-card-text> -->
     </v-card>
   </v-footer>
 </template>

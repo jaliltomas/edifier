@@ -12,28 +12,6 @@
           color="red darken-2"
         ></v-progress-linear>
       </v-col>
-      <!-- <v-col
-        cols="12"
-        :sm="$route.query.product != undefined ? 6 : 12"
-        md="3"
-        class="mb-0"
-      >
-        <div class="d-flex justify-start mb-n7">
-          <v-autocomplete
-            :items="dataBrand"
-            :item-text="(item) => brandNameUpper(item.name)"
-            item-value="id"
-            v-model="brandIds"
-            clearable
-            @keyup.enter="HandlerGetProducts(page)"
-            multiple
-            filled
-            rounded
-            label="Marcas"
-          >
-          </v-autocomplete>
-        </div>
-      </v-col> -->
       <v-col
         cols="12"
         :sm="$route.query.product != undefined ? 6 : 12"
@@ -66,9 +44,9 @@
         <v-card outlined color="#FAFAFA">
           <v-subheader
             >Marcas
-            <v-btn icon color="#A81331" class="ml-auto">
+            <!-- <v-btn icon color="#A81331" class="ml-auto">
               <v-icon dark> mdi-alarm </v-icon>
-            </v-btn>
+            </v-btn> -->
           </v-subheader>
           <v-card-text>
             <v-sheet
@@ -224,8 +202,8 @@
       </v-col>
       <v-col
         cols="12"
-        sm="12"
-        md="12"
+        sm="8"
+        md="8"
         v-if="!loading && productsData.length == 0"
       >
         <v-alert
@@ -386,7 +364,7 @@ export default {
 
         console.log("positiom", this.brandIds);
         const request = {
-          store: 1,
+          store: 3,
           page: myPage,
           per_page: 12,
           paginate: true,
@@ -460,7 +438,7 @@ export default {
         if (Object.keys(this.authUser).length > 0) {
           const myPage = page || 1;
           const request = {
-            store: 1,
+            store: 3,
             page: myPage,
             per_page: 10,
             paginate: true,

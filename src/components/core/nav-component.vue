@@ -12,23 +12,12 @@
         v-if="isMobile"
       ></v-app-bar-nav-icon>
 
-      <!-- <p
-        class="mt-0 mb-0 ml-0"
-        @click="$router.push({ name: 'home' })"
-        style="
-          color: #303030;
-          font-size: 24px;
-          letter-spacing: 3px;
-          cursor: pointer;
-          font-weight: 600;
-        "
-        title="Stadio"
-      >
-        STADIO
-      </p> -->
-
       <v-avatar size="120" tile @click="$router.push({ name: 'home' })">
-        <v-img contain src="@/assets/img/logo_stadio.svg"></v-img>
+        <v-img
+          style="cursor: pointer"
+          contain
+          src="@/assets/img/edifier-logo-color.svg"
+        ></v-img>
       </v-avatar>
 
       <v-spacer></v-spacer>
@@ -49,8 +38,6 @@
       <v-btn @click="activeSearch" icon>
         <v-icon color="black">mdi-magnify</v-icon>
       </v-btn>
-
-      
 
       <!-- CARRITO AUTENTICADO -->
       <!-- <div v-if="!isMobile">
@@ -424,7 +411,7 @@ export default {
       try {
         this.loadingProducts = true;
         const request = {
-          store: 1,
+          store: 3,
           page: 1,
           per_page: 12,
           paginate: true,
@@ -456,7 +443,7 @@ export default {
       try {
         this.loadingProducts = true;
         const request = {
-          store: 1,
+          store: 3,
           page: 1,
           per_page: 10,
           paginate: true,

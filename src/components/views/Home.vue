@@ -87,49 +87,7 @@
     </v-carousel>
 
     <v-container fluid>
-      <section id="marcas">
-        <v-row class="mt-5">
-          <v-col cols="12" md="12" class="">
-            <div class="d-flex justify-center mb-0">
-              <span
-                class="text-uppercase mb-0 text-center"
-                style="font-size: 2em; font-weight: 200"
-              >
-                Titulo para grandes marcas
-              </span>
-            </div>
-            <div
-              class="d-flex justify-center"
-              style="font-size: 1.1em; font-weight: 400"
-            >
-              <span class="text-uppercase">Encuentralas aqui</span>
-            </div>
-          </v-col>
-          <v-col offset-md="2" cols="12" md="8">
-            <v-row no-gutters>
-              <v-col
-                cols="6"
-                md="3"
-                v-for="(item, index) in 8"
-                :key="index"
-                class="d-flex justify-center"
-              >
-                <v-hover v-slot="{ hover }">
-                  <v-avatar tile size="120" class="mt-0 mb-0">
-                    <v-img
-                      contain
-                      :style="!hover ? 'filter: grayscale(100%)' : ''"
-                      src="@/assets/img/phillips.png"
-                    ></v-img>
-                  </v-avatar>
-                </v-hover>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </section>
-
-      <section id="categorias">
+      <section id="categorias" class="mt-15">
         <v-row :no-gutters="$vuetify.breakpoint.smAndDown ? true : false">
           <v-col
             cols="12"
@@ -383,7 +341,7 @@ export default {
       try {
         const myPage = page || 1;
         const request = {
-          store: 1,
+          store: 3,
           page: myPage,
           per_page: 10,
           paginate: true,
@@ -517,8 +475,6 @@ export default {
     HandlerLocation(url) {
       window.open(url);
     },
-
-    
   },
 };
 </script>

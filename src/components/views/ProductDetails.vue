@@ -3,6 +3,7 @@
     <div style="background-color: #96968e; height: auto">
       <div style="background-color: #808078; height: 10px"></div>
       <v-tabs
+        dark
         class="d-flex justify-center"
         color="white"
         background-color="#96968e"
@@ -12,7 +13,9 @@
           {{ dataProduct.keywords }}
         </v-tab>
         <v-tab @click="$vuetify.goTo('#description')">Descripción</v-tab>
-        <v-tab @click="$vuetify.goTo('#especification')">Especificaciones</v-tab>
+        <v-tab @click="$vuetify.goTo('#especification')"
+          >Especificaciones</v-tab
+        >
         <v-tab @click="$vuetify.goTo('#faq')">FAQ</v-tab>
       </v-tabs>
     </div>
@@ -198,81 +201,6 @@
       </v-card>
     </v-row>
     <div class="py-5"></div>
-    <!-- <section id="description">
-      <v-container fluid>
-        <v-row>
-          <v-col cols="12">
-            <div class="d-flex justify-center mb-0">
-              <span
-                class="text-uppercase mb-0 text-center"
-                style="font-size: 2em; font-weight: 200"
-              >
-                Descripción
-              </span>
-            </div>
-          </v-col>
-          <v-col>
-            <div
-              class="d-flex justify-start"
-              style="font-size: 1.1em; font-weight: 400"
-            >
-              <span v-html="dataProduct.description"></span>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
-
-    <section id="especification">
-      <v-container fluid style="background-color: #ecebe5">
-        <v-row>
-          <v-col cols="12">
-            <div class="d-flex justify-center mb-0">
-              <span
-                class="text-uppercase mb-0 text-center"
-                style="font-size: 2em; font-weight: 200"
-              >
-                Especificaciones
-              </span>
-            </div>
-          </v-col>
-          <v-col>
-            <div
-              class="d-flex justify-start"
-              style="font-size: 1.1em; font-weight: 400"
-            >
-              <span v-html="dataProduct.specs"></span>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
-
-    <section id="faq">
-      <v-container fluid>
-        <v-row>
-          <v-col cols="12">
-            <div class="d-flex justify-center mb-0">
-              <span
-                class="text-uppercase mb-0 text-center"
-                style="font-size: 2em; font-weight: 200"
-              >
-                FAQ
-              </span>
-            </div>
-          </v-col>
-          <v-col>
-            <div
-              class="d-flex justify-start"
-              style="font-size: 1.1em; font-weight: 400"
-            >
-              <span v-html="dataProduct.qa"></span>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section> -->
-
     <v-dialog v-model="showImageBackground" width="600">
       <v-card width="600">
         <v-img contain :src="imageBackground"></v-img>
@@ -410,7 +338,7 @@ export default {
       try {
         this.loadingResponse = true;
         const request = {
-          store: 1,
+          store: 3,
           page: 1,
           per_page: 1,
           paginate: false,
@@ -440,7 +368,7 @@ export default {
       try {
         this.loadingResponse = true;
         const request = {
-          store: 1,
+          store: 3,
           page: 1,
           per_page: 1,
           paginate: false,

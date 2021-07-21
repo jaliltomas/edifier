@@ -632,7 +632,7 @@ export default {
       try {
         const myPage = page || 1;
         const request = {
-          store: 1,
+          store: 3,
           page: myPage,
           per_page: 10,
           paginate: true,
