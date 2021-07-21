@@ -1,0 +1,536 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="12">
+        <navegation-component title="TIENDA" sub_title="TIENDA" />
+      </v-col>
+    </v-row>
+    <v-row class="mb-0 pb-0">
+      <v-col cols="12" sm="12" md="12" v-if="loading">
+        <v-progress-linear
+          indeterminate
+          color="red darken-2"
+        ></v-progress-linear>
+      </v-col>
+      <!-- <v-col
+        cols="12"
+        :sm="$route.query.product != undefined ? 6 : 12"
+        md="3"
+        class="mb-0"
+      >
+        <div class="d-flex justify-start mb-n7">
+          <v-autocomplete
+            :items="dataBrand"
+            :item-text="(item) => brandNameUpper(item.name)"
+            item-value="id"
+            v-model="brandIds"
+            clearable
+            @keyup.enter="HandlerGetProducts(page)"
+            multiple
+            filled
+            rounded
+            label="Marcas"
+          >
+          </v-autocomplete>
+        </div>
+      </v-col> -->
+      <v-col
+        cols="12"
+        :sm="$route.query.product != undefined ? 6 : 12"
+        md="9"
+        v-if="$route.query.product != undefined"
+        class="d-flex justify-end"
+      >
+        <div class="d-flex justify-end mb-2">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                @click="resetSearch"
+                icon
+                large
+                color="black"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon size="40">mdi-autorenew</v-icon>
+              </v-btn>
+            </template>
+            <span>Resetear busqueda</span>
+          </v-tooltip>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <!-- MOSTRAR CATEGORIAS -->
+      <v-col cols="12" sm="12" md="3" v-if="productsCategories.length > 0">
+        <v-card outlined color="#FAFAFA">
+          <v-subheader
+            >Marcas
+            <v-btn icon color="#A81331" class="ml-auto">
+              <v-icon dark> mdi-alarm </v-icon>
+            </v-btn>
+          </v-subheader>
+          <v-card-text>
+            <v-sheet
+              id="scrolling-techniques-7"
+              class="overflow-y-auto"
+              max-height="380"
+            >
+              <v-list flat subheader>
+                <v-list-item-group
+                  v-model="brand_position"
+                  multiple
+                  active-class=""
+                >
+                  <v-list-item v-for="(item, index) in dataBrand" :key="index">
+                    <template v-slot:default="{ active }">
+                      <v-list-item-action>
+                        <v-checkbox :input-value="active"></v-checkbox>
+                      </v-list-item-action>
+
+                      <v-list-item-content>
+                        <v-list-item-title class="text-capitalize">{{
+                          item.name
+                        }}</v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-sheet>
+          </v-card-text>
+        </v-card>
+        <v-card color="#FAFAFA" tile class="elevation-0">
+          <v-divider></v-divider>
+          <v-subheader>Categorías</v-subheader>
+          <v-card-text>
+            <v-list tile nav>
+              <div v-for="(item1, i) in productsCategories" :key="i">
+                <v-list-group v-if="item1.sub_category.length > 0" no-action>
+                  <template v-slot:activator>
+                    <v-list-item-title
+                      class="ml-0 text-capitalize"
+                      v-text="item1.name"
+                    ></v-list-item-title>
+                  </template>
+
+                  <v-list-item
+                    v-for="(item2, j) in item1.sub_category"
+                    :key="j"
+                    @click="() => {}"
+                    class="pl-0"
+                    active-class="text-capitalize secondary white--text active-shadow-item"
+                    style="text-decoration: none"
+                  >
+                    <!-- <v-list-item-title
+                      class="text-capitalize ml-3"
+                      v-text="item2.name"
+                    ></v-list-item-title> -->
+                    <v-checkbox :label="item2.name"></v-checkbox>
+                  </v-list-item>
+                  <v-divider class="mb-2"></v-divider>
+                </v-list-group>
+                <v-list-item
+                  v-else
+                  no-action
+                  active-class="secondary white--text active-shadow-item"
+                  :to="{ name: item1.path }"
+                >
+                  <v-list-item-title
+                    class="text-capitalize"
+                    v-text="item1.name"
+                  ></v-list-item-title>
+                </v-list-item>
+              </div>
+            </v-list>
+          </v-card-text>
+        </v-card>
+        <v-btn
+          block
+          class="mt-3"
+          color="black"
+          dark
+          @click="HandlerGetProducts(page)"
+        >
+          Buscar
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="12"
+        md="9"
+        v-if="!loading && productsData.length > 0"
+      >
+        <v-row>
+          <v-col
+            v-for="(item, index) in productsData"
+            :key="index"
+            cols="12"
+            sm="4"
+            md="3"
+          >
+            <v-card
+              v-if="item.product != null"
+              height="200"
+              class="elevation-0"
+              flat
+              @click="HandlerShowProduct(item)"
+            >
+              <img
+                v-if="item.images == null"
+                height="200"
+                width="100%"
+                contain
+                src="../../assets/img/no_image.jpg"
+              />
+              <div v-else>
+                <v-img
+                  height="200"
+                  width="100%"
+                  contain
+                  :src="item.images[0]"
+                  :lazy-src="item.images[0]"
+                >
+                  <template v-slot:placeholder>
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        color="black lighten-5"
+                      ></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
+              </div>
+              <v-card-text></v-card-text>
+            </v-card>
+            <p class="text-center mb-1 title font-weight-bold text-uppercase">
+              {{ item.keywords }}
+            </p>
+            <p class="text-center" v-if="item.price != null">
+              <span>${{ item.price.pvp | currencyPVP }}</span>
+            </p>
+            <!-- {{ item }} -->
+            <cp-information
+              class="text-center"
+              :dataProduct="item"
+              :authUser="authUser"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="12"
+        md="12"
+        v-if="!loading && productsData.length == 0"
+      >
+        <v-alert
+          outlined
+          type="warning"
+          prominent
+          border="left"
+          class="d-flex justify-center"
+          >No hay productos disponibles para mostrar</v-alert
+        >
+      </v-col>
+    </v-row>
+    <v-row justify="end">
+      <v-col v-if="paginationData.total > 0" cols="12" md="4">
+        <div class="text-center">
+          <v-pagination
+            color="black"
+            v-model="page"
+            :length="paginationData.lastPage"
+          ></v-pagination>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import NavegationComponent from "@/components/Utils/navegation_component";
+import informationCP from "@/components/Utils/informationCP";
+export default {
+  components: {
+    "navegation-component": NavegationComponent,
+    "cp-information": informationCP,
+  },
+  data() {
+    return {
+      loading: false,
+      page: 1,
+      selectedItem: "",
+      items: [
+        { text: "Real-Time", icon: "mdi-clock" },
+        { text: "Audience", icon: "mdi-account" },
+        { text: "Conversions", icon: "mdi-flag" },
+      ],
+      dataProducts: [],
+      dataCategories: [],
+      productsCategories: [],
+      paginate: {},
+      firstImage: null,
+
+      //Region
+      showRegion: false,
+
+      // Marcas
+      dataBrand: [],
+      brandIds: [],
+      brand_position: [],
+    };
+  },
+
+  created() {
+    // if (sessionStorage.getItem("region") == null) {
+    //   console.log("Mostrar Alerta para seleccionar region");
+    //   this.showRegion = true;
+    // } else {
+    //   this.HandlerGetProducts();
+    //   this.HandlerGetCategories();
+    // }
+
+    // if (this.$route.query.product != undefined) {
+    // this.searchProduct();
+    // } else {
+    this.HandlerGetProducts();
+    this.HanderGetProductsBrand();
+    // this.HandlerGetCategories();
+    // }
+  },
+
+  watch: {
+    page(page) {
+      this.HandlerGetProducts(page);
+    },
+
+    // authUser(user) {
+    //   this.HandlerGetCategories(1, user);
+    // },
+
+    $route() {
+      this.HandlerGetProducts();
+    },
+  },
+
+  filters: {
+    currencyPVP(value) {
+      if (value) {
+        const AMOUNT_FORMAT = new Intl.NumberFormat("de-DE", {
+          // currency: "ARS",
+          // style: "currency",
+          maximumFractionDigits: 0,
+          minimumFractionDigits: 0,
+        }).format(value);
+        return AMOUNT_FORMAT;
+      } else {
+        return " ";
+      }
+    },
+  },
+
+  computed: {
+    isAuth() {
+      return this.$store.getters["auth/AUTHENTICATED"];
+    },
+
+    authUser() {
+      return this.$store.getters["auth/GET_PROFILE"];
+    },
+
+    productsData() {
+      return this.$store.getters["products/GET_PRODUCTS"];
+    },
+
+    paginationData() {
+      return this.$store.getters["products/GET_PAGINATE_PRODUCT"];
+    },
+
+    // productsCategories() {
+    //   return this.$store.getters["products/GET_CATGORIES"];
+    // },
+
+    paginationCategories() {
+      return this.$store.getters["products/GET_PAGINATE_CATEGORIES"];
+    },
+  },
+
+  methods: {
+    HandlerGetProducts(page) {
+      if (!this.isAuth) this.HandlerGetPublicProducts(page);
+      if (this.isAuth) this.HandlerGetAuthProducts(page);
+    },
+
+    async HandlerGetPublicProducts(page) {
+      try {
+        this.loading = true;
+        const myPage = page || 1;
+        const warehouse_id =
+          sessionStorage.getItem("region") == null
+            ? 1
+            : parseInt(sessionStorage.getItem("region"));
+
+        this.brandIds = this.dataBrand.reduce((acc, out, key) => {
+          console.log(this.brand_position);
+          if (this.brand_position.includes(key)) {
+            console.log("entre");
+            acc.push(out.id);
+          }
+          return acc;
+        }, []);
+
+        console.log("positiom", this.brandIds);
+        const request = {
+          store: 1,
+          page: myPage,
+          per_page: 12,
+          paginate: true,
+          warehouse_id: warehouse_id,
+          keywords:
+            this.$route.query.product == undefined
+              ? ""
+              : this.$route.query.product,
+          brand_ids:
+            this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
+        };
+        const response = await this.$store.dispatch(
+          "products/GET_PRODUCTS",
+          request
+        );
+        this.productsCategories = response.data.categories;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async HandlerGetAuthProducts(page) {
+      try {
+        this.loading = true;
+        const myPage = page || 1;
+        const request = {
+          page: myPage,
+          per_page: 12,
+          paginate: true,
+          keywords:
+            this.$route.query.product == undefined
+              ? ""
+              : this.$route.query.product,
+          brand_ids:
+            this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
+        };
+        const response = await this.$store.dispatch(
+          "products/GET_AUTH_PRODUCTS",
+          request
+        );
+        console.log(response.data);
+        this.productsCategories = response.data.categories;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async searchProduct() {
+      try {
+        const request = {
+          page: 1,
+          per_page: 10,
+          keywords: this.$route.query.product,
+        };
+        const response = await this.$store.dispatch(
+          "products/SEARCH_PRODUCTS",
+          request
+        );
+        this.dataCategories = response.data.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async HandlerGetCategories(page) {
+      try {
+        if (Object.keys(this.authUser).length > 0) {
+          const myPage = page || 1;
+          const request = {
+            store: 1,
+            page: myPage,
+            per_page: 10,
+            paginate: true,
+            warehouse_id:
+              this.isAuth == false
+                ? parseInt(sessionStorage.getItem("region")) == null
+                  ? 1
+                  : parseInt(sessionStorage.getItem("region"))
+                : this.authUser.warehouse_id,
+          };
+          const response = await this.$store.dispatch(
+            "products/GET_CATEGORIES",
+            request
+          );
+          this.dataCategories = response.data.data.data;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    HandlerShowImage(pictures) {
+      const images = JSON.parse(pictures);
+      return images[0];
+    },
+
+    HandlerShowProduct(publication) {
+      console.log(publication);
+      const encryptedID = this.CryptoJS.AES.encrypt(
+        publication.product.id.toString(),
+        "MyS3c3rtIdPr0Duct"
+      ).toString();
+      console.log(encryptedID);
+      this.$router.push({
+        name: "product_details",
+        query: { data: encryptedID },
+      });
+    },
+
+    resetSearch() {
+      this.HandlerGetProducts();
+      this.$router.replace({ query: null });
+    },
+
+    // MARCAS
+
+    async HanderGetProductsBrand() {
+      try {
+        const response = await this.$store.dispatch("products/PRODUCTS_BRAND");
+        this.dataBrand = response.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    brandNameUpper(name) {
+      if (name != undefined) {
+        return name.toUpperCase();
+      } else return "";
+    },
+
+    handleBlur() {
+      if (this.brandIds.length > 0) {
+        this.HandlerGetProducts(this.page);
+      }
+    },
+  },
+};
+</script>
+
+<style>
+</style>
+

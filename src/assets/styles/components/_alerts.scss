@@ -1,0 +1,47 @@
+.alert-card {
+    background-image: url("./assets/illustrations/bg_modal_card.svg") !important;
+    font-family: $font-family-sans-serif !important;
+    border-radius: 20px !important;
+    background-position: center top !important;
+    background-repeat: no-repeat !important;
+    background-size: 100% !important;
+    padding: 1px;
+
+    .title-alert {
+        color: #707070 !important;
+        font-weight: 600 !important;
+    }
+
+    .content-alert {
+        margin-bottom: 10px;
+        color: #808080 !important;
+        font-size: 12.5pt !important;
+        line-height: 1.5 !important;
+    }
+
+    .actions-alert {
+        font-size: 10pt !important;
+
+        .confirm-btn,
+        .cancel-btn,
+        .error-confirm-btn {
+            letter-spacing: 2px !important;
+            text-transform: uppercase !important;
+            border-radius: 30px !important;
+            color: #fff !important;
+        }
+
+        .confirm-btn {
+            background: #6d71f9 !important;
+        }
+
+        .error-confirm-btn {
+            background: #ff5252 !important;
+        }
+
+        .cancel-btn {
+            color: #707070 !important;
+            background: transparent !important;
+        }
+    }
+}

@@ -1,0 +1,648 @@
+<template>
+  <ValidationObserver ref="obs" v-slot="{ passes }">
+    <v-card color="#E9E9E9" tile class="elevation-0 py-5 d-flex justify-center">
+      <v-card-text>
+        <v-row class="mx-1">
+          <!-- MOSTRAR MENSAJE NO HAY DIRECCION -->
+          <v-col
+            cols="12"
+            sm="12"
+            md="12"
+            class="d-flex justify-center"
+            v-if="dataAddress.length == 0 && !canRegister"
+          >
+            <v-card flat>
+              <v-card-text>
+                <span class="black--text">
+                  Parece que aun no has registrado una dirección
+                </span>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <!-- MOSTRAR DIRECCIONES REGISTRADAS -->
+          <v-col
+            cols="12"
+            sm="6"
+            md="4"
+            lg="4"
+            v-for="(item, index) in dataAddress"
+            :key="index"
+          >
+            <v-card flat v-if="dataAddress.length > 0 && !canRegister">
+              <v-card-text>
+                <v-list-item v-show="dataAddress.length > 0" two-line>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      style="cursor: pointer"
+                      @click="HandlerEdit(item)"
+                      class="text-capitalize"
+                    >
+                      <v-icon>mdi-home</v-icon>
+                      {{ item.street }}
+                      {{ item.street_number }}
+                      {{ item.floor_number }}
+                      {{ item.department_number }}
+                      {{item.location}}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      <span class="font-weight-bold text-capitalize">
+                        <v-icon>mdi-account</v-icon>
+                        {{ item.contact_name }}
+                      </span>
+                    </v-list-item-subtitle>
+                    <v-list-item-subtitle>
+                      <span>
+                        <v-icon>mdi-phone</v-icon>
+                        {{ item.contact_phone }}
+                      </span>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-icon>
+                    <v-btn @click="HandlerDelete(item)" icon>
+                      <v-icon>mdi-delete-forever</v-icon>
+                    </v-btn>
+                    <v-btn @click="HandlerEdit(item)" icon>
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon v-bind="attrs" v-on="on">
+                          <v-icon
+                            @click="HandlerUpdate(item, 1)"
+                            :class="
+                              item.status
+                                ? 'animate__animated animate__pulse animate__infinite'
+                                : ''
+                            "
+                            :color="item.status ? '#6C63FF' : ''"
+                          >
+                            mdi-map-marker
+                          </v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Dirección principal</span>
+                    </v-tooltip>
+                  </v-list-item-icon>
+                </v-list-item>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <!-- MOSTRAR FORMULARIO PARA REGISTRAR DIRECCION -->
+          <v-col cols="12" sm="12" md="12" lg="12" v-if="canRegister">
+            <v-row justify="center">
+              <v-col cols="12" sm="6" md="8" lg="8">
+                <v-row>
+                  <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-0">
+                    <label for="zip-code" class="text-capitalize">
+                      Código postal
+                    </label>
+                    <ValidationProvider
+                      name="Código Postal"
+                      rules="required|numeric|max:4|min:4"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        v-model="zipcode"
+                        class="mt-2 elevation-0"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Código postal"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-0">
+                    <label for="provincia" class="text-capitalize"
+                      >Seleccione provincia</label
+                    >
+                    <ValidationProvider
+                      name="Provincia"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <v-autocomplete
+                        :items="dataState"
+                        item-text="name"
+                        item-value="id"
+                        v-model="state_id"
+                        class="mt-2 elevation-0"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Seleccione provincia"
+                        :error-messages="errors"
+                      ></v-autocomplete>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                    <label for="localidad" class="text-capitalize">
+                      Seleccione Localidad
+                    </label>
+                    <ValidationProvider
+                      name="Tipo de documento"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        v-model="localite_id"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Selecciona localidad"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                    <label for="email" class="text-capitalize"> Calle </label>
+                    <ValidationProvider
+                      name="Calle"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        v-model="street"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Calle"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4" class="mt-md-n5">
+                    <label for="email" class="text-capitalize"> Numero </label>
+                    <ValidationProvider
+                      name="Numero"
+                      rules="required|numeric"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        v-model="street_number"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Numero"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4" class="mt-md-n5">
+                    <ValidationProvider
+                      name="Piso"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label for="email" class="text-capitalize"> Piso </label>
+                      <v-text-field
+                        v-model="floor_number"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Piso"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="4" class="mt-md-n5">
+                    <ValidationProvider
+                      name="Departamento"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label for="email" class="text-capitalize">
+                        Departamento
+                      </label>
+                      <v-text-field
+                        v-model="department_number"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Departamento"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                    <ValidationProvider
+                      name="Entre calles"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label for="email" class="text-capitalieze">
+                        Entre calles
+                      </label>
+                      <v-text-field
+                        v-model="between_streets"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Entre calles"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                    <ValidationProvider
+                      name="Observaciones"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label for="email" class="text-capitalize">
+                        Observaciones del domicilio
+                      </label>
+                      <v-text-field
+                        v-model="observations"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Observaciones del domicilio"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                    <ValidationProvider
+                      name="Nombre"
+                      rules="required"
+                      v-slot="{ errors }"
+                    >
+                      <label for="email" class="text-capitalize">
+                        Quien recibe
+                      </label>
+                      <v-text-field
+                        v-model="contact_name"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Quien recibe"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                    <ValidationProvider
+                      name="Telefono"
+                      rules="required|numeric"
+                      v-slot="{ errors }"
+                    >
+                      <label for="email" class="text-capitalize">
+                        Telefono de contacto
+                      </label>
+                      <v-text-field
+                        v-model="contact_phone"
+                        class="mt-2"
+                        color="black"
+                        dense
+                        solo
+                        flat
+                        placeholder="Telefono de contacto"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-n10">
+                    <div class="d-flex">
+                      <v-checkbox
+                        v-model="isFirst"
+                        type="checkbox"
+                        required
+                        label="Registrar como principal"
+                      ></v-checkbox>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-actions> </v-card-actions>
+    </v-card>
+    <div class="d-flex justify-center mt-5">
+      <v-btn
+        v-if="!canRegister"
+        :loading="loading"
+        @click="
+          () => {
+            canRegister = !canRegister;
+            goUpdate = false;
+            clearFill();
+          }
+        "
+        tile
+        elevation="0"
+        large
+        dark
+        color="black"
+        class="text-capitalize"
+      >
+        Agregar dirección
+      </v-btn>
+      <v-btn
+        v-if="canRegister && !goUpdate"
+        :loading="loading"
+        @click="passes(HandlerRegister)"
+        tile
+        elevation="0"
+        large
+        dark
+        color="black"
+        class="text-capitalize"
+      >
+        Registrar
+      </v-btn>
+      <v-btn
+        v-if="canRegister && goUpdate"
+        :loading="loading"
+        @click="passes(() => HandlerUpdate({}, 0))"
+        tile
+        elevation="0"
+        large
+        dark
+        color="black"
+        class="text-capitalize"
+      >
+        Actualizar
+      </v-btn>
+      <v-btn
+        v-if="canRegister"
+        :loading="loading"
+        @click="canRegister = !canRegister"
+        tile
+        elevation="0"
+        large
+        dark
+        color="black"
+        class="text-capitalize ml-2"
+      >
+        Cancelar
+      </v-btn>
+    </div>
+  </ValidationObserver>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      loading: false,
+      zipcode: "",
+      state_id: "",
+      localite_id: "",
+      street: "",
+      street_number: "",
+      floor_number: "",
+      department_number: "",
+      between_streets: "",
+      observations: "",
+      contact_name: "",
+      contact_phone: "",
+      dataAddress: [],
+      dataState: [],
+      dataLocalites: [],
+      isFirst: null,
+      isUpdate: false,
+      goUpdate: false,
+      selectItem: {},
+
+      // Register
+      canRegister: true,
+    };
+  },
+
+  created() {
+    this.HandlerGetAddress();
+    this.HandlerGetStates();
+  },
+
+  watch: {
+    state_id(state) {
+      this.HandlerGetLocalities(state);
+    },
+  },
+
+  computed: {
+    getAuthUser() {
+      return this.$store.getters["auth/GET_PROFILE"];
+    },
+  },
+
+  methods: {
+    async HandlerGetAddress(action = 0) {
+      try {
+        const response = await this.$store.dispatch("auth/GET_ADDRESS");
+        this.dataAddress = response.data.data;
+        if (action == 0) {
+          this.canRegister = !this.canRegister;
+          this.goUpdate = true;
+        }
+        // if (this.dataAddress.length > 0) {
+        //   const principalAddress = response.data.data.find(
+        //     (addrr) => addrr.status == true
+        //   );
+        //   // this.HandlerEdit(principalAddress);
+        // } else {
+        //   this.zipcode = this.getAuthUser.zipcode;
+        // }
+        await this.$store.dispatch("auth/AUTH_USER");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async HandlerGetStates() {
+      try {
+        const response = await this.$store.dispatch("country/GET_STATES");
+        this.dataState = response.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async HandlerGetLocalities(id) {
+      try {
+        const request = {
+          state_id: id,
+        };
+
+        const response = await this.$store.dispatch(
+          "country/GET_LOCALITIES",
+          request
+        );
+
+        this.dataLocalites = response.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async HandlerRegister() {
+      try {
+        this.loading = true;
+        const request = {
+          country_id: 1,
+          state_id: this.state_id,
+          location: this.localite_id,
+          zipcode: this.zipcode,
+          department_number: this.department_number,
+          contact_phone: this.contact_phone,
+          contact_name: this.contact_name,
+          street: this.street,
+          street_number: this.street_number,
+          between_streets: this.between_streets,
+          floor_number: this.floor_number,
+          observations: this.observations,
+          status: this.isFirst == null ? false : true,
+        };
+
+        await this.$store.dispatch("auth/REGISTER_ADDRESS", request);
+
+        this.$snotify.success("Exitos has registrado tu dirección", "Exitos!");
+        this.HandlerGetAddress();
+        this.clearFill();
+      } catch (error) {
+        console.log(error);
+        if (error.response.status == 422) {
+          this.$snotify.error(error.response.data.error.err_message, "Error.");
+        } else {
+          this.$snotify.error("Ha ocurrido un error con el registro", "Error.");
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    HandlerEdit(item) {
+      this.canRegister = !this.canRegister;
+      this.goUpdate = true;
+      this.selectItem = item;
+      this.state_id = parseInt(item.state_id);
+      this.localite_id = item.location;
+      this.zipcode = item.zipcode;
+      this.department_number = item.department_number;
+      this.contact_phone = item.contact_phone;
+      this.contact_name = item.contact_name;
+      this.street = item.street;
+      this.street_number = item.street_number;
+      this.between_streets = item.between_streets;
+      this.floor_number = item.floor_number;
+      this.observations = item.observations;
+      this.isFirst = item.status == true ? 1 : 0;
+      // this.isUpdate = false;
+    },
+
+    async HandlerUpdate(item = {}, action) {
+      try {
+        console.log(action);
+        this.loading = true;
+        const request = {
+          data: {
+            country_id: 1,
+            state_id: item.state_id || this.state_id,
+            location: item.location || this.localite_id,
+            zipcode: item.zipcode || this.zipcode,
+            department_number: item.department_number || this.department_number,
+            contact_phone: item.contact_phone || this.contact_phone,
+            contact_name: item.contact_name || this.contact_name,
+            street: item.street || this.street,
+            street_number: item.street_number || this.street_number,
+            between_streets: item.between_streets || this.between_streets,
+            floor_number: item.floor_number || this.floor_number,
+            observations: item.observations || this.observations,
+            status: action == 1 ? true : this.isFirst,
+          },
+          id: item.id || this.selectItem.id,
+        };
+        await this.$store.dispatch("auth/UPDATE_ADDRESS", request);
+
+        this.$snotify.success("Exitos has editado tu dirección", "Exitos!");
+        this.HandlerGetAddress(1);
+        if (action == 0) {
+          this.canRegister = !this.canRegister;
+          this.goUpdate = true;
+          // this.clearFill();
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response.status == 422) {
+          this.$snotify.error(error.response.data.error.err_message, "Error.");
+        } else {
+          this.$snotify.error("Ha ocurrido un error con el registro", "Error.");
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async HandlerDelete(item) {
+      try {
+        this.loading = true;
+        const request = {
+          id: item.id,
+        };
+
+        await this.$store.dispatch("auth/DELETE_ADDRESS", request);
+
+        this.$snotify.success("Exitos has eliminado tu dirección", "Exitos!");
+        this.HandlerGetAddress();
+        this.clearFill();
+      } catch (error) {
+        console.log(error);
+        if (error.response.status == 422) {
+          this.$snotify.error(error.response.data.error.err_message, "Error.");
+        } else {
+          this.$snotify.error("Ha ocurrido un error con el registro", "Error.");
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    HandlerNotUpdate() {
+      this.clearFill();
+      console.log(this.isUpdate);
+      this.isUpdate = !this.isUpdate;
+    },
+
+    clearFill() {
+      this.state_id = "";
+      this.localite_id = "";
+      this.zipcode = "";
+      this.department_number = "";
+      this.contact_phone = "";
+      this.contact_name = "";
+      this.street = "";
+      this.street_number = "";
+      this.between_streets = "";
+      this.floor_number = "";
+      this.observations = "";
+      this.isFirst = false;
+      this.isUpdate = false;
+      this.$refs.obs.reset();
+    },
+  },
+};
+</script>
+
+<style>
+</style>
