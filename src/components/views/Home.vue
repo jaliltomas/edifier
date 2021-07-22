@@ -355,7 +355,7 @@ export default {
     async HandlerGetProductFeatured() {
       try {
         const request = {
-          store_id: 1,
+          store_id: 3,
           warehouse_id: 3,
           limit: 12,
           paginate: true,
@@ -426,7 +426,7 @@ export default {
     async HandlerGetListPromotions() {
       try {
         const request = {
-          store_id: 1,
+          store_id: 3,
           type: "",
           page: 1,
           per_page: 12,
