@@ -27,7 +27,7 @@
           Productos
         </v-btn>
 
-        <v-btn class="text-capitalize" text> Marcas </v-btn>
+        <!-- <v-btn class="text-capitalize" text> Marcas </v-btn> -->
 
         <v-btn class="text-capitalize" text> Soporte </v-btn>
 

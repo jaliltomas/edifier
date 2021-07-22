@@ -41,43 +41,7 @@
     <v-row>
       <!-- MOSTRAR CATEGORIAS -->
       <v-col cols="12" sm="12" md="3" v-if="productsCategories.length > 0">
-        <v-card outlined color="#FAFAFA">
-          <v-subheader
-            >Marcas
-            <!-- <v-btn icon color="#A81331" class="ml-auto">
-              <v-icon dark> mdi-alarm </v-icon>
-            </v-btn> -->
-          </v-subheader>
-          <v-card-text>
-            <v-sheet
-              id="scrolling-techniques-7"
-              class="overflow-y-auto"
-              max-height="380"
-            >
-              <v-list flat subheader>
-                <v-list-item-group
-                  v-model="brand_position"
-                  multiple
-                  active-class=""
-                >
-                  <v-list-item v-for="(item, index) in dataBrand" :key="index">
-                    <template v-slot:default="{ active }">
-                      <v-list-item-action>
-                        <v-checkbox :input-value="active"></v-checkbox>
-                      </v-list-item-action>
 
-                      <v-list-item-content>
-                        <v-list-item-title class="text-capitalize">{{
-                          item.name
-                        }}</v-list-item-title>
-                      </v-list-item-content>
-                    </template>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            </v-sheet>
-          </v-card-text>
-        </v-card>
         <v-card color="#FAFAFA" tile class="elevation-0">
           <v-divider></v-divider>
           <v-subheader>Categorías</v-subheader>
