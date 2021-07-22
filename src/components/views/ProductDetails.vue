@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div style="background-color: #96968e; height: auto">
+    <div
+      style="background-color: #96968e; height: auto"
+      :class="sticky ? 'header-sticky' : ''"
+      v-scroll="onScroll"
+    >
       <div style="background-color: #808078; height: 10px"></div>
       <v-tabs
         dark
@@ -13,9 +17,9 @@
           {{ dataProduct.keywords }}
         </v-tab>
         <v-tab @click="$vuetify.goTo('#description')">Descripción</v-tab>
-        <v-tab @click="$vuetify.goTo('#especification')"
-          >Especificaciones</v-tab
-        >
+        <v-tab @click="$vuetify.goTo('#especification')">
+          Especificaciones
+        </v-tab>
         <v-tab @click="$vuetify.goTo('#faq')">FAQ</v-tab>
       </v-tabs>
     </div>
@@ -50,7 +54,9 @@
           </v-col>
           <v-col cols="12" sm="6" md="5" class="ml-md-15 d-flex flex-column">
             <div>
-              <div class="title-font">Edifier R1080BT</div>
+              <div class="title-font text-uppercase">
+                {{ dataProduct.keywords }}
+              </div>
               <p class="mt-1">
                 <span v-html="dataProduct.resume"></span>
               </p>
@@ -71,7 +77,7 @@
                   class="align-self-center ml-md-3 mb-4"
                   style="font-size: 16px; color: #424242; font-weight: 400"
                 >
-                  <span class="white--text">
+                  <span class="white--text" v-if="dataProduct.price != null">
                     18 cuotas sin interés de $
                     {{ `${dataProduct.price.pvp / 18}` | currency }}
                   </span>
@@ -83,6 +89,8 @@
                 :dataProduct="dataProduct"
                 :authUser="authUser"
                 v-if="
+                  dataProduct.product != null &&
+                  dataProduct.product.product_warehouse != null &&
                   dataProduct.product.product_warehouse[0].current_stock > 0
                 "
               />
@@ -128,7 +136,7 @@
                   rounded
                   outlined
                   color="#B63F55"
-                  @click="HandlerAddCart()"
+                  @click="HandlerBuy()"
                 >
                   Comprar
                 </v-btn>
@@ -159,6 +167,7 @@
         class="mt-n15 mr-3"
         v-for="(item, index) in dataProduct.images"
         :key="index"
+        v-show="index != 0"
         @click="
           () => {
             showImageBackground = true;
@@ -236,6 +245,10 @@ export default {
       // Imagen
       showImageBackground: false,
       imageBackground: "",
+      //Navbar
+      active: false,
+      sticky: false,
+      fab: false,
     };
   },
 
@@ -310,6 +323,14 @@ export default {
   },
 
   methods: {
+    toggleNavClass() {
+      if (this.active == false) {
+        return "nav";
+      } else {
+        return "sticky-nav";
+      }
+    },
+
     quotes(pvp) {
       const value = (pvp * this.quantity) / 18;
       return value;
@@ -578,6 +599,17 @@ export default {
         console.log(error);
       }
     },
+
+    onScroll(e) {
+      if (typeof window === "undefined") return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 50;
+      if (top > 50) {
+        this.sticky = true;
+      } else {
+        this.sticky = false;
+      }
+    },
   },
 };
 </script>
@@ -586,5 +618,12 @@ export default {
 .title-font {
   font-size: 2.5em;
   font-weight: 600;
+}
+
+.header-sticky {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
 }
 </style>

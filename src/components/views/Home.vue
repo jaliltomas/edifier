@@ -179,6 +179,7 @@
                   <v-card
                     :width="$vuetify.breakpoint.smAndDown ? '20em' : '27em'"
                     height="auto"
+                    @click="HandlerProductDetails(item)"
                   >
                     <v-img
                       cover

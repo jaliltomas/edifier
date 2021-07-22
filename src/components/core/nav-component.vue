@@ -39,24 +39,6 @@
         <v-icon color="black">mdi-magnify</v-icon>
       </v-btn>
 
-      <!-- CARRITO AUTENTICADO -->
-      <!-- <div v-if="!isMobile">
-        <div v-if="products">
-          <v-badge
-            v-if="isAuth"
-            :content="products.length"
-            :value="products.length"
-            bordered
-            color="error"
-            overlap
-          >
-            <v-btn color="black" icon @click="HandlerRouter('cart')">
-              <v-icon>mdi-cart</v-icon>
-            </v-btn>
-          </v-badge>
-        </div>
-      </div> -->
-
       <!-- FAVORITOS AUTENTICADO -->
       <div v-if="!isMobile && favoriteProduct.length > 0">
         <v-btn
@@ -144,7 +126,7 @@
         :content="products.length"
         :value="products.length"
         bordered
-        color="error"
+        color="#00A0E9"
         overlap
       >
         <v-btn color="black" icon @click="HandlerRouter('cart')">
