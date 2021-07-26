@@ -1,50 +1,130 @@
 <template>
-  <div v-if="isAuth" class="mb-5">
-    <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
+  <div>
+    <div v-if="isAuth" class="mb-5">
+      <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
+        <p
+          class="mb-0 text-uppercase"
+          style="font-color: #3f3c35; font-size: 1.2em; cursor: pointer"
+          v-if="dataProduct.product.product_warehouse.length > 0"
+          @click="goTo(authUser.zipcode, dataProduct.product.product_warehouse)"
+        >
+          <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+          {{
+            HandlerReturnWarehouse(
+              authUser.zipcode,
+              dataProduct.product.product_warehouse
+            )
+          }}
+        </p>
+      </div>
+      <div v-else>
+        <p
+          class="mb-0 text-uppercase"
+          style="font-color: #3f3c35; font-size: 1.2em"
+          v-if="dataProduct.product.product_warehouse.length > 0"
+        >
+          <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+          {{
+            HandlerReturnWarehouse(
+              authUser.zipcode,
+              dataProduct.product.product_warehouse
+            )
+          }}
+        </p>
+      </div>
+    </div>
+    <div v-else class="mb-5">
       <p
         class="mb-0 text-uppercase"
-        style="font-color: #3f3c35; font-size: 1.2em"
-        v-if="dataProduct.product.product_warehouse.length > 0"
+        style="cursor: pointer; font-color: #3f3c35"
+        @click="$router.push({ name: 'login' })"
       >
         <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
-        {{
-          HandlerReturnWarehouse(
-            authUser.zipcode,
-            dataProduct.product.product_warehouse
-          )
-        }}
+        Conocé el tiempo de entrega
       </p>
     </div>
-    <div v-else>
-      <p
-        class="mb-0 text-uppercase"
-        style="font-color: #3f3c35; font-size: 1.2em"
-        v-if="dataProduct.product.product_warehouse.length > 0"
+    <ValidationObserver ref="obs" v-slot="{ passes }">
+      <v-dialog
+        v-if="showModalReserve"
+        v-model="showModalReserve"
+        max-width="600"
       >
-        <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
-        {{
-          HandlerReturnWarehouse(
-            authUser.zipcode,
-            dataProduct.product.product_warehouse
-          )
-        }}
-      </p>
-    </div>
-  </div>
-  <div v-else class="mb-5">
-    <p
-      class="mb-0 text-uppercase"
-      style="cursor: pointer; font-color: #3f3c35"
-      @click="$router.push({ name: 'login' })"
-    >
-      <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
-      Conocé el tiempo de entrega
-    </p>
+        <v-card>
+          <v-card-title>
+            Llena los campos para manternerte informado
+          </v-card-title>
+          <v-card-text>
+            <ValidationProvider
+              name="nombre"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                filled
+                rounded
+                label="nombre"
+                v-model="email"
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+            <ValidationProvider
+              name="email"
+              rules="email|required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                filled
+                rounded
+                label="Email"
+                v-model="name"
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+            <ValidationProvider
+              name="telefono"
+              rules="numeric|required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                filled
+                rounded
+                label="Telefono"
+                v-model="phone"
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="showModalReserve = false">Cancelar</v-btn>
+            <v-btn
+              :loading="loading"
+              dark
+              color="#00A0E9"
+              @click="passes(HandlerNotification)"
+            >
+              Continuar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </ValidationObserver>
+
+    <notification_componenet
+      :active="activeNotificacion"
+      :text="textNotification"
+      :color="colorNotification"
+      @dialog:change="responseNotification"
+    />
   </div>
 </template>
 
 <script>
+import NotificationComponent from "./notification_componenet.vue";
 export default {
+  components: {
+    notification_componenet: NotificationComponent,
+  },
   props: {
     dataProduct: {
       type: Object,
@@ -56,6 +136,23 @@ export default {
       required: true,
       default: () => {},
     },
+  },
+
+  data() {
+    return {
+      loading: false,
+      showModalReserve: false,
+
+      //Data
+      email: "",
+      name: "",
+      phone: "",
+
+      //Notification
+      activeNotificacion: false,
+      textNotification: "",
+      colorNotification: "black",
+    };
   },
 
   computed: {
@@ -142,6 +239,50 @@ export default {
           return "Proximamente";
         }
       }
+    },
+
+    goTo(zip_code, warehouse) {
+      if (this.HandlerReturnWarehouse(zip_code, warehouse) == "Proximamente") {
+        this.showModalReserve = true;
+      }
+    },
+
+    async HandlerNotification() {
+      try {
+        this.loading = true;
+        const request = {
+          store_id: 3,
+          product_id: this.dataProduct.product_id,
+          publication_id: this.dataProduct.id,
+          email: this.email,
+          name: this.name,
+          phone: this.phone,
+        };
+
+        await this.$store.dispatch(
+          "products/PRODUCT_NOTIFICATION_USER",
+          request
+        );
+
+        this.showModalReserve = false;
+        this.email = "";
+        this.name = "";
+        this.phone = "";
+
+        // this.activeNotificacion = true;
+        // this.textNotification = "Se ha registrado la información";
+        // this.colorNotification = "#00a0e9";
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    responseNotification() {
+      this.activeNotificacion = false;
+      this.textNotification = "";
+      this.colorNotification = "";
     },
   },
 };

@@ -16,11 +16,10 @@
         <v-tab @click="$vuetify.goTo('#product')">
           {{ dataProduct.keywords }}
         </v-tab>
-        <v-tab @click="$vuetify.goTo('#description')">Descripción</v-tab>
-        <v-tab @click="$vuetify.goTo('#especification')">
+        <v-tab @click="$vuetify.goTo('#detalle_producto')">Descripción</v-tab>
+        <v-tab @click="$vuetify.goTo('#especificaciones')">
           Especificaciones
         </v-tab>
-        <v-tab @click="$vuetify.goTo('#faq')">FAQ</v-tab>
       </v-tabs>
     </div>
     <v-sheet color="#DAD8CC" id="product">
@@ -88,14 +87,14 @@
                 style="font-size: 18px"
                 :dataProduct="dataProduct"
                 :authUser="authUser"
-                v-if="
-                  dataProduct.product != null &&
-                  dataProduct.product.product_warehouse != null &&
-                  dataProduct.product.product_warehouse[0].current_stock > 0
-                "
               />
 
-              <div class="d-flex align-center justify-start py-1 mt-10">
+              <div
+                v-if="
+                  dataProduct.product.product_warehouse[0].current_stock > 0
+                "
+                class="d-flex align-center justify-start py-1 mt-10"
+              >
                 <span class="mx-0 text-uppercase" style="font-weight: 500">
                   Cantidad
                 </span>
@@ -129,14 +128,31 @@
 
               <div
                 class="d-md-flex justify-space-between mt-5"
-                style="width: 70%"
+                style="width: 80%"
               >
                 <v-btn
+                  v-if="
+                    dataProduct.product.product_warehouse[0].current_stock > 0
+                  "
+                  style="border-width: medium"
+                  rounded
+                  outlined
+                  color="#B63F55"
+                  @click="HandlerAddCart()"
+                >
+                  Agregar al carrito
+                </v-btn>
+
+                <v-btn
+                  v-if="
+                    dataProduct.product.product_warehouse[0].current_stock > 0
+                  "
                   style="border-width: medium"
                   rounded
                   outlined
                   color="#B63F55"
                   @click="HandlerBuy()"
+                  class="mt-1 mt-md-0"
                 >
                   Comprar
                 </v-btn>
@@ -155,7 +171,7 @@
               </div>
             </div>
             <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
-            <div class="py-md-15 py-5"></div>
+            <div class="py-md-15 py-10"></div>
           </v-col>
         </v-row>
       </v-container>
@@ -167,7 +183,7 @@
           height="auto"
           v-for="(item, index) in dataProduct.images"
           :key="index"
-          class="mt-md-n15 mr-3"
+          class="mt-n15 mr-3"
           v-show="index != 0"
           @click="
             () => {
@@ -627,5 +643,6 @@ export default {
   width: 100%;
   top: 0;
   z-index: 100;
+  margin-bottom: 500px !important;
 }
 </style>

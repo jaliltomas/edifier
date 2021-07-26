@@ -232,7 +232,7 @@ export default {
 
   created() {
     this.HandlerGetProducts(this.page, this.$route.query.data);
-    this.HanderGetProductsBrand();
+    // this.HanderGetProductsBrand();
   },
 
   watch: {
@@ -322,7 +322,7 @@ export default {
       }
     },
 
-    async HandlerGetAuthProducts(page) {
+    async HandlerGetAuthProducts(page, category_id) {
       try {
         this.loading = true;
         const myPage = page || 1;

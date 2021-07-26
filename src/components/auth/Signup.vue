@@ -287,7 +287,7 @@ export default {
         const request = {
           doc_type: this.doc_type,
           doc_number: this.doc_number,
-          store_id: 1,
+          store_id: 3,
           country_id: 1,
           state_id: 1,
           phone: this.phone,

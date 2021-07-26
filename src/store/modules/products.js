@@ -224,6 +224,18 @@ const actions = {
       return Promise.reject(error);
     }
   },
+
+  async PRODUCT_NOTIFICATION_USER(_, paylaod) {
+    try {
+      const response = await store.post(
+        `api/user_product_notification/public`,
+        paylaod
+      );
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 }
 
 export const products = {

@@ -7,7 +7,7 @@
             class="text-center"
             style="font-color: #262626; font-size: 1.6em; font-weight: 400"
           >
-            SÉ PARTE DE NUESTRA COMUNIDAD
+            SÉ PARTE DE LA COMUNIDAD EDIFIER
           </div>
           <p class="text-center">
             Suscribite a nuestro Newsletter y mantenete informado sobre nuevos

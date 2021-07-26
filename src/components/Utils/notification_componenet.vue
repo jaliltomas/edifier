@@ -1,8 +1,8 @@
 <template>
-  <v-snackbar top right v-model="active">
+  <v-snackbar :timeout="timeout" :color="color" top right v-model="active">
     {{ text }}
     <template v-slot:action="{ attrs }">
-      <v-btn color="pink" text v-bind="attrs" @click="close"> Cerrar </v-btn>
+      <v-btn color="white" text v-bind="attrs" @click="close"> Cerrar </v-btn>
     </template>
   </v-snackbar>
 </template>
@@ -20,7 +20,19 @@ export default {
       default: "",
       required: true,
     },
+    color: {
+      type: String,
+      default: "black",
+      required: true,
+    },
   },
+
+  data() {
+    return {
+      timeout: -1,
+    };
+  },
+
   methods: {
     close() {
       this.$emit("dialog:change", false);

@@ -1,30 +1,27 @@
 <template>
   <v-app>
-    <v-overlay :value="activeSearch" :opacity="0.8">
+    <v-overlay
+      @keydown.esc.native="activeSearchFun"
+      :value="activeSearch"
+      :opacity="0.8"
+    >
       <!-- @dblclick.native="activeSearchFun" -->
       <div class="d-flex" style="z-index: 100">
-        <h1>Buscar un producto</h1>
+        <h1>Buscar por término</h1>
         <v-icon @click="activeSearchFun" class="ml-10 mt-1">mdi-close</v-icon>
       </div>
       <v-text-field
+        :autofocus="true"
         @keyup.enter="searchProduct"
         style="z-index: 100"
-        label="Nombre del producto"
+        label="..."
         filled
         outlined
         solo
         inverted
         v-model="product_name"
       >
-        <!-- <template v-slot:append>
-          <v-fade-transition leave-absolute>
-            <v-btn @click="SearchProduct" icon>
-              <v-icon>mdi-magnify-plus-outline</v-icon>
-            </v-btn>
-          </v-fade-transition>
-        </template> -->
       </v-text-field>
-      <!-- <v-btn block color="black" dark tile class="mt-n2">Buscar</v-btn> -->
     </v-overlay>
     <v-main>
       <nav-component v-if="$route.name != 'recovery'" />
@@ -59,10 +56,12 @@ export default {
 
     async searchProduct() {
       try {
-        this.$router.push({
-          name: "products",
-          query: { product: this.product_name.toLowerCase() },
-        }).catch(err => err);
+        this.$router
+          .push({
+            name: "products",
+            query: { product: this.product_name.toLowerCase() },
+          })
+          .catch((err) => err);
         this.product_name = "";
         this.activeSearchFun();
       } catch (error) {
@@ -87,6 +86,5 @@ export default {
   word-break: normal !important;
   line-height: normal !important;
 }
-
 </style>
 
