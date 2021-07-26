@@ -126,7 +126,7 @@
                   </v-col>
                   <v-col cols="12" class="align-self-end">
                     <v-btn
-                      @click="HandlerLocation(item.url)"
+                      @click="HandlerLocation(item)"
                       outlined
                       color="white"
                       class="ml-7 ml-sm-3 ml-md-7 mb-5"
@@ -474,7 +474,7 @@ export default {
     },
 
     HandlerLocation(url) {
-      window.open(url);
+      this.$router.push({name: 'products', query: {data: url.category_id }});
     },
   },
 };

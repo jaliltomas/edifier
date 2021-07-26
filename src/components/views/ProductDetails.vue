@@ -49,8 +49,8 @@
                 </v-row>
               </template>
             </v-img>
-            <div class="py-15"></div>
-            <div class="py-15"></div>
+            <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
+            <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
           </v-col>
           <v-col cols="12" sm="6" md="5" class="ml-md-15 d-flex flex-column">
             <div>
@@ -154,61 +154,63 @@
                 </div>
               </div>
             </div>
-            <div class="py-15"></div>
-            <div class="py-15"></div>
+            <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
+            <div class="py-md-15 py-5"></div>
           </v-col>
         </v-row>
       </v-container>
     </v-sheet>
-    <v-row class="d-flex" justify="center">
-      <v-card
-        width="150px"
-        height="auto"
-        class="mt-n15 mr-3"
-        v-for="(item, index) in dataProduct.images"
-        :key="index"
-        v-show="index != 0"
-        @click="
-          () => {
-            showImageBackground = true;
-            imageBackground = item;
-          }
-        "
-      >
-        <v-hover v-slot="{ hover }">
-          <v-img
-            contain
-            :src="item"
-            :lazy-src="item"
-            :class="hover ? 'elevation-15' : ''"
-            :style="
-              hover
-                ? 'cursor: pointer; opacity: 0.8; background-color: black; z-index:10;'
-                : ''
-            "
-          >
-            <v-row
-              v-if="hover"
-              class="fill-height ma-0"
-              align="center"
-              justify="center"
+    <v-container>
+      <v-row class="d-flex" justify="center">
+        <v-card
+          width="150px"
+          height="auto"
+          v-for="(item, index) in dataProduct.images"
+          :key="index"
+          class="mt-md-n15 mr-3"
+          v-show="index != 0"
+          @click="
+            () => {
+              showImageBackground = true;
+              imageBackground = item;
+            }
+          "
+        >
+          <v-hover v-slot="{ hover }">
+            <v-img
+              contain
+              :src="item"
+              :lazy-src="item"
+              :class="hover ? 'elevation-15' : ''"
+              :style="
+                hover
+                  ? 'cursor: pointer; opacity: 0.8; background-color: black; z-index:10;'
+                  : ''
+              "
             >
-              <v-btn fab color="white" small>
-                <v-icon>mdi-plus-circle-outline</v-icon>
-              </v-btn>
-            </v-row>
-            <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
-                <v-progress-circular
-                  indeterminate
-                  color="grey lighten-5"
-                ></v-progress-circular>
+              <v-row
+                v-if="hover"
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+              >
+                <v-btn fab color="white" small>
+                  <v-icon>mdi-plus-circle-outline</v-icon>
+                </v-btn>
               </v-row>
-            </template>
-          </v-img>
-        </v-hover>
-      </v-card>
-    </v-row>
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </v-hover>
+        </v-card>
+      </v-row>
+    </v-container>
     <div class="py-5"></div>
     <v-dialog v-model="showImageBackground" width="600">
       <v-card width="600">

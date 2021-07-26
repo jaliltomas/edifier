@@ -14,8 +14,8 @@
       </v-col>
       <v-col
         cols="12"
-        :sm="$route.query.product != undefined ? 6 : 12"
-        md="9"
+        sm="12"
+        md="12"
         v-if="$route.query.product != undefined"
         class="d-flex justify-end"
       >
@@ -41,7 +41,6 @@
     <v-row>
       <!-- MOSTRAR CATEGORIAS -->
       <v-col cols="12" sm="12" md="3" v-if="productsCategories.length > 0">
-
         <v-card color="#FAFAFA" tile class="elevation-0">
           <v-divider></v-divider>
           <v-subheader>Categorías</v-subheader>
@@ -166,8 +165,8 @@
       </v-col>
       <v-col
         cols="12"
-        sm="8"
-        md="8"
+        sm="12"
+        md="9"
         v-if="!loading && productsData.length == 0"
       >
         <v-alert
@@ -225,35 +224,21 @@ export default {
       dataBrand: [],
       brandIds: [],
       brand_position: [],
+
+      // Cateogry
+      category_id: "",
     };
   },
 
   created() {
-    // if (sessionStorage.getItem("region") == null) {
-    //   console.log("Mostrar Alerta para seleccionar region");
-    //   this.showRegion = true;
-    // } else {
-    //   this.HandlerGetProducts();
-    //   this.HandlerGetCategories();
-    // }
-
-    // if (this.$route.query.product != undefined) {
-    // this.searchProduct();
-    // } else {
-    this.HandlerGetProducts();
+    this.HandlerGetProducts(this.page, this.$route.query.data);
     this.HanderGetProductsBrand();
-    // this.HandlerGetCategories();
-    // }
   },
 
   watch: {
     page(page) {
       this.HandlerGetProducts(page);
     },
-
-    // authUser(user) {
-    //   this.HandlerGetCategories(1, user);
-    // },
 
     $route() {
       this.HandlerGetProducts();
@@ -264,8 +249,6 @@ export default {
     currencyPVP(value) {
       if (value) {
         const AMOUNT_FORMAT = new Intl.NumberFormat("de-DE", {
-          // currency: "ARS",
-          // style: "currency",
           maximumFractionDigits: 0,
           minimumFractionDigits: 0,
         }).format(value);
@@ -293,22 +276,18 @@ export default {
       return this.$store.getters["products/GET_PAGINATE_PRODUCT"];
     },
 
-    // productsCategories() {
-    //   return this.$store.getters["products/GET_CATGORIES"];
-    // },
-
     paginationCategories() {
       return this.$store.getters["products/GET_PAGINATE_CATEGORIES"];
     },
   },
 
   methods: {
-    HandlerGetProducts(page) {
-      if (!this.isAuth) this.HandlerGetPublicProducts(page);
-      if (this.isAuth) this.HandlerGetAuthProducts(page);
+    HandlerGetProducts(page, category_id) {
+      if (!this.isAuth) this.HandlerGetPublicProducts(page, category_id);
+      if (this.isAuth) this.HandlerGetAuthProducts(page, category_id);
     },
 
-    async HandlerGetPublicProducts(page) {
+    async HandlerGetPublicProducts(page, category_id) {
       try {
         this.loading = true;
         const myPage = page || 1;
@@ -317,16 +296,6 @@ export default {
             ? 1
             : parseInt(sessionStorage.getItem("region"));
 
-        this.brandIds = this.dataBrand.reduce((acc, out, key) => {
-          console.log(this.brand_position);
-          if (this.brand_position.includes(key)) {
-            console.log("entre");
-            acc.push(out.id);
-          }
-          return acc;
-        }, []);
-
-        console.log("positiom", this.brandIds);
         const request = {
           store: 3,
           page: myPage,
@@ -337,9 +306,10 @@ export default {
             this.$route.query.product == undefined
               ? ""
               : this.$route.query.product,
-          brand_ids:
-            this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
+          brand_ids: "",
+          category_id: category_id == undefined ? "" : parseInt(category_id),
         };
+
         const response = await this.$store.dispatch(
           "products/GET_PRODUCTS",
           request
@@ -366,6 +336,7 @@ export default {
               : this.$route.query.product,
           brand_ids:
             this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
+          category_id: category_id == undefined ? "" : parseInt(category_id),
         };
         const response = await this.$store.dispatch(
           "products/GET_AUTH_PRODUCTS",
@@ -380,57 +351,7 @@ export default {
       }
     },
 
-    async searchProduct() {
-      try {
-        const request = {
-          page: 1,
-          per_page: 10,
-          keywords: this.$route.query.product,
-        };
-        const response = await this.$store.dispatch(
-          "products/SEARCH_PRODUCTS",
-          request
-        );
-        this.dataCategories = response.data.data.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async HandlerGetCategories(page) {
-      try {
-        if (Object.keys(this.authUser).length > 0) {
-          const myPage = page || 1;
-          const request = {
-            store: 3,
-            page: myPage,
-            per_page: 10,
-            paginate: true,
-            warehouse_id:
-              this.isAuth == false
-                ? parseInt(sessionStorage.getItem("region")) == null
-                  ? 1
-                  : parseInt(sessionStorage.getItem("region"))
-                : this.authUser.warehouse_id,
-          };
-          const response = await this.$store.dispatch(
-            "products/GET_CATEGORIES",
-            request
-          );
-          this.dataCategories = response.data.data.data;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    HandlerShowImage(pictures) {
-      const images = JSON.parse(pictures);
-      return images[0];
-    },
-
     HandlerShowProduct(publication) {
-      console.log(publication);
       const encryptedID = this.CryptoJS.AES.encrypt(
         publication.product.id.toString(),
         "MyS3c3rtIdPr0Duct"
@@ -445,29 +366,6 @@ export default {
     resetSearch() {
       this.HandlerGetProducts();
       this.$router.replace({ query: null });
-    },
-
-    // MARCAS
-
-    async HanderGetProductsBrand() {
-      try {
-        const response = await this.$store.dispatch("products/PRODUCTS_BRAND");
-        this.dataBrand = response.data.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    brandNameUpper(name) {
-      if (name != undefined) {
-        return name.toUpperCase();
-      } else return "";
-    },
-
-    handleBlur() {
-      if (this.brandIds.length > 0) {
-        this.HandlerGetProducts(this.page);
-      }
     },
   },
 };

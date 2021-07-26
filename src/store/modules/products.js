@@ -42,7 +42,7 @@ const mutations = {
 const actions = {
   async GET_PRODUCTS({ commit }, payload) {
     try {
-      const response = await store.get(`api/publication/products_store_data?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&warehouse_id=${payload.warehouse_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}`);
+      const response = await store.get(`api/publication/products_store_data?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&warehouse_id=${payload.warehouse_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}&category_id=${payload.category_id}`);
       commit("SET_PRODUCT", response.data.data);
       return response;
     } catch (error) {
@@ -53,7 +53,7 @@ const actions = {
   async GET_AUTH_PRODUCTS({ commit }, payload) {
     try {
       const response = await store.get(
-        `/api/publication/products_store_data_auth?page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}`
+        `/api/publication/products_store_data_auth?page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}&category_id=${payload.category_id}`
       );
       commit("SET_PRODUCT", response.data.data);
       return response;
@@ -207,9 +207,9 @@ const actions = {
     }
   },
 
-  async PRODUCTS_BRAND() {
+  async PRODUCTS_BRAND(_, payload) {
     try {
-      const response = await product.get(`api/brand/brand`);
+      const response = await product.get(`api/brand/brand?has_publications=${payload.has_publications}&store_id=${payload.store_id}`);
       return response;
     } catch (error) {
       return Promise.reject(error);
