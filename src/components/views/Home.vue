@@ -4,6 +4,7 @@
       v-model="item"
       hide-delimiters
       height="100%"
+      :interval="12000"
       :hide-delimiter-background="false"
       :show-arrows-on-hover="false"
       :show-arrows="false"
@@ -41,7 +42,7 @@
                   class="mb-0"
                   :style="`font-size: 3vmax; color: ${item.color}`"
                 >
-                  $ {{ parseFloat(item.price) | currency }}
+                  {{ parseFloat(item.price) | currency }}
                 </div>
               </v-col>
               <v-col cols="12" md="12">
@@ -52,7 +53,7 @@
                   rounded
                   @click="HandlerLocation(item.url)"
                 >
-                  conocelo a detalle
+                  conocelo en detalle
                 </v-btn>
               </v-col>
               <v-col cols="12" md="12">
@@ -74,7 +75,7 @@
               <v-col
                 v-for="(val, index) in item.features"
                 :key="index"
-                style="background-color: #ffffff"
+                style="background-color: rgb(255 255 255 / 60%);"
                 class="mr-1"
                 :md="item.features.length == 4 ? '' : 3"
               >
@@ -105,39 +106,45 @@
                   : ''
               "
             >
-              <v-img
-                gradient="to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)"
-                cover
-                style="width: 100%; height: 350px"
-                :src="item.image_url"
-              >
-                <v-row style="height: 22.5em">
-                  <v-col cols="12">
-                    <div
-                      class="px-5 py-5 white--text"
-                      :style="
-                        $vuetify.breakpoint.name == 'sm'
-                          ? 'font-size: 1.5em'
-                          : 'font-size: 2em'
-                      "
-                    >
-                      {{ item.text_title }}
-                    </div>
-                  </v-col>
-                  <v-col cols="12" class="align-self-end">
-                    <v-btn
-                      @click="HandlerLocation(item)"
-                      outlined
-                      color="white"
-                      class="ml-7 ml-sm-3 ml-md-7 mb-5"
-                      rounded
-                      :small="$vuetify.breakpoint.name == 'sm' ? true : false"
-                    >
-                      ver productos
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-img>
+              <v-hover v-slot="{ hover }">
+                <v-img
+                  :gradient="
+                    !hover
+                      ? 'to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)'
+                      : ''
+                  "
+                  cover
+                  style="width: 100%; height: 350px"
+                  :src="item.image_url"
+                >
+                  <v-row style="height: 22.5em">
+                    <v-col cols="12">
+                      <div
+                        class="px-5 py-5 white--text"
+                        :style="
+                          $vuetify.breakpoint.name == 'sm'
+                            ? 'font-size: 1.5em'
+                            : 'font-size: 2em'
+                        "
+                      >
+                        {{ item.text_title }}
+                      </div>
+                    </v-col>
+                    <v-col cols="12" class="align-self-end">
+                      <v-btn
+                        @click="HandlerLocation(item)"
+                        outlined
+                        color="white"
+                        class="ml-7 ml-sm-3 ml-md-7 mb-5"
+                        rounded
+                        :small="$vuetify.breakpoint.name == 'sm' ? true : false"
+                      >
+                        ver productos
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-img>
+              </v-hover>
             </v-card>
           </v-col>
         </v-row>

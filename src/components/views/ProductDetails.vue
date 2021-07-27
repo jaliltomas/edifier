@@ -1,11 +1,11 @@
 <template>
   <div>
     <div
-      style="background-color: #FFFFFF; height: auto"
+      style="background-color: #ffffff; height: auto"
       :class="sticky ? 'header-sticky' : ''"
       v-scroll="onScroll"
     >
-      <div style="background-color: #C9CDD9; height: 5px"></div>
+      <div style="background-color: #c9cdd9; height: 5px"></div>
       <v-tabs
         class="d-flex justify-center"
         color="#797A7E"
@@ -228,8 +228,21 @@
     </v-container>
     <div class="py-5"></div>
     <v-dialog v-model="showImageBackground" width="600">
-      <v-card width="600">
-        <v-img contain :src="imageBackground"></v-img>
+      <v-card width="600" height="auto">
+        <v-img
+          style="width: 100%; height: auto"
+          :src="imageBackground"
+          :lazy-src="imageBackground"
+        >
+          <template v-slot:placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="grey lighten-5"
+              ></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
       </v-card>
     </v-dialog>
     <div v-html="dataProduct.text_html"></div>
