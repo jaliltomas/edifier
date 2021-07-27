@@ -6,7 +6,12 @@
           class="mb-0 text-uppercase"
           style="font-color: #3f3c35; font-size: 1.2em; cursor: pointer"
           v-if="dataProduct.product.product_warehouse.length > 0"
-          @click="goTo(authUser.zipcode, dataProduct.product.product_warehouse)"
+          @click="
+            ModalProductUser(
+              authUser.zipcode,
+              dataProduct.product.product_warehouse
+            )
+          "
         >
           <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
           {{
@@ -22,6 +27,12 @@
           class="mb-0 text-uppercase"
           style="font-color: #3f3c35; font-size: 1.2em"
           v-if="dataProduct.product.product_warehouse.length > 0"
+          @click="
+            ModalProductUser(
+              authUser.zipcode,
+              dataProduct.product.product_warehouse
+            )
+          "
         >
           <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
           {{
@@ -179,12 +190,16 @@ export default {
       );
 
       if (getWarehouseFwl01 != undefined) {
-        if (cp >= 1000 || cp < 1441) {
-          return "Recibilo sin cargo en 24hrs";
-        } else if (this.responseChazki) {
-          return "Recibilo sin cargo en 72hrs";
+        if (getWarehouseFwl01.current_stock > 0) {
+          if (cp >= 1000 || cp < 1441) {
+            return "Recibilo sin cargo en 24hrs 1";
+          } else if (this.responseChazki) {
+            return "Recibilo sin cargo en 72hrs";
+          } else {
+            return "Recibilo sin cargo en 4-6hrs";
+          }
         } else {
-          return "Recibilo sin cargo en 4-6hrs";
+          return "Proximamente";
         }
       }
     },
@@ -241,7 +256,7 @@ export default {
       }
     },
 
-    goTo(zip_code, warehouse) {
+    ModalProductUser(zip_code, warehouse) {
       if (this.HandlerReturnWarehouse(zip_code, warehouse) == "Proximamente") {
         this.showModalReserve = true;
       }
