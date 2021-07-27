@@ -1,17 +1,16 @@
 <template>
   <div>
     <div
-      style="background-color: #96968e; height: auto"
+      style="background-color: #FFFFFF; height: auto"
       :class="sticky ? 'header-sticky' : ''"
       v-scroll="onScroll"
     >
-      <div style="background-color: #808078; height: 10px"></div>
+      <div style="background-color: #C9CDD9; height: 5px"></div>
       <v-tabs
-        dark
         class="d-flex justify-center"
-        color="white"
-        background-color="#96968e"
-        slider-color="#B63F55"
+        color="#797A7E"
+        background-color="#FFFFFF"
+        slider-color="#0EA4E9"
       >
         <v-tab @click="$vuetify.goTo('#product')">
           {{ dataProduct.keywords }}
@@ -22,7 +21,7 @@
         </v-tab>
       </v-tabs>
     </div>
-    <v-sheet color="#DAD8CC" id="product">
+    <v-sheet color="#EBF1F7" id="product">
       <v-container fluid>
         <v-row justify="center" class="mt-10">
           <v-col cols="12" sm="6" md="5">
@@ -134,10 +133,10 @@
                   v-if="
                     dataProduct.product.product_warehouse[0].current_stock > 0
                   "
+                  dark
                   style="border-width: medium"
                   rounded
-                  outlined
-                  color="#B63F55"
+                  color="#00A0E9"
                   @click="HandlerAddCart()"
                 >
                   Agregar al carrito
@@ -149,8 +148,8 @@
                   "
                   style="border-width: medium"
                   rounded
-                  outlined
-                  color="#B63F55"
+                  dark
+                  color="#00A0E9"
                   @click="HandlerBuy()"
                   class="mt-1 mt-md-0"
                 >

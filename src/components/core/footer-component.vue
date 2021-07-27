@@ -1,12 +1,12 @@
 <template>
   <v-footer :padless="true">
-    <v-card flat tile width="100%" color="#CBC9BC" class="text-start py-15">
+    <v-card flat tile width="100%" color="#EBF1F7" class="text-start py-15">
       <v-row class="mx-0 my-0" justify="space-around">
         <v-col cols="12" md="4">
           <v-img
             width="250"
             contain
-            src="@/assets/img/edifier-logo-color.svg"
+            src="@/assets/img/edifier-logo-gris.svg"
           ></v-img>
           <div class="mt-5" @click.prevent="showTerms = true">
             <a style="color: black" href="">
@@ -32,7 +32,7 @@
               target="_F960AFIPInfo"
             >
               <v-img
-                style="cursor: pointer"
+                style="cursor: pointer; filter: grayscale(100%)"
                 class="mt-2 mt-md-0 d-flex justify-end"
                 contain
                 width="5em"

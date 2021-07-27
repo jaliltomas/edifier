@@ -146,7 +146,7 @@
 
     <section id="destacados">
       <v-responsive>
-        <v-sheet color="#ECEBE5" class="mt-15">
+        <v-sheet color="#EBF1F7" class="mt-15">
           <div class="d-flex justify-center pt-15">
             <span
               class="text-uppercase text-center mb-0"
@@ -238,11 +238,11 @@
             </v-col>
             <v-col cols="12" md="12" class="d-flex justify-center mb-15">
               <v-btn
+                dark
                 @click="$router.push({ name: 'products' })"
                 style="border-width: medium"
-                outlined
                 rounded
-                color="#B63F55"
+                color="#00A0E9"
               >
                 <span class="font-weight-medium"> Ir a la tienda </span>
               </v-btn>
@@ -474,7 +474,7 @@ export default {
     },
 
     HandlerLocation(url) {
-      this.$router.push({name: 'products', query: {data: url.category_id }});
+      this.$router.push({ name: "products", query: { data: url.category_id } });
     },
   },
 };
