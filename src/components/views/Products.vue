@@ -67,7 +67,10 @@
                       class="text-capitalize ml-3"
                       v-text="item2.name"
                     ></v-list-item-title> -->
-                    <v-checkbox :label="item2.name"></v-checkbox>
+                    <v-checkbox
+                      :label="item2.name"
+                      @change="categorySearch(item2)"
+                    ></v-checkbox>
                   </v-list-item>
                   <v-divider class="mb-2"></v-divider>
                 </v-list-group>
@@ -227,6 +230,7 @@ export default {
 
       // Cateogry
       category_id: "",
+      categoriesArray: [],
     };
   },
 
@@ -287,7 +291,7 @@ export default {
       if (this.isAuth) this.HandlerGetAuthProducts(page, category_id);
     },
 
-    async HandlerGetPublicProducts(page, category_id) {
+    async HandlerGetPublicProducts(page) {
       try {
         this.loading = true;
         const myPage = page || 1;
@@ -307,7 +311,8 @@ export default {
               ? ""
               : this.$route.query.product,
           brand_ids: "",
-          category_id: category_id == undefined ? "" : parseInt(category_id),
+          sub_category_ids:
+            this.categoriesArray.length == 0 ? "" : this.categoriesArray,
         };
 
         const response = await this.$store.dispatch(
@@ -322,7 +327,7 @@ export default {
       }
     },
 
-    async HandlerGetAuthProducts(page, category_id) {
+    async HandlerGetAuthProducts(page) {
       try {
         this.loading = true;
         const myPage = page || 1;
@@ -336,7 +341,8 @@ export default {
               : this.$route.query.product,
           brand_ids:
             this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
-          category_id: category_id == undefined ? "" : parseInt(category_id),
+          sub_category_ids:
+            this.categoriesArray.length == 0 ? "" : this.categoriesArray,
         };
         const response = await this.$store.dispatch(
           "products/GET_AUTH_PRODUCTS",
@@ -366,6 +372,19 @@ export default {
     resetSearch() {
       this.HandlerGetProducts();
       this.$router.replace({ query: null });
+    },
+
+    categorySearch(category) {
+      if (this.categoriesArray.length == 0) {
+        this.categoriesArray.push(category.id);
+      } else {
+        if (this.categoriesArray.includes(category.id)) {
+          const positioDelete = this.categoriesArray.indexOf(category.id);
+          this.categoriesArray.splice(positioDelete, 1);
+        } else {
+          this.categoriesArray.push(category.id);
+        }
+      }
     },
   },
 };

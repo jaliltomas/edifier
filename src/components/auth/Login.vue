@@ -1,126 +1,109 @@
 <template>
-  <v-container>
-    <ValidationObserver ref="obs" v-slot="{ passes }">
-      <v-row>
+  <v-container fill-height>
+    <v-row justify="center" align="center">
+      <ValidationObserver ref="obs" v-slot="{ passes }">
         <v-col cols="12" md="12">
-          <navegtion-component
-            title="INICIAR SESIÓN"
-            sub_title="INICIAR SESIÓN"
-          />
-        </v-col>
-        <!-- <v-col cols="12" md="12">
-          <h1 class="text-center text-md-start font-weight-bold text-uppercase">
-            Bienvenidos a MULTIMARCA
-          </h1>
-          <p>Ingresa tus datos para comenzar a comprar</p>
-        </v-col> -->
-        <v-row justify="center" class="my-10">
-          <v-col cols="12" md="4">
-            <v-card
-              flat
-              class="px-5 py-5"
-              style="
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-                border-radius: 20px !important;
-              "
-            >
-              <v-col class="text-center">
-                <v-avatar tile size="200">
-                  <v-img src="@/assets/img/logo.svg" contain></v-img>
-                </v-avatar>
-              </v-col>
-              <v-col cols="12" md="12">
-                <label for="email">Correo Electrónico</label>
-                <ValidationProvider
-                  name="Nombre"
-                  rules="email|required"
-                  v-slot="{ errors }"
-                >
-                  <v-text-field
-                    v-model="email"
-                    class="mt-2"
-                    color="black"
-                    dense
-                    outlined
-                    placeholder="ejemplo@mail.com"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" md="12" class="mt-n5">
-                <label for="email">Contraseña</label>
-                <ValidationProvider
-                  name="Contraseña"
-                  rules="required"
-                  v-slot="{ errors }"
-                >
-                  <v-text-field
-                    @keyup.enter="passes(HandlerLogin)"
-                    type="password"
-                    v-model="password"
-                    class="mt-2"
-                    color="black"
-                    dense
-                    outlined
-                    placeholder="Ingresa tu contraseña"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" md="12">
-                <!-- <div class="d-md-flex justify-md-space-between"> -->
-                <!-- <div class="d-flex justify-center"> -->
-                <v-btn
-                  :loading="loading"
-                  @click="passes(HandlerLogin)"
-                  tile
-                  elevation="0"
-                  large
-                  block
-                  dark
-                  color="#A81331"
-                  class="text-capitalize"
-                >
-                  Ingresar
-                </v-btn>
-                <v-btn
-                  :loading="loading"
-                  @click="HandlerRouter('signup')"
-                  tile
-                  elevation="0"
-                  large
-                  block
-                  dark
-                  color="black"
-                  class="text-capitalize mt-1"
-                >
-                  Registrar
-                </v-btn>
-                <!-- </div> -->
-                <!-- </div> -->
-              </v-col>
-              <v-col
-                class="text-center mt-n7 mt-md-n5"
-                cols="12"
-                sm="12"
-                md="12"
+          <v-img
+            class="mx-auto"
+            width="60%"
+            contain
+            src="@/assets/img/edifier-logo-color.svg"
+          ></v-img>
+          <v-card
+            flat
+            class="px-0 py-0"
+            style="
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+              border-radius: 20px !important;
+            "
+          >
+            <v-col cols="12" md="12">
+              <label for="email">Correo Electrónico</label>
+              <ValidationProvider
+                name="Nombre"
+                rules="email|required"
+                v-slot="{ errors }"
               >
-                <div
-                  @click="HandlerRouter('login')"
-                  style="cursor: pointer"
-                  class="mt-6 blue--text"
-                >
-                  Recuperar contraseña
-                </div>
+                <v-text-field
+                  v-model="email"
+                  class="mt-2"
+                  color="#00A0E9"
+                  dense
+                  outlined
+                  placeholder="ejemplo@mail.com"
+                  :error-messages="errors"
+                ></v-text-field>
+              </ValidationProvider>
+            </v-col>
+            <v-col cols="12" md="12" class="mt-n5">
+              <label for="email">Contraseña</label>
+              <ValidationProvider
+                name="Contraseña"
+                rules="required"
+                v-slot="{ errors }"
+              >
+                <v-text-field
+                  @keyup.enter="passes(HandlerLogin)"
+                  type="password"
+                  v-model="password"
+                  class="mt-2"
+                  color="#00A0E9"
+                  dense
+                  outlined
+                  placeholder="Ingresa tu contraseña"
+                  :error-messages="errors"
+                ></v-text-field>
+              </ValidationProvider>
+            </v-col>
+            <v-col cols="12" md="12">
+              <!-- <div class="d-md-flex justify-md-space-between"> -->
+              <!-- <div class="d-flex justify-center"> -->
+              <v-btn
+                :loading="loading"
+                @click="passes(HandlerLogin)"
+                tile
+                elevation="0"
+                large
+                block
+                dark
+                color="#00A0E9"
+                class="text-capitalize"
+              >
+                Ingresar
+              </v-btn>
+              <v-btn
+                :loading="loading"
+                @click="HandlerRouter('signup')"
+                tile
+                elevation="0"
+                large
+                block
+                dark
+                color="black"
+                class="text-capitalize mt-1"
+              >
+                Registrar
+              </v-btn>
+              <!-- </div> -->
+              <!-- </div> -->
+            </v-col>
+            <v-col class="text-center mt-n7 mt-md-n5" cols="12" sm="12" md="12">
+              <div
+                @click="HandlerRouter('login')"
+                style="cursor: pointer"
+                class="mt-6 blue--text"
+              >
+                Recuperar contraseña
+              </div>
 
-                <!-- <div
+              <!-- <div
                     @click="HandlerRouter('signup')"
                     style="cursor: pointer"
                     class="mt-2 blue--text"
                     >Registrate
                   </div> -->
 
-                <!-- <span
+              <!-- <span
                   @click="showRecovery = true"
                   style="cursor: pointer; font-size: 12px"
                 >
@@ -132,19 +115,11 @@
                 >
                   No tienes cuenta? Registrate
                 </span> -->
-              </v-col>
-            </v-card>
-          </v-col>
-        </v-row>
-        <!-- <v-col cols="12" md="6" class="d-flex justify-end mt-md-n10">
-          <v-img
-            class="d-none d-sm-flex"
-            contain
-            src="@/assets/img/login 2.svg"
-          ></v-img>
-        </v-col> -->
-      </v-row>
-    </ValidationObserver>
+            </v-col>
+          </v-card>
+        </v-col>
+      </ValidationObserver>
+    </v-row>
 
     <!-- VALIDAR CUENTA -->
     <v-dialog v-model="showVerification" max-width="600">
