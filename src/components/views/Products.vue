@@ -312,7 +312,9 @@ export default {
               : this.$route.query.product,
           brand_ids: "",
           sub_category_ids:
-            this.categoriesArray.length == 0 ? "" : this.categoriesArray,
+            this.categoriesArray.length == 0
+              ? ""
+              : JSON.stringify(this.categoriesArray),
         };
 
         const response = await this.$store.dispatch(
@@ -342,7 +344,9 @@ export default {
           brand_ids:
             this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
           sub_category_ids:
-            this.categoriesArray.length == 0 ? "" : this.categoriesArray,
+            this.categoriesArray.length == 0
+              ? ""
+              : JSON.stringify(this.categoriesArray),
         };
         const response = await this.$store.dispatch(
           "products/GET_AUTH_PRODUCTS",
