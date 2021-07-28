@@ -8,10 +8,13 @@
             contain
             src="@/assets/img/edifier-logo-gris.svg"
           ></v-img>
-          <div class="mt-5" @click.prevent="showTerms = true">
-            <a style="color: black" href="">
-              Politica de privacidad - Términos de uso.
+          <div class="mt-5">
+            <a @click.prevent="() => {}" style="color: black" href="">
+              Politica de privacidad
             </a>
+          </div>
+          <div class="mt-0" @click.prevent="showTerms = true">
+            <a style="color: black" href=""> Términos de uso </a>
           </div>
           <div>© EDIFIER 2021 Todos los derechos reservados.</div>
         </v-col>
@@ -22,7 +25,7 @@
             <v-icon class="black--text mx-1">mdi-youtube</v-icon>
           </div>
           <div class="d-md-flex mt-2">
-            <span class="text-end mr-5">
+            <span class="text-end mr-5" style="font-size: 15px">
               Cumplimos con la Resolución 270/2020 de la Secretaría de Comercio
               Interior del Ministerio de Desarrollo Productivo sobre la
               protección del Consumidor en el Comercio Electrónico

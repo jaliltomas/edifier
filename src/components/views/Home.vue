@@ -25,9 +25,9 @@
                 <v-icon :color="item.color" @click="HandlerLeft" class="ml-n1">
                   mdi-chevron-left
                 </v-icon>
-                <v-icon :color="item.color" @click="HandlerRight"
-                  >mdi-chevron-right</v-icon
-                >
+                <v-icon :color="item.color" @click="HandlerRight">
+                  mdi-chevron-right
+                </v-icon>
               </div>
               <v-col cols="12" md="12">
                 <div
@@ -51,7 +51,7 @@
                   outlined
                   color="red darken--4"
                   rounded
-                  @click="HandlerLocation(item.url)"
+                  @click="HandlerLocationCarrusel(item)"
                 >
                   conocelo en detalle
                 </v-btn>
@@ -75,7 +75,7 @@
               <v-col
                 v-for="(val, index) in item.features"
                 :key="index"
-                style="background-color: rgb(255 255 255 / 60%);"
+                style="background-color: rgb(255 255 255 / 60%)"
                 class="mr-1"
                 :md="item.features.length == 4 ? '' : 3"
               >
@@ -186,9 +186,10 @@
                   <v-card
                     :width="$vuetify.breakpoint.smAndDown ? '20em' : '27em'"
                     height="auto"
-                    @click="HandlerProductDetails(item)"
                   >
                     <v-img
+                      @click="HandlerProductDetails(item)"
+                      style="cursor: pointer"
                       cover
                       class="mx-7 my-7"
                       width="auto"
@@ -198,7 +199,7 @@
                     </v-img>
                     <v-card-text class="mx-3">
                       <v-row style="height: auto">
-                        <v-col cols="12">
+                        <!-- <v-col cols="12">
                           <span
                             v-if="
                               item.product != null && item.product.brand != null
@@ -208,7 +209,7 @@
                           >
                             {{ item.product.brand.name }}
                           </span>
-                        </v-col>
+                        </v-col> -->
                         <v-col cols="12" class="mt-n5">
                           <span
                             class="black--text text-uppercase"
@@ -465,9 +466,6 @@ export default {
             }
           }
         }
-
-        console.log("Carrusel", this.carrusel);
-        console.log("categoria", this.categoria);
       } catch (error) {
         console.log(error);
       }
@@ -481,7 +479,13 @@ export default {
     },
 
     HandlerLocation(url) {
-      this.$router.push({ name: "products", query: { data: url.category_id } });
+      console.log("Categoria", url);
+      const category_id = JSON.parse(url.category_id);
+      this.$router.push({ name: "products", query: { data: category_id } });
+    },
+
+    HandlerLocationCarrusel(url) {
+      window.open(url);
     },
   },
 };

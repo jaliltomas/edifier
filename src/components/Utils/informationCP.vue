@@ -192,14 +192,14 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 || cp < 1441) {
-            return "Recibilo sin cargo en 24hrs 1";
+            return "Envío sin cargo en 24hrs 1";
           } else if (this.responseChazki) {
-            return "Recibilo sin cargo en 72hrs";
+            return "Envío sin cargo en 72hrs";
           } else {
-            return "Recibilo sin cargo en 4-6hrs";
+            return "Envío sin cargo en 4-6hrs";
           }
         } else {
-          return "Proximamente";
+          return "Reservá el tuyo";
         }
       }
     },
@@ -223,7 +223,7 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Recibilo sin cargo en 72Hrs";
+          return "Envío sin cargo en 72Hrs";
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -233,16 +233,16 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock == 0
         ) {
-          return "Proximamente";
+          return "Reservá el tuyo";
         }
       } else if (
         getWarehouseReg == undefined &&
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Recibilo sin cargo en 72Hrs";
+          return "Envío sin cargo en 72Hrs";
         } else if (getWarehouseFwl01.current_stock == 0) {
-          return "Proximamente";
+          return "Reservá el tuyo";
         }
       } else if (
         getWarehouseReg != undefined &&
@@ -251,13 +251,13 @@ export default {
         if (getWarehouseReg.current_stock > 0) {
           return "Entrega o Retira en el día";
         } else if (getWarehouseReg.current_stock == 0) {
-          return "Proximamente";
+          return "Reservá el tuyo";
         }
       }
     },
 
     ModalProductUser(zip_code, warehouse) {
-      if (this.HandlerReturnWarehouse(zip_code, warehouse) == "Proximamente") {
+      if (this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo") {
         this.showModalReserve = true;
       }
     },

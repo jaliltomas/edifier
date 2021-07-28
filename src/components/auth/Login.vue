@@ -9,6 +9,8 @@
           <div>
             <div class="py-15"></div>
             <v-img
+              @click="$router.push('/')"
+              style="cursor: pointer"
               class="mx-auto"
               contain
               width="250"
