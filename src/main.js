@@ -9,6 +9,10 @@ import './plugins/vee-validate'
 import './plugins/snotify'
 import './plugins/crypto'
 
+import VueAnimated from '@codekraft-studio/vue-animated'
+
+Vue.use(VueAnimated)
+
 import VueCarousel from 'vue-carousel';
 Vue.use(VueCarousel);
 

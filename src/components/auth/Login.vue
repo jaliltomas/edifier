@@ -33,9 +33,15 @@
         </div>
       </v-col>
       <v-col cols="12" md="7">
-        <ValidationObserver ref="obs" v-slot="{ passes }">
-          <div class="d-flex justify-center">
+        <div class="d-flex justify-center">
+          <!-- :width="!show ? 800 : 400" -->
+          <Animated
+            name="pulse"
+            :duration="{ enter: 2000, leave: 2000 }"
+            :mode="mode"
+          >
             <v-card
+              v-if="show"
               width="400"
               flat
               class="px-0 py-0"
@@ -57,68 +63,244 @@
               >
                 Ingresa con tu cuenta
               </div>
-              <v-col cols="12" md="12">
-                <label for="email">Correo Electrónico</label>
-                <ValidationProvider
-                  name="Nombre"
-                  rules="email|required"
-                  v-slot="{ errors }"
-                >
-                  <v-text-field
-                    v-model="email"
-                    class="mt-2"
+
+              <ValidationObserver ref="obs" v-slot="{ passes }">
+                <!-- <Animated
+                enter="fadeIn"
+                leave="FadeOut"
+                appear
+                :duration="{ enter: 1000, leave: 0 }"
+              >
+                <div v-if="show"> -->
+                <v-col cols="12" md="12">
+                  <label for="email">Correo Electrónico</label>
+                  <ValidationProvider
+                    name="Nombre"
+                    rules="email|required"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      v-model="email"
+                      class="mt-2"
+                      color="#00A0E9"
+                      dense
+                      outlined
+                      placeholder="ejemplo@mail.com"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" md="12" class="mt-n5">
+                  <label for="email">Contraseña</label>
+                  <ValidationProvider
+                    name="Contraseña"
+                    rules="required"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      @keyup.enter="passes(HandlerLogin)"
+                      type="password"
+                      v-model="password"
+                      class="mt-2"
+                      color="#00A0E9"
+                      dense
+                      outlined
+                      placeholder="Ingresa tu contraseña"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" md="12" class="mb-0">
+                  <v-btn
+                    :loading="loading"
+                    @click="passes(HandlerLogin)"
+                    tile
+                    elevation="0"
+                    large
+                    block
+                    dark
                     color="#00A0E9"
-                    dense
-                    outlined
-                    placeholder="ejemplo@mail.com"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" md="12" class="mt-n5">
-                <label for="email">Contraseña</label>
-                <ValidationProvider
-                  name="Contraseña"
-                  rules="required"
-                  v-slot="{ errors }"
-                >
-                  <v-text-field
-                    @keyup.enter="passes(HandlerLogin)"
-                    type="password"
-                    v-model="password"
-                    class="mt-2"
-                    color="#00A0E9"
-                    dense
-                    outlined
-                    placeholder="Ingresa tu contraseña"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </ValidationProvider>
-              </v-col>
-              <v-col cols="12" md="12">
+                    class="text-capitalize mb-0"
+                  >
+                    Ingresar
+                  </v-btn>
+                </v-col>
+                <!-- </div>
+              </Animated> -->
+              </ValidationObserver>
+
+              <!-- <ValidationObserver ref="obs" v-slot="{}">
+              <Animated
+                enter="fadeIn"
+                leave="FadeOut"
+                :duration="{ enter: 2000, leave: 0 }"
+              >
+                <div v-if="!show">
+                  <v-row>
+                    <v-col cols="12" md="6" class="mt-md-n5">
+                      <label for="nombre">Nombre</label>
+                      <ValidationProvider
+                        name="nombre"
+                        rules="required"
+                        v-slot="{ errors }"
+                      >
+                        <v-text-field
+                          v-model="first_name"
+                          class="mt-2"
+                          color="black"
+                          dense
+                          outlined
+                          placeholder="Ingresa tu nombre"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="12" md="6" class="mt-md-n5">
+                      <label for="Codigo Postal">Codigo Postal</label>
+                      <ValidationProvider
+                        name="codigo postal"
+                        rules="required|min:4|max:4|numeric"
+                        v-slot="{ errors }"
+                      >
+                        <v-text-field
+                          v-model="postal_code"
+                          class="mt-2"
+                          color="black"
+                          dense
+                          outlined
+                          placeholder="Ingresa tu codigo postal"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="12" md="6" class="mt-md-n5">
+                      <ValidationProvider
+                        name="correo"
+                        rules="email|required|confirmed:email_confirmation"
+                        v-slot="{ errors }"
+                      >
+                        <label for="email"> Correo Electrónico </label>
+                        <v-text-field
+                          autocomplete="off"
+                          v-model="email"
+                          class="mt-2"
+                          color="black"
+                          dense
+                          outlined
+                          placeholder="Ingresa tu correo electronico"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="12" md="6" class="mt-md-n5">
+                      <ValidationProvider
+                        name="confirmar correo"
+                        rules="email|required"
+                        v-slot="{ errors }"
+                        vid="email_confirmation"
+                      >
+                        <label for="email confirmar"> Confirmar Correo </label>
+                        <v-text-field
+                          autocomplete="off"
+                          v-model="email_confirmation"
+                          class="mt-2"
+                          color="black"
+                          dense
+                          outlined
+                          placeholder="Confrima tu correo electronico"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="12" md="6" class="mt-md-n5">
+                      <ValidationProvider
+                        name="contraseña"
+                        rules="required|confirmed:confirmation"
+                        v-slot="{ errors }"
+                      >
+                        <label for="password"> Contraseña </label>
+                        <v-text-field
+                          autocomplete="off"
+                          v-model="password"
+                          type="password"
+                          class="mt-2"
+                          color="black"
+                          dense
+                          outlined
+                          placeholder="Ingresa tu contraseña"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="12" md="6" class="mt-md-n5">
+                      <ValidationProvider
+                        name="confirmar contraseña"
+                        rules="required"
+                        vid="confirmation"
+                        v-slot="{ errors }"
+                      >
+                        <label for="password confirmar">
+                          Confirmar Contraseña
+                        </label>
+                        <v-text-field
+                          autocomplete="off"
+                          v-model="confirm_password"
+                          type="password"
+                          class="mt-2"
+                          color="black"
+                          dense
+                          outlined
+                          placeholder="Confirma tu nombre contraseña"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-col>
+
+                    <v-col cols="12" md="12">
+                      <div class="d-md-flex justify-md-space-between">
+                        <div class="d-flex justify-center">
+                          <v-btn
+                            :loading="loading"
+                            @click="passes(HandlerSignUp)"
+                            tile
+                            elevation="0"
+                            large
+                            dark
+                            color="black"
+                            class="text-capitalize"
+                          >
+                            Continuar
+                          </v-btn>
+                        </div>
+                        <span
+                          @click="HandlerRouter('login')"
+                          style="cursor: pointer"
+                          class="d-flex justify-center mt-2 blue--text"
+                          >Ya tienes cuenta? Inicia sesion
+                        </span>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
+              </Animated>
+            </ValidationObserver> -->
+
+              <v-col cols="12" md="12" class="mt-0">
                 <v-btn
                   :loading="loading"
-                  @click="passes(HandlerLogin)"
-                  tile
-                  elevation="0"
-                  large
-                  block
-                  dark
-                  color="#00A0E9"
-                  class="text-capitalize"
-                >
-                  Ingresar
-                </v-btn>
-                <v-btn
-                  :loading="loading"
-                  @click="HandlerRouter('signup')"
+                  @click="changeState"
                   tile
                   elevation="0"
                   large
                   block
                   dark
                   color="black"
-                  class="text-capitalize mt-1"
+                  class="text-capitalize mt-0"
                 >
                   Registrar
                 </v-btn>
@@ -138,8 +320,14 @@
                 </div>
               </v-col>
             </v-card>
-          </div>
-        </ValidationObserver>
+          </Animated>
+          <Animated :duration="{ enter: 4000, leave: 4000 }">
+            <v-card>
+              <v-btn @click="changeState">registrar</v-btn>
+              <v-btn @click="changeState">Actualizar</v-btn>
+            </v-card>
+          </Animated>
+        </div>
       </v-col>
     </v-row>
 
@@ -239,6 +427,11 @@ export default {
       loading: false,
       loading_verification: false,
       email_verifiction: "",
+
+      //Animation
+      show: true,
+      canRegister: true,
+      mode: "out-in"
     };
   },
 
@@ -317,6 +510,10 @@ export default {
         this.loading_verification = false;
       }
     },
+
+    changeState() {
+      console.log(this.show)
+    }
   },
 };
 </script>
