@@ -479,13 +479,13 @@ export default {
     },
 
     HandlerLocation(url) {
-      console.log("Categoria", url);
+      // console.log("Categoria", url);
       const category_id = JSON.parse(url.category_id);
       this.$router.push({ name: "products", query: { data: category_id } });
     },
 
     HandlerLocationCarrusel(url) {
-      window.open(url);
+      window.open(url.url);
     },
   },
 };
