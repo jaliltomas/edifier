@@ -157,7 +157,7 @@
           <div class="d-flex justify-center pt-15">
             <span
               class="text-uppercase text-center mb-0"
-              style="font-size: 2em; font-weight: 200"
+              style="font-size: 2em; font-weight: 300"
             >
               Productos Destacados
             </span>
@@ -466,6 +466,8 @@ export default {
             }
           }
         }
+
+        console.log("Carrusel", this.carrusel)
       } catch (error) {
         console.log(error);
       }
@@ -485,7 +487,8 @@ export default {
     },
 
     HandlerLocationCarrusel(url) {
-      window.open(url);
+      console.log("Abrrir", url)
+      window.open(url.url);
     },
   },
 };

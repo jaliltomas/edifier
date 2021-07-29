@@ -13,13 +13,25 @@
             )
           "
         >
-          <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
-          {{
-            HandlerReturnWarehouse(
-              authUser.zipcode,
-              dataProduct.product.product_warehouse
-            )
-          }}
+          <span
+            v-if="
+              HandlerReturnWarehouse(
+                authUser.zipcode,
+                dataProduct.product.product_warehouse
+              ) != 'Reservá el tuyo'
+            "
+          >
+            <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+            {{
+              HandlerReturnWarehouse(
+                authUser.zipcode,
+                dataProduct.product.product_warehouse
+              )
+            }}
+          </span>
+          <span v-else>
+            <v-btn outlined rounded color="#15A7EB">Reservá el tuyo</v-btn>
+          </span>
         </p>
       </div>
       <div v-else>
@@ -34,13 +46,25 @@
             )
           "
         >
-          <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
-          {{
-            HandlerReturnWarehouse(
-              authUser.zipcode,
-              dataProduct.product.product_warehouse
-            )
-          }}
+          <span
+            v-if="
+              HandlerReturnWarehouse(
+                authUser.zipcode,
+                dataProduct.product.product_warehouse
+              ) != 'Reservá el tuyo'
+            "
+          >
+            <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+            {{
+              HandlerReturnWarehouse(
+                authUser.zipcode,
+                dataProduct.product.product_warehouse
+              )
+            }}
+          </span>
+          <span v-else>
+            <v-btn outlined rounded color="#15A7EB">Reservá el tuyo</v-btn>
+          </span>
         </p>
       </div>
     </div>
@@ -62,7 +86,7 @@
       >
         <v-card>
           <v-card-title>
-            Llena los campos para manternerte informado
+            Completá con tus datos y nos comunicaremos
           </v-card-title>
           <v-card-text>
             <ValidationProvider
@@ -73,7 +97,7 @@
               <v-text-field
                 filled
                 rounded
-                label="nombre"
+                label="Nombre"
                 v-model="email"
                 :error-messages="errors"
               ></v-text-field>
@@ -92,8 +116,8 @@
               ></v-text-field>
             </ValidationProvider>
             <ValidationProvider
-              name="telefono"
-              rules="numeric|required"
+              name="télefono"
+              rules="numeric"
               v-slot="{ errors }"
             >
               <v-text-field
@@ -192,7 +216,7 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 || cp < 1441) {
-            return "Envío sin cargo en 24hrs 1";
+            return "Envío sin cargo en 24hrs";
           } else if (this.responseChazki) {
             return "Envío sin cargo en 72hrs";
           } else {
@@ -257,7 +281,9 @@ export default {
     },
 
     ModalProductUser(zip_code, warehouse) {
-      if (this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo") {
+      if (
+        this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo"
+      ) {
         this.showModalReserve = true;
       }
     },

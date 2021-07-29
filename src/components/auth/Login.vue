@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="mx-0 px-0 py-0 my-0">
     <v-row justify="center" align="center" no-gutters>
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="5" v-if="!$vuetify.breakpoint.smAndDown">
         <div
           style="width: 100%; height: 100vh; background-color: #ebf1f7"
           class="d-flex flex-column"
@@ -33,76 +33,234 @@
         </div>
       </v-col>
       <v-col cols="12" md="7">
-        <div class="d-flex justify-center">
-          <!-- :width="!show ? 800 : 400" -->
-          <Animated
-            name="pulse"
-            :duration="{ enter: 2000, leave: 2000 }"
-            :mode="mode"
+        <v-img
+          v-if="$vuetify.breakpoint.smAndDown"
+          @click="$router.push('/')"
+          style="cursor: pointer"
+          class="mx-auto mt-10"
+          contain
+          width="250"
+          src="@/assets/img/edifier-logo-color.svg"
+        ></v-img>
+        <div class="d-flex justify-center mt-5">
+          <v-card
+            v-if="show"
+            width="400"
+            flat
+            class="px-0 py-0 animate__animated animate__backInDown"
+            style="
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+              border-radius: 20px !important;
+            "
           >
-            <v-card
-              v-if="show"
-              width="400"
-              flat
-              class="px-0 py-0"
-              style="
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-                border-radius: 20px !important;
-              "
+            <div class="text-center" style="font-size: 2em; font-weight: 380">
+              Bienvenido
+            </div>
+            <div
+              class="text-center mt-5"
+              style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
             >
-              <div class="text-center" style="font-size: 2em; font-weight: 380">
-                Bienvenido
-              </div>
-              <div
-                class="text-center mt-5"
-                style="
-                  font-size: 0.87em;
-                  font-weight: 400;
-                  line-height: 1.375rem;
-                "
-              >
-                Ingresa con tu cuenta
-              </div>
+              Ingresa con tu cuenta
+            </div>
 
-              <ValidationObserver ref="obs" v-slot="{ passes }">
-                <!-- <Animated
-                enter="fadeIn"
-                leave="FadeOut"
-                appear
-                :duration="{ enter: 1000, leave: 0 }"
+            <ValidationObserver ref="obs" v-slot="{ passes }">
+              <v-col cols="12" md="12">
+                <label for="email">Correo Electrónico</label>
+                <ValidationProvider
+                  name="Nombre"
+                  rules="email|required"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="email"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    outlined
+                    placeholder="ejemplo@mail.com"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" md="12" class="mt-n5">
+                <label for="email">Contraseña</label>
+                <ValidationProvider
+                  name="Contraseña"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    @keyup.enter="passes(HandlerLogin)"
+                    type="password"
+                    v-model="password"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    outlined
+                    placeholder="Ingresa tu contraseña"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" md="12">
+                <v-btn
+                  :loading="loading"
+                  @click="passes(HandlerLogin)"
+                  tile
+                  elevation="0"
+                  large
+                  block
+                  dark
+                  color="#00A0E9"
+                  class="text-capitalize"
+                >
+                  Ingresar
+                </v-btn>
+                <v-btn
+                  :loading="loading"
+                  @click="show = !show"
+                  tile
+                  elevation="0"
+                  large
+                  block
+                  dark
+                  color="black"
+                  class="text-capitalize mt-1"
+                >
+                  Registrar
+                </v-btn>
+              </v-col>
+            </ValidationObserver>
+
+            <v-col class="text-center mt-n7 mt-md-n5" cols="12" sm="12" md="12">
+              <div
+                @click="HandlerRouter('login')"
+                style="cursor: pointer"
+                class="mt-6 blue--text"
               >
-                <div v-if="show"> -->
-                <v-col cols="12" md="12">
-                  <label for="email">Correo Electrónico</label>
+                Recuperar contraseña
+              </div>
+            </v-col>
+          </v-card>
+
+          <v-card
+            v-else
+            class="animate__animated animate__backInUp"
+            width="600"
+            flat
+            style="
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+              border-radius: 20px !important;
+            "
+          >
+            <div class="text-center" style="font-size: 2em; font-weight: 380">
+              Bienvenido
+            </div>
+            <div
+              class="text-center mt-5"
+              style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
+            >
+              Registra tu cuenta
+            </div>
+
+            <ValidationObserver ref="obsReg" v-slot="{ passes }">
+              <v-row>
+                <v-col cols="12" md="6" class="mt-2">
+                  <label for="nombre" class="ml-3">Nombre</label>
                   <ValidationProvider
-                    name="Nombre"
-                    rules="email|required"
-                    v-slot="{ errors }"
-                  >
-                    <v-text-field
-                      v-model="email"
-                      class="mt-2"
-                      color="#00A0E9"
-                      dense
-                      outlined
-                      placeholder="ejemplo@mail.com"
-                      :error-messages="errors"
-                    ></v-text-field>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" md="12" class="mt-n5">
-                  <label for="email">Contraseña</label>
-                  <ValidationProvider
-                    name="Contraseña"
+                    name="nombre"
                     rules="required"
                     v-slot="{ errors }"
                   >
                     <v-text-field
-                      @keyup.enter="passes(HandlerLogin)"
-                      type="password"
+                      v-model="first_name"
+                      class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
+                      color="black"
+                      dense
+                      outlined
+                      placeholder="Ingresa tu nombre"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col cols="12" md="6" class="mt-2">
+                  <label for="Codigo Postal" class="ml-3 ml-sm-3 ml-md-0">
+                    Codigo Postal
+                  </label>
+                  <ValidationProvider
+                    name="codigo postal"
+                    rules="required|min:4|max:4|numeric"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      v-model="postal_code"
+                      class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
+                      color="black"
+                      dense
+                      outlined
+                      placeholder="Ingresa tu codigo postal"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col cols="12" md="6" class="mt-md-n5">
+                  <ValidationProvider
+                    name="correo"
+                    rules="email|required|confirmed:email_confirmation"
+                    v-slot="{ errors }"
+                  >
+                    <label for="email" class="ml-3"> Correo Electrónico </label>
+                    <v-text-field
+                      autocomplete="off"
+                      v-model="email"
+                      class="mt-2 pl-3 pr-3 pr-sm-3 pr-md-0"
+                      color="black"
+                      dense
+                      outlined
+                      placeholder="Ingresa tu correo electronico"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col cols="12" md="6" class="mt-md-n5">
+                  <ValidationProvider
+                    name="confirmar correo"
+                    rules="email|required"
+                    v-slot="{ errors }"
+                    vid="email_confirmation"
+                  >
+                    <label for="email confirmar" class="ml-3 ml-sm-3 ml-md-0">
+                      Confirmar Correo
+                    </label>
+                    <v-text-field
+                      autocomplete="off"
+                      v-model="email_confirmation"
+                      class="mt-2 pr-3 ml-3 ml-sm-3 ml-md-0"
+                      color="black"
+                      dense
+                      outlined
+                      placeholder="Confrima tu correo electronico"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col cols="12" md="6" class="mt-md-n5">
+                  <ValidationProvider
+                    name="contraseña"
+                    rules="required|confirmed:confirmation"
+                    v-slot="{ errors }"
+                  >
+                    <label for="password" class="ml-3"> Contraseña </label>
+                    <v-text-field
+                      autocomplete="off"
                       v-model="password"
-                      class="mt-2"
-                      color="#00A0E9"
+                      type="password"
+                      class="mt-2 pl-3 pr-3 pr-sm-3 pr-md-0"
+                      color="black"
                       dense
                       outlined
                       placeholder="Ingresa tu contraseña"
@@ -110,223 +268,65 @@
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>
-                <v-col cols="12" md="12" class="mb-0">
-                  <v-btn
-                    :loading="loading"
-                    @click="passes(HandlerLogin)"
-                    tile
-                    elevation="0"
-                    large
-                    block
-                    dark
-                    color="#00A0E9"
-                    class="text-capitalize mb-0"
+
+                <v-col cols="12" md="6" class="mt-md-n5">
+                  <ValidationProvider
+                    name="confirmar contraseña"
+                    rules="required"
+                    vid="confirmation"
+                    v-slot="{ errors }"
                   >
-                    Ingresar
-                  </v-btn>
+                    <label for="password confirmar" class="ml-3">
+                      Confirmar Contraseña
+                    </label>
+                    <v-text-field
+                      autocomplete="off"
+                      v-model="confirm_password"
+                      type="password"
+                      class="mt-2 pr-3 ml-3 ml-sm-3 ml-md-0"
+                      color="black"
+                      dense
+                      outlined
+                      placeholder="Confirma tu nombre contraseña"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
                 </v-col>
-                <!-- </div>
-              </Animated> -->
-              </ValidationObserver>
 
-              <!-- <ValidationObserver ref="obs" v-slot="{}">
-              <Animated
-                enter="fadeIn"
-                leave="FadeOut"
-                :duration="{ enter: 2000, leave: 0 }"
-              >
-                <div v-if="!show">
-                  <v-row>
-                    <v-col cols="12" md="6" class="mt-md-n5">
-                      <label for="nombre">Nombre</label>
-                      <ValidationProvider
-                        name="nombre"
-                        rules="required"
-                        v-slot="{ errors }"
-                      >
-                        <v-text-field
-                          v-model="first_name"
-                          class="mt-2"
-                          color="black"
-                          dense
-                          outlined
-                          placeholder="Ingresa tu nombre"
-                          :error-messages="errors"
-                        ></v-text-field>
-                      </ValidationProvider>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-md-n5">
-                      <label for="Codigo Postal">Codigo Postal</label>
-                      <ValidationProvider
-                        name="codigo postal"
-                        rules="required|min:4|max:4|numeric"
-                        v-slot="{ errors }"
-                      >
-                        <v-text-field
-                          v-model="postal_code"
-                          class="mt-2"
-                          color="black"
-                          dense
-                          outlined
-                          placeholder="Ingresa tu codigo postal"
-                          :error-messages="errors"
-                        ></v-text-field>
-                      </ValidationProvider>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-md-n5">
-                      <ValidationProvider
-                        name="correo"
-                        rules="email|required|confirmed:email_confirmation"
-                        v-slot="{ errors }"
-                      >
-                        <label for="email"> Correo Electrónico </label>
-                        <v-text-field
-                          autocomplete="off"
-                          v-model="email"
-                          class="mt-2"
-                          color="black"
-                          dense
-                          outlined
-                          placeholder="Ingresa tu correo electronico"
-                          :error-messages="errors"
-                        ></v-text-field>
-                      </ValidationProvider>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-md-n5">
-                      <ValidationProvider
-                        name="confirmar correo"
-                        rules="email|required"
-                        v-slot="{ errors }"
-                        vid="email_confirmation"
-                      >
-                        <label for="email confirmar"> Confirmar Correo </label>
-                        <v-text-field
-                          autocomplete="off"
-                          v-model="email_confirmation"
-                          class="mt-2"
-                          color="black"
-                          dense
-                          outlined
-                          placeholder="Confrima tu correo electronico"
-                          :error-messages="errors"
-                        ></v-text-field>
-                      </ValidationProvider>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-md-n5">
-                      <ValidationProvider
-                        name="contraseña"
-                        rules="required|confirmed:confirmation"
-                        v-slot="{ errors }"
-                      >
-                        <label for="password"> Contraseña </label>
-                        <v-text-field
-                          autocomplete="off"
-                          v-model="password"
-                          type="password"
-                          class="mt-2"
-                          color="black"
-                          dense
-                          outlined
-                          placeholder="Ingresa tu contraseña"
-                          :error-messages="errors"
-                        ></v-text-field>
-                      </ValidationProvider>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-md-n5">
-                      <ValidationProvider
-                        name="confirmar contraseña"
-                        rules="required"
-                        vid="confirmation"
-                        v-slot="{ errors }"
-                      >
-                        <label for="password confirmar">
-                          Confirmar Contraseña
-                        </label>
-                        <v-text-field
-                          autocomplete="off"
-                          v-model="confirm_password"
-                          type="password"
-                          class="mt-2"
-                          color="black"
-                          dense
-                          outlined
-                          placeholder="Confirma tu nombre contraseña"
-                          :error-messages="errors"
-                        ></v-text-field>
-                      </ValidationProvider>
-                    </v-col>
-
-                    <v-col cols="12" md="12">
-                      <div class="d-md-flex justify-md-space-between">
-                        <div class="d-flex justify-center">
-                          <v-btn
-                            :loading="loading"
-                            @click="passes(HandlerSignUp)"
-                            tile
-                            elevation="0"
-                            large
-                            dark
-                            color="black"
-                            class="text-capitalize"
-                          >
-                            Continuar
-                          </v-btn>
-                        </div>
-                        <span
-                          @click="HandlerRouter('login')"
-                          style="cursor: pointer"
-                          class="d-flex justify-center mt-2 blue--text"
-                          >Ya tienes cuenta? Inicia sesion
-                        </span>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </div>
-              </Animated>
-            </ValidationObserver> -->
-
-              <v-col cols="12" md="12" class="mt-0">
-                <v-btn
-                  :loading="loading"
-                  @click="changeState"
-                  tile
-                  elevation="0"
-                  large
-                  block
-                  dark
-                  color="black"
-                  class="text-capitalize mt-0"
+                <v-col cols="12" md="12">
+                  <div class="mx-3">
+                    <v-btn
+                      block
+                      :loading="loading"
+                      @click="passes(HandlerSignUp)"
+                      tile
+                      large
+                      elevation="0"
+                      dark
+                      color="#00A0E9"
+                      class="text-capitalize"
+                    >
+                      Registrar
+                    </v-btn>
+                  </div>
+                </v-col>
+                <v-col
+                  class="text-center mt-n7 mt-md-n5"
+                  cols="12"
+                  sm="12"
+                  md="12"
                 >
-                  Registrar
-                </v-btn>
-              </v-col>
-              <v-col
-                class="text-center mt-n7 mt-md-n5"
-                cols="12"
-                sm="12"
-                md="12"
-              >
-                <div
-                  @click="HandlerRouter('login')"
-                  style="cursor: pointer"
-                  class="mt-6 blue--text"
-                >
-                  Recuperar contraseña
-                </div>
-              </v-col>
-            </v-card>
-          </Animated>
-          <Animated :duration="{ enter: 4000, leave: 4000 }">
-            <v-card>
-              <v-btn @click="changeState">registrar</v-btn>
-              <v-btn @click="changeState">Actualizar</v-btn>
-            </v-card>
-          </Animated>
+                  <div
+                    @click="show = !show"
+                    style="cursor: pointer"
+                    class="mt-6 mb-4 blue--text"
+                  >
+                    Ya tienes cuenta? Inicia sesion
+                  </div>
+                </v-col>
+              </v-row>
+            </ValidationObserver>
+          </v-card>
         </div>
       </v-col>
     </v-row>
@@ -364,7 +364,7 @@
 
     <!-- RECUPERAR CONTRASEÑA -->
     <v-dialog v-model="showRecovery" max-width="600">
-      <ValidationObserver ref="obs" v-slot="{ passes }">
+      <ValidationObserver ref="obsRec" v-slot="{ passes }">
         <v-card :loading="loading_verification">
           <v-card-title>
             Ingresa tu correo para que recuperar tu cuenta
@@ -428,10 +428,24 @@ export default {
       loading_verification: false,
       email_verifiction: "",
 
+      //Register
+      doc_type: "",
+      doc_number: "",
+      store_id: "",
+      country_id: "",
+      phone: "",
+      email: "",
+      email_confirmation: "",
+      first_name: "",
+      postal_code: "",
+      last_name: "",
+      password: "",
+      confirm_password: "",
+
       //Animation
       show: true,
       canRegister: true,
-      mode: "out-in"
+      mode: "out-in",
     };
   },
 
@@ -491,6 +505,37 @@ export default {
       }
     },
 
+    async HandlerSignUp() {
+      try {
+        this.loading = true;
+        const request = {
+          doc_type: this.doc_type,
+          doc_number: this.doc_number,
+          store_id: 3,
+          country_id: 1,
+          state_id: 1,
+          phone: this.phone,
+          email: this.email,
+          first_name: this.first_name,
+          last_name: this.last_name,
+          state_id: this.state_id.id,
+          location_id: this.location_id,
+          warehouse_id: this.warehouse_id,
+          billing_zip_code: this.postal_code,
+          password: this.password,
+        };
+        await this.$store.dispatch("auth/REGISTER", request);
+        this.showNotification = true;
+        // this.$router.push({ name: "login" });
+      } catch (error) {
+        console.log(error.response.data);
+
+        this.$snotify.error(error.response.data.error.err_message, "Error!");
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async HandlerRecovery() {
       try {
         this.loading_verification = true;
@@ -512,8 +557,8 @@ export default {
     },
 
     changeState() {
-      console.log(this.show)
-    }
+      console.log(this.show);
+    },
   },
 };
 </script>
