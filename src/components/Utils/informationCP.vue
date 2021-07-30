@@ -97,8 +97,8 @@
               <v-text-field
                 filled
                 rounded
+                v-model="authUserData.buyer.first_name"
                 label="Nombre"
-                v-model="email"
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
@@ -111,7 +111,7 @@
                 filled
                 rounded
                 label="Email"
-                v-model="name"
+                v-model="authUserData.buyer.email"
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
@@ -123,8 +123,8 @@
               <v-text-field
                 filled
                 rounded
-                label="Telefono"
-                v-model="phone"
+                label="Télefono"
+                v-model="authUserData.buyer.phone"
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
@@ -194,6 +194,10 @@ export default {
     isAuth() {
       return this.$store.getters["auth/AUTHENTICATED"];
     },
+
+    authUserData() {
+      return this.$store.getters["auth/GET_PROFILE"];
+    }
   },
 
   methods: {

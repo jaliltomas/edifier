@@ -657,4 +657,8 @@ export default {
   z-index: 100;
   margin-bottom: 500px !important;
 }
+
+.v-dialog:not(.v-dialog--fullscreen) {
+     max-height: 0% 
+}
 </style>

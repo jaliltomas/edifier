@@ -315,6 +315,10 @@ export default {
             this.categoriesArray.length == 0
               ? ""
               : JSON.stringify(this.categoriesArray),
+          category_ids:
+            this.$route.query.data == undefined
+              ? ""
+              : JSON.stringify([this.$route.query.data]),
         };
 
         const response = await this.$store.dispatch(
@@ -347,6 +351,10 @@ export default {
             this.categoriesArray.length == 0
               ? ""
               : JSON.stringify(this.categoriesArray),
+          category_ids:
+            this.$route.query.data == undefined
+              ? ""
+              : JSON.stringify([this.$route.query.data]),
         };
         const response = await this.$store.dispatch(
           "products/GET_AUTH_PRODUCTS",
