@@ -9,11 +9,7 @@
             src="@/assets/img/edifier-logo-gris.svg"
           ></v-img>
           <div class="mt-5">
-            <a
-              @click.prevent="() => {}"
-              style="color: black; text-decoration: none"
-              href=""
-            >
+            <a @click.prevent="() => {}" style="color: black; text-decoration: none" href="">
               Política de privacidad
             </a>
           </div>
