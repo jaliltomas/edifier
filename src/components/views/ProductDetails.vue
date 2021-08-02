@@ -47,7 +47,10 @@
                 </v-row>
               </template>
             </v-img>
-            <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
+            <div
+              class="py-15"
+              v-if="!$vuetify.breakpoint.smAndDown && !messageProductAdd"
+            ></div>
             <!-- <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div> -->
           </v-col>
           <v-col cols="12" sm="6" md="5" class="ml-md-15 d-flex flex-column">
@@ -90,7 +93,7 @@
                   class="mt-auto"
                 />
 
-                <div class="d-flex mt-2 mt-md-0">
+                <!-- <div class="d-flex mt-2 mt-md-0">
                   <v-btn
                     style="border-width: medium"
                     fab
@@ -100,7 +103,7 @@
                     <v-icon color="white">mdi-share-variant-outline</v-icon>
                   </v-btn>
                   <span class="mt-1 ml-1">COMPARTIR</span>
-                </div>
+                </div> -->
               </div>
 
               <div
@@ -151,7 +154,7 @@
                   dataProduct.product.product_warehouse[0].current_stock > 0
                 "
               >
-                <v-btn
+                <!-- <v-btn
                   dark
                   style="border-width: medium"
                   rounded
@@ -159,14 +162,14 @@
                   @click="HandlerAddCart()"
                 >
                   Agregar al carrito
-                </v-btn>
+                </v-btn> -->
 
                 <v-btn
                   style="border-width: medium"
                   rounded
                   dark
                   color="#00A0E9"
-                  @click="HandlerBuy()"
+                  @click="HandlerAddCart()"
                   class="mt-1 mt-md-0"
                 >
                   Comprar
@@ -181,15 +184,42 @@
                   >
                     <v-icon color="white">mdi-share-variant-outline</v-icon>
                   </v-btn>
-                  <span class="mt-1 ml-1">COMPARTIR</span>
+                  <span
+                    class="mt-2 ml-1"
+                    style="font-size: 12px; font-weight: 600"
+                  >
+                    COMPARTIR
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
+            <div
+              class="py-15"
+              v-if="!$vuetify.breakpoint.smAndDown && !messageProductAdd"
+            ></div>
             <div
               v-if="$vuetify.breakpoint.smAndDown"
               class="py-md-15 py-10"
             ></div>
+          </v-col>
+          <v-col offset-md="6" md="6" v-if="messageProductAdd">
+            <div
+              class="mb-15 d-flex ml-7"
+              style="background-color: #00a0e9; border-radius: 5px; width: 80%"
+            >
+              <p
+                @click="$router.push({ name: 'cart' })"
+                class="white--text px-3 py-3 mb-0"
+                style="font-size: 16px !important; cursor: pointer"
+              >
+                Tu producto fue agregado con éxito. Si deseas ir a tu carrito
+                haz click aquí, de lo contrario puedes seguir agregando
+                productos.
+              </p>
+              <v-btn icon small @click="messageProductAdd = false">
+                <v-icon size="20" color="white">mdi-close</v-icon>
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -287,6 +317,7 @@ export default {
       iconHeart: "mdi-heart-outlined",
       id: "",
       action: 1,
+      messageProductAdd: false,
       //CHAZKI
       chazkiResponse: null,
       //loading
@@ -534,7 +565,6 @@ export default {
       try {
         if (this.isAuth) {
           const cart = this.productCartState;
-          console.log("Carrito*******", cart);
 
           const existingProduct = cart.shopping_cart_items.find(
             (p) => this.dataProduct.id === p.publication_id
@@ -556,8 +586,6 @@ export default {
                 quantity: prod.original_quantity,
               };
             });
-
-            console.log("reqeust ***************", request);
 
             await this.$store.dispatch("cart/CREATE_CART", {
               items: [...request],
@@ -583,7 +611,6 @@ export default {
               }
             });
 
-            console.log("reqeust ***************", newitem);
             this.$store.commit("cart/ADD_ITEM", {
               ...this.dataProduct,
               original_quantity: this.quantity,
@@ -593,10 +620,11 @@ export default {
               items: [...itemFilter],
             });
           }
-          this.$snotify.success(
-            "Has agregado al carrito el producto",
-            "Excelente"
-          );
+          // this.$snotify.success(
+          //   "Has agregado al carrito el producto",
+          //   "Excelente"
+          // );
+          this.messageProductAdd = true;
         } else {
           this.$router.push({ name: "login" });
         }
@@ -677,7 +705,14 @@ export default {
   margin-bottom: 500px !important;
 }
 
-.v-dialog:not(.v-dialog--fullscreen) {
-  max-height: 0%;
+.v-dialog {
+    border-radius: 4px;
+    margin: 24px;
+    overflow-y: hidden;
+    pointer-events: auto;
+    transition: .3s cubic-bezier(.25,.8,.25,1);
+    width: 100%;
+    z-index: inherit;
+    box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
 }
 </style>
