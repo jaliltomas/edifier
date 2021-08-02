@@ -7,8 +7,8 @@
     >
       <!-- @dblclick.native="activeSearchFun" -->
       <div class="d-flex" style="z-index: 100">
-        <h1>Buscar por término</h1>
-        <v-icon @click="activeSearchFun" class="ml-10 mt-1">mdi-close</v-icon>
+        <h1 class="mr-15">Buscar</h1>
+        <v-icon @click="activeSearchFun" class="ml-15 pl-15 mt-1">mdi-close</v-icon>
       </div>
       <v-text-field
         :autofocus="true"

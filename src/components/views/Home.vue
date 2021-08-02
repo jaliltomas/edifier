@@ -175,7 +175,7 @@
             <v-col cols="12" md="11">
               <carousel
                 :perPage="$vuetify.breakpoint.smAndDown ? 1 : 3"
-                paginationColor="#B63F55"
+                paginationColor="#3FB7EE"
                 class="mt-10"
               >
                 <slide
