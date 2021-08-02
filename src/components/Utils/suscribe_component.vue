@@ -21,6 +21,7 @@
             <v-text-field
               dense
               outlined
+              single-line
               color="#00A0E9"
               label="EMAIL"
               :full-width="$vuetify.breakpoint.smAndDown ? true : false"
@@ -42,7 +43,7 @@
               @click="passes(HandlerSuscribe)"
               color="#00A0E9"
               height="40px"
-              :width="$vuetify.breakpoint.smAndUp ? '230px' : 'auto'"
+              :width="$vuetify.breakpoint.smAndUp ? '200px' : 'auto'"
               :loading="loading"
               dark
               ><span style="font-size: 1.2em">SUSCRIBITE</span></v-btn
