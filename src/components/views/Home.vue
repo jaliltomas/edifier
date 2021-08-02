@@ -489,7 +489,7 @@ export default {
     },
 
     HandlerLocationCarrusel(url) {
-      window.open(url.url);
+      location.href = url.url;
     },
   },
 };

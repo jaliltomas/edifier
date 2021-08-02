@@ -121,7 +121,7 @@
       </v-btn>
 
       <!-- CARRITO -->
-      <v-badge
+      <!-- <v-badge
         v-if="products"
         :content="products.length"
         :value="products.length"
@@ -132,7 +132,72 @@
         <v-btn color="black" icon @click="HandlerRouter('cart')">
           <v-icon>mdi-cart-outline</v-icon>
         </v-btn>
-      </v-badge>
+      </v-badge> -->
+
+      <v-menu
+        open-on-hover
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-width="200"
+        offset-x
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon color="indigo" dark v-bind="attrs" v-on="on">
+            <v-icon>mdi-cart-outline</v-icon>
+          </v-btn>
+        </template>
+
+        <v-card>
+          <div
+            class="pt-3 px-5 d-flex"
+            v-for="(item, index) in productCartState.shopping_cart_items"
+            :key="index"
+          >
+            <div>
+              <v-avatar tile v-if="item.publication.images == null">
+                <img
+                  height="200"
+                  width="100%"
+                  contain
+                  src="@/assets/img/no_image.jpg"
+                />
+              </v-avatar>
+              <v-avatar v-else tile size="100">
+                <v-img
+                  contain
+                  :src="item.publication.images[0]"
+                  :lazy-src="item.publication.images[0]"
+                  alt="Product Image"
+                ></v-img>
+              </v-avatar>
+            </div>
+            <div class="pl-3 align-self-center">
+              <div class="">{{ item.publication.keywords }}</div>
+              <div
+                class="mt-2"
+                v-if="
+                  item.publication != null && item.publication.price != null
+                "
+              >
+                $ {{ item.publication.price.pvp | currency }}
+              </div>
+            </div>
+          </div>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              dark
+              small
+              color="#00a0e9"
+              rounded
+              @click="HandlerRouter('cart')"
+            >
+              Carrito
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -240,6 +305,12 @@ export default {
 
       // search
       search: false,
+
+      // CART
+      fav: true,
+      menu: false,
+      message: false,
+      hints: true,
     };
   },
 
@@ -312,6 +383,10 @@ export default {
         ];
       }
       return items;
+    },
+
+    productCartState() {
+      return this.$store.getters["cart/CART_PRODUCTS"];
     },
 
     products() {
