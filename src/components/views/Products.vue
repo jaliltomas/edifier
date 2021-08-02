@@ -1,10 +1,10 @@
 <template>
   <v-container>
-    <v-row>
+    <!-- <v-row>
       <v-col cols="12" md="12">
         <navegation-component title="TIENDA" sub_title="TIENDA" />
       </v-col>
-    </v-row>
+    </v-row> -->
     <v-row class="mb-0 pb-0">
       <v-col cols="12" sm="12" md="12" v-if="loading">
         <v-progress-linear
@@ -42,6 +42,7 @@
       <!-- MOSTRAR CATEGORIAS -->
       <v-col cols="12" sm="12" md="3" v-if="productsCategories.length > 0">
         <v-card color="#FAFAFA" tile class="elevation-0">
+          <span @click="cleanFilters">Limpiar Filtros</span>
           <v-divider></v-divider>
           <v-subheader>Categorías</v-subheader>
           <v-card-text>
@@ -70,6 +71,8 @@
                     <v-checkbox
                       :label="item2.name"
                       @change="categorySearch(item2)"
+                      ref="n"
+                      :value="selected[j]"
                     ></v-checkbox>
                   </v-list-item>
                   <v-divider class="mb-2"></v-divider>
@@ -231,6 +234,7 @@ export default {
       // Cateogry
       category_id: "",
       categoriesArray: [],
+      selected: [],
     };
   },
 
@@ -397,6 +401,15 @@ export default {
           this.categoriesArray.push(category.id);
         }
       }
+      this.HandlerGetProducts(this.page);
+    },
+
+    cleanFilters() {
+      console.log(this.selected);
+      this.$refs.n.forEach((val, index) => {
+        console.log(val)
+        this.selected[index] = false;
+      });
     },
   },
 };

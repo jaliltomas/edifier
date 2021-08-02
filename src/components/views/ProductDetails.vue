@@ -48,7 +48,7 @@
               </template>
             </v-img>
             <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
-            <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
+            <!-- <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div> -->
           </v-col>
           <v-col cols="12" sm="6" md="5" class="ml-md-15 d-flex flex-column">
             <div>
@@ -82,14 +82,31 @@
                 </v-chip>
               </div>
 
-              <cp-information
-                style="font-size: 18px"
-                :dataProduct="dataProduct"
-                :authUser="authUser"
-              />
+              <div class="d-flex justify-space-between mt-5">
+                <cp-information
+                  style="font-size: 18px"
+                  :dataProduct="dataProduct"
+                  :authUser="authUser"
+                  class="mt-auto"
+                />
+
+                <div class="d-flex mt-2 mt-md-0">
+                  <v-btn
+                    style="border-width: medium"
+                    fab
+                    color="#5A5953"
+                    x-small
+                  >
+                    <v-icon color="white">mdi-share-variant-outline</v-icon>
+                  </v-btn>
+                  <span class="mt-1 ml-1">COMPARTIR</span>
+                </div>
+              </div>
 
               <div
                 v-if="
+                  dataProduct.product != null &&
+                  dataProduct.product.product_warehouse != null &&
                   dataProduct.product.product_warehouse[0].current_stock > 0
                 "
                 class="d-flex align-center justify-start py-1 mt-10"
@@ -128,11 +145,13 @@
               <div
                 class="d-md-flex justify-space-between mt-5"
                 style="width: 80%"
+                v-if="
+                  dataProduct.product != null &&
+                  dataProduct.product.product_warehouse != null &&
+                  dataProduct.product.product_warehouse[0].current_stock > 0
+                "
               >
                 <v-btn
-                  v-if="
-                    dataProduct.product.product_warehouse[0].current_stock > 0
-                  "
                   dark
                   style="border-width: medium"
                   rounded
@@ -143,9 +162,6 @@
                 </v-btn>
 
                 <v-btn
-                  v-if="
-                    dataProduct.product.product_warehouse[0].current_stock > 0
-                  "
                   style="border-width: medium"
                   rounded
                   dark
@@ -170,7 +186,10 @@
               </div>
             </div>
             <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div>
-            <div class="py-md-15 py-10"></div>
+            <div
+              v-if="$vuetify.breakpoint.smAndDown"
+              class="py-md-15 py-10"
+            ></div>
           </v-col>
         </v-row>
       </v-container>
@@ -182,7 +201,7 @@
           height="auto"
           v-for="(item, index) in dataProduct.images"
           :key="index"
-          class="mt-n15 mr-3"
+          class="mt-n15 mt-sm-n10 mt-md-n15 mr-3"
           v-show="index != 0"
           @click="
             () => {
@@ -659,6 +678,6 @@ export default {
 }
 
 .v-dialog:not(.v-dialog--fullscreen) {
-     max-height: 0% 
+  max-height: 0%;
 }
 </style>

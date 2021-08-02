@@ -10,7 +10,7 @@
           ></v-img>
           <div class="mt-5">
             <a @click.prevent="() => {}" style="color: black" href="">
-              Politica de privacidad
+              Política de privacidad
             </a>
           </div>
           <div class="mt-0" @click.prevent="showTerms = true">
