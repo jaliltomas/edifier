@@ -406,6 +406,33 @@
         </v-card>
       </ValidationObserver>
     </v-dialog>
+    <v-dialog v-model="showNotification" max-width="600" persistent>
+      <v-card>
+        <v-card-title> Confirma tu cuenta para continuar </v-card-title>
+        <v-card-text>
+          <p class="mb-0 mt-10 black--text">
+            Se ha enviado un correo para confirmar su cuenta, porfavor copie el
+            codigo en el mismo e inicie sesion para validar.
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            dark
+            color="black"
+            tile
+            @click="
+              () => {
+                show = !show;
+                showNotification = false;
+              }
+            "
+          >
+            Continuar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -419,6 +446,7 @@ export default {
     return {
       isLogin: true,
       showVerification: false,
+      showNotification: false,
       showRecovery: false,
       email: "",
       password: "",
@@ -518,9 +546,6 @@ export default {
           email: this.email,
           first_name: this.first_name,
           last_name: this.last_name,
-          state_id: this.state_id.id,
-          location_id: this.location_id,
-          warehouse_id: this.warehouse_id,
           billing_zip_code: this.postal_code,
           password: this.password,
         };
@@ -528,7 +553,7 @@ export default {
         this.showNotification = true;
         // this.$router.push({ name: "login" });
       } catch (error) {
-        // console.log(error.response.data);
+        console.log(error);
 
         this.$snotify.error(error.response.data.error.err_message, "Error!");
       } finally {
