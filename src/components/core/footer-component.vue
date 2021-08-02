@@ -9,14 +9,14 @@
             src="@/assets/img/edifier-logo-gris.svg"
           ></v-img>
           <div class="mt-5">
-            <a @click.prevent="() => {}" style="color: black" href="">
-              Politica de privacidad
+            <a @click.prevent="() => {}" style="color: black; text-decoration: none;" href="">
+              Política de privacidad
             </a>
           </div>
           <div class="mt-0" @click.prevent="showTerms = true">
-            <a style="color: black" href=""> Términos de uso </a>
+            <a style="color: black;text-decoration: none;" href=""> Términos de uso </a>
           </div>
-          <div>© EDIFIER 2021 Todos los derechos reservados.</div>
+          <div>© EDIFIER 2021 Todos los derechos reservados</div>
         </v-col>
         <v-col cols="12" md="4">
           <div class="d-flex justify-start justify-md-end">
