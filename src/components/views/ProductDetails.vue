@@ -19,6 +19,10 @@
         <v-tab @click="$vuetify.goTo('#especificaciones')">
           Especificaciones
         </v-tab>
+        <v-tab @click="HandlerDowloadManual">
+          <span v-if="!loadingManual">MANUAL DE USUARIOS</span>
+          <span v-else>...</span>
+        </v-tab>
       </v-tabs>
     </div>
     <v-sheet color="#EBF1F7" id="product">
@@ -329,6 +333,7 @@ export default {
       active: false,
       sticky: false,
       fab: false,
+      loadingManual: false,
     };
   },
 
@@ -687,6 +692,31 @@ export default {
         this.sticky = false;
       }
     },
+
+    async HandlerDowloadManual() {
+      try {
+        this.loadingManual = true;
+        const request = { url: this.dataProduct.product.product_manual };
+
+        const response = await this.$store.dispatch(
+          "products/PRODUCT_MANUAL",
+          request
+        );
+
+        const name = this.dataProduct.keywords.replaceAll(" ", "_");
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `${name}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loadingManual = false;
+      }
+    },
   },
 };
 </script>
@@ -706,13 +736,14 @@ export default {
 }
 
 .v-dialog {
-    border-radius: 4px;
-    margin: 24px;
-    overflow-y: hidden;
-    pointer-events: auto;
-    transition: .3s cubic-bezier(.25,.8,.25,1);
-    width: 100%;
-    z-index: inherit;
-    box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
+  border-radius: 4px;
+  margin: 24px;
+  overflow-y: hidden;
+  pointer-events: auto;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 100%;
+  z-index: inherit;
+  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%),
+    0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
 }
 </style>

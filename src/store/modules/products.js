@@ -236,6 +236,19 @@ const actions = {
       return Promise.reject(error);
     }
   },
+
+  async PRODUCT_MANUAL(_, paylaod) {
+    try {
+      const response = await product({
+        url: `api/product/download_manual?url=${paylaod.url}`,
+        method: 'GET',
+        responseType: 'blob',
+      });
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
 }
 
 export const products = {
