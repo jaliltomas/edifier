@@ -528,7 +528,7 @@ export default {
         this.showNotification = true;
         // this.$router.push({ name: "login" });
       } catch (error) {
-        console.log(error.response.data);
+        // console.log(error.response.data);
 
         this.$snotify.error(error.response.data.error.err_message, "Error!");
       } finally {
