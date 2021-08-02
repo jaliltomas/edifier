@@ -48,10 +48,10 @@
               <v-col cols="12" md="12">
                 <v-btn
                   :small="$vuetify.breakpoint.smAndDown ? true : false"
-                  outlined
-                  color="red darken--4"
+                  color="#00A0E9"
                   rounded
                   @click="HandlerLocationCarrusel(item)"
+                  class="elevation-0"
                 >
                   conocelo en detalle
                 </v-btn>
@@ -79,7 +79,9 @@
                 class="mr-1"
                 :md="item.features.length == 4 ? '' : 3"
               >
-                <span class="black--text mr-1 text-uppercase"> {{ val }}</span>
+                <p class="black--text mr-1 text-uppercase text-center mb-0">
+                  {{ val }}
+                </p>
               </v-col>
             </v-row>
           </v-container>
@@ -467,7 +469,7 @@ export default {
           }
         }
 
-        console.log("Carrusel", this.carrusel)
+        console.log("Carrusel", this.carrusel);
       } catch (error) {
         console.log(error);
       }

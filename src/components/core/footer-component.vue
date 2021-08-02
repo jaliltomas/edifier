@@ -14,7 +14,9 @@
             </a>
           </div>
           <div class="mt-0" @click.prevent="showTerms = true">
-            <a style="color: black;text-decoration: none;" href=""> Términos de uso </a>
+            <a style="color: black; text-decoration: none" href="">
+              Términos de uso
+            </a>
           </div>
           <div>© EDIFIER 2021 Todos los derechos reservados</div>
         </v-col>
