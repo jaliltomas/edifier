@@ -157,7 +157,7 @@
           </v-btn>
         </template>
 
-        <v-card v-if="productCartState.shopping_cart_items.length > 0">
+        <v-card v-if="productCartState.shopping_cart_items != null && productCartState.shopping_cart_items.length > 0">
           <div
             class="pt-3 px-5 d-flex"
             v-for="(item, index) in productCartState.shopping_cart_items"
