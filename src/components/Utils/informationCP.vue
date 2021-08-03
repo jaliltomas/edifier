@@ -63,7 +63,9 @@
             }}
           </span>
           <span v-else>
-            <v-btn outlined rounded color="#15A7EB">Reservá el tuyo</v-btn>
+            <!-- {{dataProduct.user_product_notification}} -->
+            <v-btn outlined rounded color="#15A7EB" v-if="dataProduct.user_product_notification == null">Reservá el tuyo</v-btn>
+            <v-btn  text rounded  v-else class="blue--text"> Reservado </v-btn>
           </span>
         </p>
       </div>
@@ -286,7 +288,7 @@ export default {
 
     ModalProductUser(zip_code, warehouse) {
       if (
-        this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo"
+        this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo" && this.dataProduct.user_product_notification == null
       ) {
         this.showModalReserve = true;
       }
