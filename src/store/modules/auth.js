@@ -1,51 +1,54 @@
-import { users, store, product } from '../../services'
+import { users, store, product } from "../../services";
 
 const state = {
   token: null,
   user: {}
-}
+};
 
 const getters = {
-  AUTHENTICATED: (state) => state.token == null ? false : true,
-  GET_PROFILE: (state) => state.user
-}
+  AUTHENTICATED: state => (state.token == null ? false : true),
+  GET_PROFILE: state => state.user
+};
 
 const mutations = {
   SET_TOKEN: (state, payload) => {
     state.token = payload;
     localStorage.setItem("token", payload);
-    users.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${payload}`;
-    store.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${payload}`;
-    product.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${payload}`;
+    users.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
+    store.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
+    product.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
   },
 
-  SET_USER: (state, payload) => state.user = payload,
+  SET_USER: (state, payload) => (state.user = payload),
 
-  CLEAR_DATA: (state) => {
-    console.log(state)
+  CLEAR_DATA: state => {
+    console.log(state);
     // state.token = null;
     // localStorage.clear();
   },
 
-  CLEAR_DATA_LOGOUT: (state) => {
+  CLEAR_DATA_LOGOUT: state => {
     state.token = null;
     localStorage.clear();
   }
-}
+};
 
 const actions = {
   async LOGIN({ commit, dispatch }, payload) {
     try {
       const response = await users.post("api/auth/login/buyers", payload);
-      commit('SET_TOKEN', response.data.data.access_token.token);
-      commit('SET_USER', response.data.data.user);
-      dispatch('cart/GET_CURRENT_CART', {}, { root: true });
+      commit("SET_TOKEN", response.data.data.access_token.token);
+      commit("SET_USER", response.data.data.user);
+      dispatch("cart/GET_CURRENT_CART", {}, { root: true });
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+
+  async CODE_VERIFICATION(_, payload) {
+    try {
+      const response = await users.post("api/buyers/verify_code", payload);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -64,7 +67,7 @@ const actions = {
   async AUTH_USER({ commit }) {
     try {
       const response = await users.get("api/buyers/auth/getuser");
-      commit('SET_USER', response.data.data);
+      commit("SET_USER", response.data.data);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -73,11 +76,8 @@ const actions = {
 
   async UPDATE_USER({ commit }, payload) {
     try {
-      const response = await users.post(
-        "api/buyers/update",
-        payload
-      );
-      commit('SET_USER', response.data.data);
+      const response = await users.post("api/buyers/update", payload);
+      commit("SET_USER", response.data.data);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -98,10 +98,7 @@ const actions = {
 
   async RECOVERY_PASSWORD(_, payload) {
     try {
-      const response = await users.post(
-        "api/buyers/forgot_password",
-        payload
-      );
+      const response = await users.post("api/buyers/forgot_password", payload);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -110,10 +107,7 @@ const actions = {
 
   async VERIFY_CODE(_, payload) {
     try {
-      const response = await users.post(
-        "api/buyers/verify_code",
-        payload
-      );
+      const response = await users.post("api/buyers/verify_code", payload);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -122,10 +116,7 @@ const actions = {
 
   async CHANGE_PASSWORD_RECOVERY(_, payload) {
     try {
-      const response = await users.post(
-        "api/buyers/new_password",
-        payload
-      );
+      const response = await users.post("api/buyers/new_password", payload);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -135,7 +126,7 @@ const actions = {
   async LOGOUT({ commit }) {
     try {
       // const response = await users.get("api/auth/logout");
-      commit('CLEAR_DATA');
+      commit("CLEAR_DATA");
       return true;
     } catch (error) {
       return Promise.reject(error);
@@ -146,15 +137,15 @@ const actions = {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        commit('SET_TOKEN', token);
-        dispatch('cart/GET_CURRENT_CART', {}, { root: true });
-        dispatch('AUTH_USER');
+        commit("SET_TOKEN", token);
+        dispatch("cart/GET_CURRENT_CART", {}, { root: true });
+        dispatch("AUTH_USER");
         const request = {
           page: 1,
           per_page: 1,
-          paginate: false,
-        }
-        dispatch('products/GET_FAVORITES_PRODUCTS', request, { root: true });
+          paginate: false
+        };
+        dispatch("products/GET_FAVORITES_PRODUCTS", request, { root: true });
         return;
       } else {
         return false;
@@ -175,10 +166,7 @@ const actions = {
 
   async REGISTER_ADDRESS(_, payload) {
     try {
-      const response = await users.post(
-        "api/addresses",
-        payload
-      );
+      const response = await users.post("api/addresses", payload);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -199,15 +187,13 @@ const actions = {
 
   async DELETE_ADDRESS(_, payload) {
     try {
-      const response = await users.delete(
-        `api/addresses/${payload.id}`
-      );
+      const response = await users.delete(`api/addresses/${payload.id}`);
       return response;
     } catch (error) {
       return Promise.reject(error);
     }
-  },
-}
+  }
+};
 
 export const auth = {
   namespaced: true,
@@ -215,4 +201,4 @@ export const auth = {
   getters,
   mutations,
   actions
-}
+};

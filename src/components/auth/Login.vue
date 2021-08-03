@@ -134,7 +134,7 @@
 
             <v-col class="text-center mt-n7 mt-md-n5" cols="12" sm="12" md="12">
               <div
-                @click="HandlerRouter('login')"
+                @click="showRecovery = !showRecovery"
                 style="cursor: pointer"
                 class="mt-6 blue--text"
               >
@@ -332,7 +332,7 @@
     </v-row>
 
     <!-- VALIDAR CUENTA -->
-    <v-dialog v-model="showVerification" max-width="600">
+    <v-dialog v-model="showVerification" max-width="480">
       <ValidationObserver ref="obs" v-slot="{ passes }">
         <v-card>
           <v-card-title>
@@ -354,7 +354,28 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="passes(HandlerValidateLogin)" dark color="black"
+
+            <!-- <v-btn
+              v-if="statusRegister"
+              @click="passes(HandlerValidateCode)"
+              dark
+              color="black"
+              >Reenviar Codigo</v-btn
+            > -->
+
+            <v-btn
+              v-if="statusRegister"
+              @click="passes(HandlerValidateCode)"
+              dark
+              color="black"
+              >Validar</v-btn
+            >
+
+            <v-btn
+              v-else
+              @click="passes(HandlerValidateLogin)"
+              dark
+              color="black"
               >Validar</v-btn
             >
           </v-card-actions>
@@ -363,7 +384,7 @@
     </v-dialog>
 
     <!-- RECUPERAR CONTRASEÑA -->
-    <v-dialog v-model="showRecovery" max-width="600">
+    <v-dialog v-model="showRecovery" max-width="500">
       <ValidationObserver ref="obsRec" v-slot="{ passes }">
         <v-card :loading="loading_verification">
           <v-card-title>
@@ -378,7 +399,8 @@
               <v-text-field
                 @keyup.enter="passes(HandlerRecovery)"
                 v-model="email_verifiction"
-                label="Correo electronico"
+                label="Correo Electrónico"
+                dense
                 outlined
                 :error-messages="errors"
               ></v-text-field>
@@ -395,10 +417,10 @@
               Cancelar
             </v-btn>
             <v-btn
+              color="#00A0E9"
               :loading="loading_verification"
               @click="passes(HandlerRecovery)"
               dark
-              color="black"
             >
               Recuperar
             </v-btn>
@@ -448,6 +470,7 @@ export default {
       showVerification: false,
       showNotification: false,
       showRecovery: false,
+      statusRegister: false,
       email: "",
       password: "",
       code: "",
@@ -484,6 +507,7 @@ export default {
 
     async HandlerLogin() {
       try {
+        this.statusRegister = false;
         this.loading = true;
         const request = {
           email: this.email,
@@ -533,6 +557,35 @@ export default {
       }
     },
 
+    async HandlerValidateCode() {
+      try {
+        this.loading = true;
+        const request = {
+          code: this.code,
+          email: this.email,
+          store: 3,
+        };
+        await this.$store.dispatch("auth/CODE_VERIFICATION", request);
+        this.$snotify.success(
+          "Su codigo fue verificado con exito",
+          "Felicidades"
+        );
+        this.showVerification = false;
+        this.show = true;
+      } catch (error) {
+        console.log(error.response.data);
+        // if (error.response.status == 401) {
+        //   this.$snotify.error("Usuario no encontrado", "Error!");
+        // } else if (error.response.status == 622) {
+        //   this.showVerification = true;
+        // } else {
+        this.$snotify.error(error.response.data.error.err_message, "Error!");
+        // }
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async HandlerSignUp() {
       try {
         this.loading = true;
@@ -550,7 +603,8 @@ export default {
           password: this.password,
         };
         await this.$store.dispatch("auth/REGISTER", request);
-        this.showNotification = true;
+        this.statusRegister = true;
+        this.showVerification = true;
         // this.$router.push({ name: "login" });
       } catch (error) {
         console.log(error);
