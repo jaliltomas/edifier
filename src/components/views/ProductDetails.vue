@@ -20,7 +20,7 @@
           Especificaciones
         </v-tab>
         <v-tab @click="HandlerDowloadManual">
-          <span v-if="!loadingManual">MANUAL DE USUARIOS</span>
+          <span v-if="!loadingManual">MANUAL DE USUARIO</span>
           <span v-else>...</span>
         </v-tab>
       </v-tabs>
@@ -694,28 +694,30 @@ export default {
     },
 
     async HandlerDowloadManual() {
-      try {
-        this.loadingManual = true;
-        const request = { url: this.dataProduct.product.product_manual };
+      console.log('rede')
+      window.open(this.dataProduct.product.product_manual, 'manual_de_usuario')
+      // try {
+      //   this.loadingManual = true;
+      //   const request = { url: this.dataProduct.product.product_manual };
 
-        const response = await this.$store.dispatch(
-          "products/PRODUCT_MANUAL",
-          request
-        );
+      //   const response = await this.$store.dispatch(
+      //     "products/PRODUCT_MANUAL",
+      //     request
+      //   );
 
-        const name = this.dataProduct.keywords.replaceAll(" ", "_");
+      //   const name = this.dataProduct.keywords.replaceAll(" ", "_");
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `${name}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.loadingManual = false;
-      }
+      //   const url = window.URL.createObjectURL(new Blob([response.data]));
+      //   const link = document.createElement("a");
+      //   link.href = url;
+      //   link.setAttribute("download", `${name}.pdf`);
+      //   document.body.appendChild(link);
+      //   link.click();
+      // } catch (error) {
+      //   console.log(error);
+      // } finally {
+      //   this.loadingManual = false;
+      // }
     },
   },
 };
