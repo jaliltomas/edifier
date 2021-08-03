@@ -1,202 +1,138 @@
 <template>
-  <v-container>
-    <!-- <v-row>
-      <v-col cols="12" md="12">
-        <navegation-component title="TIENDA" sub_title="TIENDA" />
-      </v-col>
-    </v-row> -->
-    <v-row class="mb-0 pb-0">
-      <v-col cols="12" sm="12" md="12" v-if="loading">
-        <v-progress-linear
-          indeterminate
-          color="red darken-2"
-        ></v-progress-linear>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="12"
-        md="12"
-        v-if="$route.query.product != undefined"
-        class="d-flex justify-end"
-      >
-        <div class="d-flex justify-end mb-2">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                @click="resetSearch"
-                icon
-                large
-                color="black"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon size="40">mdi-autorenew</v-icon>
-              </v-btn>
-            </template>
-            <span>Resetear busqueda</span>
-          </v-tooltip>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <!-- MOSTRAR CATEGORIAS -->
-      <v-col cols="12" sm="12" md="3" v-if="productsCategories.length > 0">
-        <v-card color="#FAFAFA" tile class="elevation-0">
-          <span @click="cleanFilters">Limpiar Filtros</span>
-          <v-divider></v-divider>
-          <v-subheader>Categorías</v-subheader>
-          <v-card-text>
-            <v-list tile nav>
-              <div v-for="(item1, i) in productsCategories" :key="i">
-                <v-list-group v-if="item1.sub_category.length > 0" no-action>
-                  <template v-slot:activator>
-                    <v-list-item-title
-                      class="ml-0 text-capitalize"
-                      v-text="item1.name"
-                    ></v-list-item-title>
-                  </template>
+  <div>
+    <v-sheet>
+      <v-img src="@/assets/img/carrousel/Carrusel01.jpg">
+        <v-container fill-height>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" class="d-flex justify-center">
+              <div class="font-weight-bold d-flex">
+                <span style="color: #00a0e9; font-size: 2.5em">
+                  Auriculares
+                </span>
+              </div>
+            </v-col>
+            <v-col cols="12" class="d-flex justify-center">
+              <div style="color: white" class="d-flex">
+                Descubre tu mejor opción
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-img>
+    </v-sheet>
 
-                  <v-list-item
-                    v-for="(item2, j) in item1.sub_category"
-                    :key="j"
-                    @click="() => {}"
-                    class="pl-0"
-                    active-class="text-capitalize secondary white--text active-shadow-item"
-                    style="text-decoration: none"
-                  >
-                    <!-- <v-list-item-title
-                      class="text-capitalize ml-3"
-                      v-text="item2.name"
-                    ></v-list-item-title> -->
-                    <v-checkbox
-                      :label="item2.name"
-                      @change="categorySearch(item2)"
-                      ref="n"
-                      :value="selected[j]"
-                    ></v-checkbox>
-                  </v-list-item>
-                  <v-divider class="mb-2"></v-divider>
-                </v-list-group>
-                <v-list-item
-                  v-else
-                  no-action
-                  active-class="secondary white--text active-shadow-item"
-                  :to="{ name: item1.path }"
-                >
-                  <v-list-item-title
-                    class="text-capitalize"
-                    v-text="item1.name"
-                  ></v-list-item-title>
-                </v-list-item>
-              </div>
-            </v-list>
-          </v-card-text>
-        </v-card>
-        <v-btn
-          block
-          class="mt-3"
-          color="black"
-          dark
-          @click="HandlerGetProducts(page)"
-        >
-          Buscar
-        </v-btn>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="12"
-        md="9"
-        v-if="!loading && productsData.length > 0"
-      >
+    <v-sheet color="#F1F1F1">
+      <v-container>
         <v-row>
-          <v-col
-            v-for="(item, index) in productsData"
-            :key="index"
-            cols="12"
-            sm="4"
-            md="3"
-          >
-            <v-card
-              v-if="item.product != null"
-              height="200"
-              class="elevation-0"
-              flat
-              @click="HandlerShowProduct(item)"
-            >
-              <img
-                v-if="item.images == null"
-                height="200"
-                width="100%"
-                contain
-                src="../../assets/img/no_image.jpg"
-              />
-              <div v-else>
-                <v-img
-                  height="200"
-                  width="100%"
-                  contain
-                  :src="item.images[0]"
-                  :lazy-src="item.images[0]"
+          <v-col cols="12" md="3" class="d-flex align-stretch my-5">
+            <v-sheet width="100%" height="100%">
+              <div
+                class="px-5 py-5"
+                v-for="(category, index) in productsCategories"
+                :key="index"
+              >
+                <div class="text-capitalize" style="font-size: 17px">
+                  {{ category.name }}
+                </div>
+                <div
+                  v-for="(sub_cat, index2) in category.sub_category"
+                  :key="index2"
                 >
-                  <template v-slot:placeholder>
-                    <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                    >
-                      <v-progress-circular
-                        indeterminate
-                        color="black lighten-5"
-                      ></v-progress-circular>
-                    </v-row>
-                  </template>
-                </v-img>
+                  <v-checkbox
+                    :label="subCatName(sub_cat.name)"
+                    color="#00A0E9"
+                  ></v-checkbox>
+                </div>
               </div>
-              <v-card-text></v-card-text>
-            </v-card>
-            <p class="text-center mb-1 title font-weight-bold text-uppercase">
-              {{ item.keywords }}
-            </p>
-            <p class="text-center" v-if="item.price != null">
-              <span>${{ item.price.pvp | currencyPVP }}</span>
-            </p>
-            <!-- {{ item }} -->
-            <cp-information
-              class="text-center"
-              :dataProduct="item"
-              :authUser="authUser"
-            />
+            </v-sheet>
+          </v-col>
+          <v-col cols="12" md="9" class="align-stretch my-5">
+            <v-sheet color="white" class="mt-3">
+              <v-row>
+                <v-col
+                  v-for="(item, index) in productsData"
+                  :key="index"
+                  cols="12"
+                  sm="4"
+                  md="4"
+                >
+                  <v-card
+                    v-if="item.product != null"
+                    height="200"
+                    class="elevation-0"
+                    flat
+                    @click="HandlerShowProduct(item)"
+                  >
+                    <img
+                      v-if="item.images == null"
+                      height="200"
+                      width="100%"
+                      contain
+                      src="../../assets/img/no_image.jpg"
+                    />
+                    <div v-else>
+                      <v-img
+                        height="200"
+                        width="100%"
+                        contain
+                        :src="item.images[0]"
+                        :lazy-src="item.images[0]"
+                      >
+                        <template v-slot:placeholder>
+                          <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                          >
+                            <v-progress-circular
+                              indeterminate
+                              color="black lighten-5"
+                            ></v-progress-circular>
+                          </v-row>
+                        </template>
+                      </v-img>
+                    </div>
+                    <v-card-text></v-card-text>
+                  </v-card>
+                  <p
+                    class="
+                      text-center
+                      mb-1
+                      title
+                      font-weight-bold
+                      text-uppercase
+                    "
+                  >
+                    {{ item.keywords }}
+                  </p>
+                  <p class="text-center" v-if="item.price != null">
+                    <span>${{ item.price.pvp | currencyPVP }}</span>
+                  </p>
+                  <!-- {{ item }} -->
+                  <cp-information
+                    class="text-center"
+                    :dataProduct="item"
+                    :authUser="authUser"
+                  />
+                </v-col>
+              </v-row>
+              <v-row justify="center" class="mb-0">
+                <v-col v-if="paginationData.total > 0" cols="12" md="4">
+                  <div class="text-center">
+                    <v-pagination
+                      color="#00A0E9"
+                      v-model="page"
+                      :length="paginationData.lastPage"
+                    ></v-pagination>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-sheet>
           </v-col>
         </v-row>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="12"
-        md="9"
-        v-if="!loading && productsData.length == 0"
-      >
-        <v-alert
-          outlined
-          type="warning"
-          prominent
-          border="left"
-          class="d-flex justify-center"
-          >No hay productos disponibles para mostrar</v-alert
-        >
-      </v-col>
-    </v-row>
-    <v-row justify="end">
-      <v-col v-if="paginationData.total > 0" cols="12" md="4">
-        <div class="text-center">
-          <v-pagination
-            color="black"
-            v-model="page"
-            :length="paginationData.lastPage"
-          ></v-pagination>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+      </v-container>
+    </v-sheet>
+  </div>
 </template>
 
 <script>
@@ -209,6 +145,31 @@ export default {
   },
   data() {
     return {
+      // Categories
+      items: [
+        {
+          title: "Auriculares",
+          icon: "mdi-inbox",
+          text: "Inbox",
+        },
+        {
+          title: "Auriculares",
+          icon: "mdi-star",
+          text: "Star",
+        },
+        {
+          title: "Auriculares",
+          icon: "mdi-send",
+          text: "Send",
+        },
+        {
+          title: "Auriculares",
+          icon: "mdi-email-open",
+          text: "Drafts",
+        },
+      ],
+      model: 1,
+
       loading: false,
       page: 1,
       selectedItem: "",
@@ -407,9 +368,13 @@ export default {
     cleanFilters() {
       console.log(this.selected);
       this.$refs.n.forEach((val, index) => {
-        console.log(val)
+        console.log(val);
         this.selected[index] = false;
       });
+    },
+
+    subCatName(name) {
+      return name[0].toUpperCase() + name.slice(1);
     },
   },
 };

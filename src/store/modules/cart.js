@@ -18,7 +18,7 @@ const mutations = {
   },
 
   ADD_ITEM: (state, payload) => {
-    state.productsInCart.shopping_cart_items.push(payload);
+    state.productsInCart.shopping_cart_items.push({publication: payload});
   },
 
   UPDATE_ITEM: (state, payload) => {

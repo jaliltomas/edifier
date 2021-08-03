@@ -26,7 +26,13 @@
       </v-tabs>
     </div>
     <v-sheet color="#EBF1F7" id="product">
-      <v-container fluid>
+      <v-container
+        :fluid="
+          $vuetify.breakpoint.name == 'lg' || $vuetify.breakpoint.name == 'xl'
+            ? false
+            : true
+        "
+      >
         <v-row justify="center" class="mt-10">
           <v-col cols="12" sm="6" md="5">
             <img
@@ -694,8 +700,8 @@ export default {
     },
 
     async HandlerDowloadManual() {
-      console.log('rede')
-      window.open(this.dataProduct.product.product_manual, 'manual_de_usuario')
+      console.log("rede");
+      window.open(this.dataProduct.product.product_manual, "manual_de_usuario");
       // try {
       //   this.loadingManual = true;
       //   const request = { url: this.dataProduct.product.product_manual };

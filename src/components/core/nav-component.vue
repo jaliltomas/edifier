@@ -16,23 +16,33 @@
         <v-img
           style="cursor: pointer"
           contain
+          @mouseover="megaMenu = false"
           src="@/assets/img/edifier-logo-color.svg"
         ></v-img>
       </v-avatar>
+      <div
+        v-if="!$vuetify.breakpoint.smAndDown"
+        class="px-5"
+        @mouseover="megaMenu = false"
+        style="color: white; cursor: default"
+      >
+        e
+      </div>
+      <div v-if="!isMobile">
+        <span @mouseover="megaMenu = true" style="cursor: pointer">
+          Productos
+        </span>
+        <span
+          @mouseover="megaMenu = false"
+          class="text-capitalize px-10"
+          style="cursor: pointer"
+        >
+          Soporte
+        </span>
+        <span class="text-capitalize" style="cursor: pointer"> Contacto </span>
+      </div>
 
       <v-spacer></v-spacer>
-
-      <div v-if="!isMobile">
-        <v-btn class="text-capitalize" text @click="HandlerRouter('products')">
-          Productos
-        </v-btn>
-
-        <!-- <v-btn class="text-capitalize" text> Marcas </v-btn> -->
-
-        <v-btn class="text-capitalize" text> Soporte </v-btn>
-
-        <v-btn class="text-capitalize" text> Contacto </v-btn>
-      </div>
 
       <!-- BUSCADOR -->
       <v-btn @click="activeSearch" icon>
@@ -142,12 +152,12 @@
         offset-x
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon color="indigo" dark v-bind="attrs" v-on="on">
+          <v-btn icon color="#00A0E9" dark v-bind="attrs" v-on="on">
             <v-icon>mdi-cart-outline</v-icon>
           </v-btn>
         </template>
 
-        <v-card>
+        <v-card v-if="productCartState.shopping_cart_items.length > 0">
           <div
             class="pt-3 px-5 d-flex"
             v-for="(item, index) in productCartState.shopping_cart_items"
@@ -239,6 +249,36 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
+
+    <div
+      v-if="megaMenu"
+      @mouseleave="megaMenu = false"
+      class="mega_menu animate__animated animate__fadeIn animate__faster"
+    >
+      <v-list nav dense style="padding-left: 18em; padding-right: 18em">
+        <v-list-item-group
+          v-model="group"
+          active-class="deep-purple--text text--accent-4"
+        >
+          <v-list-item>
+            <v-list-item-title>Foo</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>Bar</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>Fizz</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-title>Buzz</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </div>
+
     <v-dialog max-width="600" v-model="showRegion">
       <v-card :loading="loadingProducts">
         <v-card-title>Selecciona tu region</v-card-title>
@@ -277,6 +317,8 @@ export default {
   data() {
     return {
       drawer: false,
+      megaMenu: false,
+      group: null,
 
       // Regions
       showRegion: false,
@@ -312,14 +354,6 @@ export default {
       message: false,
       hints: true,
     };
-  },
-
-  created() {
-    // if (sessionStorage.getItem("region") == null && this.isAuth == false) {
-    //   this.showRegion = true;
-    // } else {
-    //   this.regionSelected = parseInt(sessionStorage.getItem("region"));
-    // }
   },
 
   watch: {
@@ -393,21 +427,6 @@ export default {
       const cart = this.$store.getters["cart/CART_PRODUCTS"];
       return cart.length == 0 ? [] : cart.shopping_cart_items;
     },
-
-    // getRegion() {
-    //   if (this.isAuth) {
-    //     const authUser = this.$store.getters["auth/GET_PROFILE"];
-    //     const regionData = this.getRegionData(authUser.warehouse_id);
-    //     return regionData;
-    //   } else {
-    //     if (sessionStorage.getItem("region") == null) {
-    //       return "";
-    //     }
-    //     const myRegion = parseInt(sessionStorage.getItem("region"));
-    //     const regionData = this.getRegionData(myRegion);
-    //     return regionData;
-    //   }
-    // },
   },
 
   methods: {
@@ -533,5 +552,12 @@ export default {
 .fade-transition-leave-active {
   position: absolute;
   width: 100%;
+}
+
+.mega_menu {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  margin-left: -12px;
 }
 </style>
