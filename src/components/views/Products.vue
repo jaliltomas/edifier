@@ -32,7 +32,7 @@
                 :key="index"
               >
                 <div
-                  @click="HandlerGetProducts(page, category, 1)"
+                  @click="HandlerFilterCategory(category, 1)"
                   class="text-capitalize"
                   style="font-size: 17px"
                 >
@@ -45,7 +45,7 @@
                   <v-checkbox
                     :label="subCatName(sub_cat.name)"
                     color="#00A0E9"
-                    @change="HandlerGetProducts(page, category, 2)"
+                    @change="HandlerFilterCategory(sub_cat, 2)"
                     v-model="sub_cat.value"
                   ></v-checkbox>
                 </div>
@@ -317,27 +317,22 @@ export default {
           "products/GET_PRODUCTS",
           request
         );
-        this.productsCategories = response.data.categories;
+
+        // COLOCAR SUBCATEGORIA TRUE
+        const categories = response.data.categories;
         if (this.$route.query.sub_data != undefined) {
-          let findSubCat;
-          let findSubCatIndex;
-          for (const cat in this.productsCategories) {
-            findSubCat = this.productsCategories[cat].sub_category.map(
-              (value) => {
-                return {
-                  ...value,
-                  value: true,
-                };
+          for (const category of categories) {
+            for (const sub_cat of category.sub_category) {
+              if (sub_cat.id == this.$route.query.sub_data) {
+                sub_cat.value = true;
+              } else {
+                sub_cat.value = false;
               }
-            );
-            findSubCatIndex = this.productsCategories[
-              cat
-            ].sub_category.findIndex(
-              (value) => (value.id = this.$route.query.sub_data)
-            );
+            }
           }
-          this.productsCategories[findSubCatIndex].sub_category = findSubCat;
         }
+
+        this.productsCategories = categories;
       } catch (error) {
         console.log(error);
       } finally {
@@ -425,6 +420,11 @@ export default {
     subCatName(name) {
       return name[0].toUpperCase() + name.slice(1);
     },
+
+    HandlerFilterCategory(value, action) {
+      console.log(value)
+      console.log(action)
+    }
   },
 };
 </script>
