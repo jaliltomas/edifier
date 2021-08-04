@@ -700,7 +700,6 @@ export default {
     },
 
     async HandlerDowloadManual() {
-      console.log("rede");
       window.open(this.dataProduct.product.product_manual, "manual_de_usuario");
       // try {
       //   this.loadingManual = true;

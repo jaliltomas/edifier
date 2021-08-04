@@ -563,7 +563,7 @@ export default {
         const request = {
           code: this.code,
           email: this.email,
-          store: 3,
+          store_id: 3,
         };
         await this.$store.dispatch("auth/CODE_VERIFICATION", request);
         this.$snotify.success(
