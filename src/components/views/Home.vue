@@ -42,7 +42,7 @@
                   class="mb-0"
                   :style="`font-size: 3vmax; color: ${item.color}`"
                 >
-                  {{ parseFloat(item.price) | currency }}
+                  {{ item.price }}
                 </div>
               </v-col>
               <v-col cols="12" md="12">

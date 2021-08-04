@@ -30,7 +30,7 @@
         @mouseover="megaMenu = false"
         style="color: white; cursor: default"
       >
-        e
+        .
       </div>
       <div v-if="!isMobile">
         <span @mouseover="megaMenu = true" style="cursor: pointer">
@@ -258,66 +258,44 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-
+    <!-- MEGA MENU -->
     <div
       v-if="megaMenu"
       @mouseleave="megaMenu = false"
       class="mega_menu animate__animated animate__fadeIn animate__faster"
+      style="background-color: white"
     >
-      <v-list nav dense style="padding-left: 18em; padding-right: 18em">
-        <v-list-item-group
-          v-model="group"
-          active-class="deep-purple--text text--accent-4"
-        >
-          <v-list-item>
-            <v-list-item-title>Foo</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>Bar</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>Fizz</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-title>Buzz</v-list-item-title>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </div>
-
-    <v-dialog max-width="600" v-model="showRegion">
-      <v-card :loading="loadingProducts">
-        <v-card-title>Selecciona tu region</v-card-title>
-        <v-card-text class="mb-0 pb-0">
-          <v-select
-            @change="selectRegion"
-            dense
-            outlined
-            color="black"
-            :items="dataRegion"
-            item-text="name"
-            item-value="id"
-            label="Region"
-            v-model="regionSelected"
-          ></v-select>
-        </v-card-text>
-        <v-card-actions class="mt-0 pt-0">
-          <v-spacer></v-spacer>
-          <v-btn
-            :loading="loadingProducts"
-            v-if="regionSelected != ''"
-            @click="showRegion = false"
-            text
-            color="black"
+      <v-container>
+        <v-row class="mb-10">
+          <v-col
+            cols="12"
+            md="3"
+            v-for="(category, index) in categories"
+            :key="index"
           >
-            Cancelar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <div
+              @click="HandlerGetPublicProducts(category, 1)"
+              style="font-size: 1.3em; cursor: pointer"
+              class="mt-7 mb-5 text-capitalize"
+            >
+              {{ category.name }}
+            </div>
+            <div
+              v-for="(sub_cat, j) in category.sub_category"
+              :key="j"
+              class="text-capitalize mb-3"
+            >
+              <span
+                @click="HandlerGetPublicProducts(sub_cat, 2)"
+                style="cursor: pointer"
+              >
+                {{ sub_cat.name }}
+              </span>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </v-container>
 </template>
 
@@ -328,28 +306,6 @@ export default {
       drawer: false,
       megaMenu: false,
       group: null,
-
-      // Regions
-      showRegion: false,
-      dataRegion: [
-        {
-          name: "CABA",
-          id: 1,
-        },
-        {
-          name: "GBA",
-          id: 2,
-        },
-        {
-          name: "Rosario",
-          id: 3,
-        },
-        {
-          name: "Cordoba Capital",
-          id: 4,
-        },
-      ],
-      regionSelected: "",
 
       // Loading
       loadingProducts: false,
@@ -362,7 +318,14 @@ export default {
       menu: false,
       message: false,
       hints: true,
+
+      //Categories
+      categories: [],
     };
+  },
+
+  created() {
+    this.GetCategories();
   },
 
   watch: {
@@ -449,97 +412,47 @@ export default {
 
     async HandlerLogout() {
       try {
-        // await this.$store.dispatch("auth/LOGOUT");
         this.$store.commit("auth/CLEAR_DATA_LOGOUT");
-        // console.log(response);
         this.$router.push({ name: "home" }).catch((err) => err);
       } catch (error) {
         console.log(error);
       }
     },
 
-    getRegion() {
-      if (this.isAuth) {
-        const authUser = this.$store.getters["auth/GET_PROFILE"];
-        const regionData = this.getRegionData(authUser.warehouse_id);
-        return regionData.length > 0 ? regionData[0].name : "";
-      } else {
-        if (sessionStorage.getItem("region") == null) {
-          return "";
-        }
-        const myRegion = parseInt(sessionStorage.getItem("region"));
-        const regionData = this.getRegionData(myRegion);
-        return regionData.length > 0 ? regionData[0].name : "";
-      }
-    },
-
-    getRegionData(region) {
-      const selectRegion = this.dataRegion
-        .map((reg) => {
-          if (reg.id == region) {
-            return reg;
-          }
-        })
-        .filter((val) => val != undefined);
-      return selectRegion;
-    },
-
-    selectRegion(evt) {
-      this.regionSelected = evt;
-      this.showRegion = false;
-      sessionStorage.setItem("region", this.regionSelected);
-      this.HandlerGetProductByRegion(this.regionSelected);
-      this.HandlerGetCategoriesByRegion(this.regionSelected);
-    },
-
-    async HandlerGetProductByRegion(region) {
+    async GetCategories() {
       try {
-        this.loadingProducts = true;
-        const request = {
-          store: 3,
-          page: 1,
-          per_page: 12,
-          paginate: true,
-          warehouse_id: region,
-        };
-
-        if (!this.isAuth) {
-          await this.$store.dispatch("products/GET_PRODUCTS", request);
-        } else {
-          await this.$store.dispatch("products/GET_AUTH_PRODUCTS", request);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.loadingProducts = false;
-      }
-    },
-
-    HandlerShowRegion() {
-      console.log(this.isAuth);
-      if (this.isAuth == true) {
-        this.$snotify.warning("Modifica tu region en el perfil", "Alerta!");
-      } else {
-        this.showRegion = true;
-      }
-    },
-
-    async HandlerGetCategoriesByRegion(region) {
-      try {
-        this.loadingProducts = true;
         const request = {
           store: 3,
           page: 1,
           per_page: 10,
-          paginate: true,
-          warehouse_id: region,
         };
-        await this.$store.dispatch("products/GET_CATEGORIES", request);
+        const response = await this.$store.dispatch(
+          "products/GET_CATEGORIES",
+          request
+        );
+        this.categories = response.data.data.data;
+        console.log("Categorias****", response);
       } catch (error) {
         console.log(error);
-      } finally {
-        this.loadingProducts = false;
       }
+    },
+
+    async HandlerGetPublicProducts(item, value) {
+      if (value == 1) {
+        const category_id = JSON.parse(item.id);
+        this.$router
+          .push({ name: "products", query: { data: category_id } })
+          .catch((err) => err);
+      } else {
+        const sub_category_id = JSON.parse(item.id);
+        this.$router
+          .push({
+            name: "products",
+            query: { sub_data: sub_category_id },
+          })
+          .catch((err) => err);
+      }
+      this.megaMenu = false;
     },
 
     activeSearch() {

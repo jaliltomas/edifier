@@ -31,7 +31,11 @@
                 v-for="(category, index) in productsCategories"
                 :key="index"
               >
-                <div class="text-capitalize" style="font-size: 17px">
+                <div
+                  @click="HandlerGetProducts(page, category, 1)"
+                  class="text-capitalize"
+                  style="font-size: 17px"
+                >
                   {{ category.name }}
                 </div>
                 <div
@@ -41,6 +45,8 @@
                   <v-checkbox
                     :label="subCatName(sub_cat.name)"
                     color="#00A0E9"
+                    @change="HandlerGetProducts(page, category, 2)"
+                    v-model="sub_cat.value"
                   ></v-checkbox>
                 </div>
               </div>
@@ -65,7 +71,7 @@
                   >
                     <img
                       v-if="item.images == null"
-                      :aspect-ratio="4/3"
+                      :aspect-ratio="4 / 3"
                       height="200"
                       width="100%"
                       contain
@@ -195,23 +201,37 @@ export default {
 
       // Cateogry
       category_id: "",
+      sub_category_id: "",
       categoriesArray: [],
       selected: [],
     };
   },
 
   created() {
-    this.HandlerGetProducts(this.page, this.$route.query.data);
+    this.category_id =
+      this.$route.query.data == undefined ? null : this.$route.query.data;
+    if (this.$route.query.sub_data != undefined) {
+      this.categoriesArray.push(this.$route.query.sub_data);
+    } else {
+      this.categoriesArray = [];
+    }
+    this.HandlerGetProducts(this.page);
     // this.HanderGetProductsBrand();
   },
-
   watch: {
     page(page) {
       this.HandlerGetProducts(page);
     },
 
     $route() {
-      this.HandlerGetProducts();
+      this.category_id =
+        this.$route.query.data == undefined ? null : this.$route.query.data;
+      if (this.$route.query.sub_data != undefined) {
+        this.categoriesArray.push(this.$route.query.sub_data);
+      } else {
+        this.categoriesArray = [];
+      }
+      this.HandlerGetProducts(this.page);
     },
   },
 
@@ -228,7 +248,6 @@ export default {
       }
     },
   },
-
   computed: {
     isAuth() {
       return this.$store.getters["auth/AUTHENTICATED"];
@@ -252,13 +271,18 @@ export default {
   },
 
   methods: {
-    HandlerGetProducts(page, category_id) {
-      if (!this.isAuth) this.HandlerGetPublicProducts(page, category_id);
-      if (this.isAuth) this.HandlerGetAuthProducts(page, category_id);
+    HandlerGetProducts(page, category_id, value) {
+      if (!this.isAuth) this.HandlerGetPublicProducts(page, category_id, value);
+      if (this.isAuth) this.HandlerGetAuthProducts(page, category_id, value);
     },
 
-    async HandlerGetPublicProducts(page) {
+    async HandlerGetPublicProducts(page, category_id, value) {
       try {
+        if (value == 2) {
+          if (!this.categoriesArray.includes(category_id.id)) {
+            this.categoriesArray.push(category_id.id);
+          }
+        }
         this.loading = true;
         const myPage = page || 1;
         const warehouse_id =
@@ -280,11 +304,13 @@ export default {
           sub_category_ids:
             this.categoriesArray.length == 0
               ? ""
+              : typeof this.categoriesArray == "number"
+              ? JSON.stringify([this.categoriesArray])
               : JSON.stringify(this.categoriesArray),
           category_ids:
-            this.$route.query.data == undefined
+            this.category_id == undefined
               ? ""
-              : JSON.stringify([this.$route.query.data]),
+              : JSON.stringify([this.category_id]),
         };
 
         const response = await this.$store.dispatch(
@@ -292,6 +318,26 @@ export default {
           request
         );
         this.productsCategories = response.data.categories;
+        if (this.$route.query.sub_data != undefined) {
+          let findSubCat;
+          let findSubCatIndex;
+          for (const cat in this.productsCategories) {
+            findSubCat = this.productsCategories[cat].sub_category.map(
+              (value) => {
+                return {
+                  ...value,
+                  value: true,
+                };
+              }
+            );
+            findSubCatIndex = this.productsCategories[
+              cat
+            ].sub_category.findIndex(
+              (value) => (value.id = this.$route.query.sub_data)
+            );
+          }
+          this.productsCategories[findSubCatIndex].sub_category = findSubCat;
+        }
       } catch (error) {
         console.log(error);
       } finally {
@@ -316,11 +362,13 @@ export default {
           sub_category_ids:
             this.categoriesArray.length == 0
               ? ""
+              : typeof this.categoriesArray == "number"
+              ? JSON.stringify([this.categoriesArray])
               : JSON.stringify(this.categoriesArray),
           category_ids:
-            this.$route.query.data == undefined
+            this.category_id == undefined
               ? ""
-              : JSON.stringify([this.$route.query.data]),
+              : JSON.stringify([this.category_id]),
         };
         const response = await this.$store.dispatch(
           "products/GET_AUTH_PRODUCTS",

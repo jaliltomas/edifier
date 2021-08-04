@@ -130,14 +130,14 @@
               ></v-text-field>
             </ValidationProvider>
             <ValidationProvider
-              name="télefono"
+              name="teléfono"
               rules="numeric"
               v-slot="{ errors }"
             >
               <v-text-field
                 filled
                 rounded
-                label="Télefono"
+                label="Teléfono"
                 v-model="authUserData.buyer.phone"
                 :error-messages="errors"
               ></v-text-field>
