@@ -65,6 +65,7 @@
                   >
                     <img
                       v-if="item.images == null"
+                      :aspect-ratio="4/3"
                       height="200"
                       width="100%"
                       contain

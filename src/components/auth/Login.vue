@@ -1,37 +1,7 @@
 <template>
   <v-container fluid class="mx-0 px-0 py-0 my-0">
     <v-row justify="center" align="center" no-gutters>
-      <v-col cols="12" md="5" v-if="!$vuetify.breakpoint.smAndDown">
-        <div
-          style="width: 100%; height: 100vh; background-color: #ebf1f7"
-          class="d-flex flex-column"
-        >
-          <div>
-            <div class="py-15"></div>
-            <v-img
-              @click="$router.push('/')"
-              style="cursor: pointer"
-              class="mx-auto"
-              contain
-              width="250"
-              src="@/assets/img/edifier-logo-color.svg"
-            ></v-img>
-          </div>
-          <div class="mt-auto">
-            <v-img
-              class="mx-auto pt-15"
-              contain
-              width="250"
-              src="@/assets/img/destacado/Destacado002.jpeg"
-            ></v-img>
-            <div class="mx-15 text-center">
-              Inicia sesión para mantenerte informado de los productos y
-              servicios que tenemos para ti
-            </div>
-            <div class="py-15"></div>
-          </div>
-        </div>
-      </v-col>
+      <information-component />
       <v-col cols="12" md="7">
         <v-img
           v-if="$vuetify.breakpoint.smAndDown"
@@ -43,6 +13,7 @@
           src="@/assets/img/edifier-logo-color.svg"
         ></v-img>
         <div class="d-flex justify-center mt-5">
+          <!-- LOGIN CARD -->
           <v-card
             v-if="show"
             width="400"
@@ -142,7 +113,7 @@
               </div>
             </v-col>
           </v-card>
-
+          <!-- REGISTER CARD -->
           <v-card
             v-else
             class="animate__animated animate__backInUp"
@@ -428,6 +399,7 @@
         </v-card>
       </ValidationObserver>
     </v-dialog>
+
     <v-dialog v-model="showNotification" max-width="600" persistent>
       <v-card>
         <v-card-title> Confirma tu cuenta para continuar </v-card-title>
@@ -459,10 +431,10 @@
 </template>
 
 <script>
-import NavegationComponent from "@/components/Utils/navegation_component";
+import InformationComponent from './AuthUtils/InformationComponent.vue'
 export default {
   components: {
-    "navegtion-component": NavegationComponent,
+    "information-component": InformationComponent,
   },
   data() {
     return {

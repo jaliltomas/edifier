@@ -5,7 +5,10 @@
         <p
           class="mb-0 text-uppercase"
           style="font-color: #3f3c35; font-size: 1.2em; cursor: pointer"
-          v-if="dataProduct.product.product_warehouse.length > 0"
+          v-if="
+            dataProduct.product != null &&
+            dataProduct.product.product_warehouse.length > 0
+          "
           @click="
             ModalProductUser(
               authUser.zipcode,
@@ -38,7 +41,10 @@
         <p
           class="mb-0 text-uppercase"
           style="font-color: #3f3c35; font-size: 1.2em"
-          v-if="dataProduct.product.product_warehouse.length > 0"
+          v-if="
+            dataProduct.product != null &&
+            dataProduct.product.product_warehouse.length > 0
+          "
           @click="
             ModalProductUser(
               authUser.zipcode,
@@ -64,8 +70,14 @@
           </span>
           <span v-else>
             <!-- {{dataProduct.user_product_notification}} -->
-            <v-btn outlined rounded color="#15A7EB" v-if="dataProduct.user_product_notification == null">Reservá el tuyo</v-btn>
-            <v-btn  text rounded  v-else class="blue--text"> Reservado </v-btn>
+            <v-btn
+              outlined
+              rounded
+              color="#15A7EB"
+              v-if="dataProduct.user_product_notification == null"
+              >Reservá el tuyo</v-btn
+            >
+            <v-btn text rounded v-else class="blue--text"> Reservado </v-btn>
           </span>
         </p>
       </div>
@@ -165,7 +177,7 @@ export default {
   props: {
     dataProduct: {
       type: Object,
-      required: true,
+      required: false,
       default: () => {},
     },
     authUser: {
@@ -199,7 +211,7 @@ export default {
 
     authUserData() {
       return this.$store.getters["auth/GET_PROFILE"];
-    }
+    },
   },
 
   methods: {
@@ -288,7 +300,8 @@ export default {
 
     ModalProductUser(zip_code, warehouse) {
       if (
-        this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo" && this.dataProduct.user_product_notification == null
+        this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo" &&
+        this.dataProduct.user_product_notification == null
       ) {
         this.showModalReserve = true;
       }

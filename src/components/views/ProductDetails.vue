@@ -98,6 +98,7 @@
               <div class="d-flex justify-space-between mt-5">
                 <cp-information
                   style="font-size: 18px"
+                  v-if="dataProduct"
                   :dataProduct="dataProduct"
                   :authUser="authUser"
                   class="mt-auto"
@@ -319,7 +320,7 @@ export default {
   },
   data() {
     return {
-      dataProduct: [],
+      dataProduct: {},
       productImages: [],
       quantity: 1,
       productCart: [],
@@ -377,7 +378,6 @@ export default {
     },
 
     breakpoint() {
-      console.log(this.$vuetify.breakpoint.name);
       return this.$vuetify.breakpoint.name;
     },
   },
@@ -468,7 +468,6 @@ export default {
         );
 
         this.dataProduct = response.data.data[0];
-        console.log(this.dataProduct);
       } catch (error) {
         console.log(error);
       } finally {
@@ -529,7 +528,6 @@ export default {
 
     async HandlerAddFavorites(item) {
       try {
-        console.log(item);
         const request = {
           publication_id: item.id,
           page: 1,
@@ -700,7 +698,6 @@ export default {
     },
 
     async HandlerDowloadManual() {
-      console.log("rede");
       window.open(this.dataProduct.product.product_manual, "manual_de_usuario");
       // try {
       //   this.loadingManual = true;
