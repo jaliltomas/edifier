@@ -514,7 +514,7 @@ export default {
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
-        this.$router.push({ name: "products" });
+        this.$router.push({ name: "home" });
       } catch (error) {
         console.log(error.response.data);
         if (error.response.status == 401) {
@@ -535,7 +535,7 @@ export default {
         const request = {
           code: this.code,
           email: this.email,
-          store: 3,
+          store_id: 3,
         };
         await this.$store.dispatch("auth/CODE_VERIFICATION", request);
         this.$snotify.success(
