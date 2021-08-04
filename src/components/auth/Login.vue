@@ -542,7 +542,7 @@ export default {
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
-        this.$router.push({ name: "products" });
+        this.$router.push({ name: "home" });
       } catch (error) {
         console.log(error.response.data);
         if (error.response.status == 401) {
