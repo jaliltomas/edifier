@@ -201,21 +201,15 @@
                     </v-img>
                     <v-card-text class="mx-3">
                       <v-row style="height: auto">
-                        <!-- <v-col cols="12">
-                          <span
-                            v-if="
-                              item.product != null && item.product.brand != null
-                            "
-                            class="black--text text-uppercase"
-                            style="font-weight: 500"
-                          >
-                            {{ item.product.brand.name }}
-                          </span>
-                        </v-col> -->
                         <v-col cols="12" class="mt-n5">
                           <span
+                            @click="HandlerProductDetails(item)"
                             class="black--text text-uppercase"
-                            style="font-weight: 600; font-size: 1.3em"
+                            style="
+                              font-weight: 600;
+                              font-size: 1.3em;
+                              cursor: pointer;
+                            "
                           >
                             {{ item.keywords }}
                           </span>

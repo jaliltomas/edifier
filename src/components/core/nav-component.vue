@@ -156,7 +156,14 @@
         offset-x
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon color="#00A0E9" dark v-bind="attrs" v-on="on">
+          <v-btn
+            @click="HandlerRouter('cart')"
+            icon
+            color="#00A0E9"
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
             <v-icon>mdi-cart-outline</v-icon>
           </v-btn>
         </template>
@@ -212,7 +219,7 @@
               rounded
               @click="HandlerRouter('cart')"
             >
-              Carrito
+              Mi Carrito
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -284,6 +291,7 @@
               v-for="(sub_cat, j) in category.sub_category"
               :key="j"
               class="text-capitalize mb-3"
+              v-show="category.name != 'Línea S' || category.name != 'Gaming'"
             >
               <span
                 @click="HandlerGetPublicProducts(sub_cat, 2)"
