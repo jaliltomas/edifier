@@ -35,9 +35,7 @@ const routes = [
 
 const router = new VueRouter({
     mode: 'history',
-    scrollBehavior(to, from) {
-        // console.log(to)
-        // console.log(from)
+    scrollBehavior() {
         return {
             x: 0,
             y: 0

@@ -306,7 +306,12 @@ export default {
           this.$route.query.sub_data != undefined &&
           this.categoriesArray.length == 0
         ) {
+          console.log("Filtrar padre", this.productsCategories);
           this.category_id = this.productsCategories[0].id;
+          this.$router.push({
+            path: this.$route.path,
+            query: { data: this.category_id },
+          });
         }
         this.loading = true;
         const myPage = page || 1;
@@ -456,25 +461,25 @@ export default {
         } else {
           this.categoriesArray.push(value.id.toString());
         }
-        // const query = {
-        //   ...this.$route.query,
-        //   sub_data: this.categoriesArray[0],
-        // };
-        // this.$router.push({ query });
-        this.$router.push({
-          path: this.$route.path,
-          query: { sub_data: this.categoriesArray[0] },
-        });
+        if (this.categoriesArray.length > 0) {
+          this.$router.push({
+            path: this.$route.path,
+            query: { sub_data: this.categoriesArray[0] },
+          }).catch(err => err);
+        }
         this.HandlerGetProducts(this.page);
       } else if (action == 1) {
         this.categoriesArray = [];
         this.category_id = value.id;
+        this.$router.push({
+          path: this.$route.path,
+          query: { data: this.category_id },
+        }).catch(err => err);
         this.HandlerGetProducts(this.page);
       } else {
-        console.log("Filtrar por todos");
         this.categoriesArray = [];
         this.category_id = null;
-        this.$router.push(this.$route.path);
+        this.$router.push(this.$route.path).catch(err => err);
         this.HandlerGetProducts(this.page);
       }
     },
