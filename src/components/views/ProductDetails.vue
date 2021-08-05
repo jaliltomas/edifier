@@ -1,7 +1,11 @@
 <template>
   <div>
     <div
-      style="background-color: #ffffff; height: auto"
+      :style="
+        sticky
+          ? 'background-color: #ffffff; height: 60px'
+          : 'background-color: #ffffff; height: auto'
+      "
       :class="sticky ? 'header-sticky' : ''"
       v-scroll="onScroll"
     >

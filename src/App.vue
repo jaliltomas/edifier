@@ -25,6 +25,7 @@
     </v-overlay>
     <v-main>
       <nav-component v-if="$route.name != 'login'" />
+      <div v-if="$route.name != 'login'" style="padding-top: 51px"></div>
       <router-view />
     </v-main>
     <footer-component v-if="$route.name != 'login'"/>

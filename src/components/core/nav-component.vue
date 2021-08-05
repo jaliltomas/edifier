@@ -1,141 +1,147 @@
 <template>
   <v-container fluid>
-    <v-app-bar
-      dense
-      flat
-      :class="$route.name == 'home' ? 'elevation-0 mb-0' : 'elevation-0 mb-0'"
-      color="transparent"
-      light
-    >
-      <v-app-bar-nav-icon
-        @click="drawer = !drawer"
-        v-if="isMobile"
-      ></v-app-bar-nav-icon>
-
-      <v-avatar
-        size="120"
-        tile
-        @click="$router.push({ name: 'home' }).catch((err) => err)"
-      >
-        <v-img
-          style="cursor: pointer"
-          contain
-          @mouseover="megaMenu = false"
-          src="@/assets/img/edifier-logo-color.svg"
-        ></v-img>
-      </v-avatar>
+    <div class="custom-nav" style="height: 75px">
       <div
-        v-if="!$vuetify.breakpoint.smAndDown"
-        class="px-5"
-        @mouseover="megaMenu = false"
-        style="color: white; cursor: default"
+        class="d-flex px-0 px-sm-15 px-md-15"
+        style="height: 75px; align-items: center"
       >
-        .
-      </div>
-      <div v-if="!isMobile">
-        <span @mouseover="megaMenu = true" style="cursor: pointer">
-          Productos
-        </span>
-        <span
-          @mouseover="megaMenu = false"
-          class="text-capitalize px-10"
-          style="cursor: pointer"
+        <v-app-bar-nav-icon
+          @click="drawer = !drawer"
+          v-if="isMobile"
+        ></v-app-bar-nav-icon>
+
+        <v-avatar
+          size="120"
+          tile
+          @click="$router.push({ name: 'home' }).catch((err) => err)"
         >
-          Soporte
-        </span>
-        <span class="text-capitalize" style="cursor: pointer"> Contacto </span>
-      </div>
+          <v-img
+            style="cursor: pointer"
+            contain
+            @mouseover="megaMenu = false"
+            src="@/assets/img/edifier-logo-color.svg"
+          ></v-img>
+        </v-avatar>
+        <div
+          v-if="!$vuetify.breakpoint.smAndDown"
+          class="px-5"
+          @mouseover="megaMenu = false"
+          style="color: white; cursor: default"
+        >
+          .
+        </div>
+        <div v-if="!isMobile">
+          <span @mouseover="megaMenu = true" style="cursor: pointer">
+            Productos
+          </span>
+          <span
+            @click="goTo()"
+            @mouseover="megaMenu = false"
+            class="text-capitalize px-10"
+            style="cursor: pointer"
+          >
+            Soporte
+          </span>
+          <span
+            @mouseover="megaMenu = false"
+            @click="goTo()"
+            class="text-capitalize"
+            style="cursor: pointer"
+          >
+            Contacto
+          </span>
+        </div>
 
-      <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-      <!-- BUSCADOR -->
-      <v-btn @click="activeSearch" icon>
-        <v-icon color="black">mdi-magnify</v-icon>
-      </v-btn>
+        <!-- BUSCADOR -->
+        <v-btn @click="activeSearch" icon>
+          <v-icon color="black">mdi-magnify</v-icon>
+        </v-btn>
 
-      <!-- FAVORITOS AUTENTICADO -->
-      <div v-if="!isMobile && favoriteProduct.length > 0">
+        <!-- FAVORITOS AUTENTICADO -->
+        <div v-if="!isMobile && favoriteProduct.length > 0">
+          <v-btn
+            @click="$router.push({ name: 'product_favorite' })"
+            v-if="isAuth"
+            class="mr-1 ml-2"
+            color="black"
+            icon
+          >
+            <v-icon
+              class="animate__animated animate__pulse animate__infinite"
+              color="red lighten-1"
+            >
+              mdi-heart
+            </v-icon>
+          </v-btn>
+        </div>
+
+        <!-- PERFIL AUTENTICADO -->
+        <div v-if="!isMobile && isAuth == true">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                @click="$router.push({ name: 'profile' })"
+                v-if="isAuth"
+                class="mr-1 ml-2 elevation-1"
+                color="#E9E9E9"
+                fab
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon color="black">mdi-account-circle-outline </v-icon>
+              </v-btn>
+            </template>
+            <span>Perfil</span>
+          </v-tooltip>
+        </div>
+
+        <!-- INGRESAR NO AUTENTICADO -->
         <v-btn
-          @click="$router.push({ name: 'product_favorite' })"
-          v-if="isAuth"
-          class="mr-1 ml-2"
+          v-if="isMobile == false && isAuth == false"
+          class="text-capitalize"
+          text
+          @click="HandlerRouter('login')"
+        >
+          <v-icon class="mr-1">mdi-account-outline</v-icon>
+          Ingresar
+        </v-btn>
+
+        <!-- SALIR APP -->
+        <v-btn
+          v-if="isMobile == false && isAuth == true"
+          class="text-capitalize"
+          text
+          @click="HandlerLogout"
+        >
+          <v-icon class="mr-1">mdi-exit-to-app</v-icon>
+          Salir
+        </v-btn>
+
+        <v-btn
+          v-if="isMobile == true && isAuth == false"
+          class="text-capitalize"
+          text
+          @click="$router.push({ name: 'login' })"
+        >
+          <v-icon class="mr-1">mdi-account</v-icon>
+        </v-btn>
+
+        <v-btn
+          v-if="isMobile && isAuth == true"
+          @click="HandlerLogout()"
+          class="ml-0 mr-0"
           color="black"
+          text
           icon
         >
-          <v-icon
-            class="animate__animated animate__pulse animate__infinite"
-            color="red lighten-1"
-          >
-            mdi-heart
-          </v-icon>
+          <v-icon>mdi-exit-to-app </v-icon>
         </v-btn>
-      </div>
 
-      <!-- PERFIL AUTENTICADO -->
-      <div v-if="!isMobile && isAuth == true">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              @click="$router.push({ name: 'profile' })"
-              v-if="isAuth"
-              class="mr-1 ml-2 elevation-1"
-              color="#E9E9E9"
-              fab
-              small
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon color="black">mdi-account-circle-outline </v-icon>
-            </v-btn>
-          </template>
-          <span>Perfil</span>
-        </v-tooltip>
-      </div>
-
-      <!-- INGRESAR NO AUTENTICADO -->
-      <v-btn
-        v-if="isMobile == false && isAuth == false"
-        class="text-capitalize"
-        text
-        @click="HandlerRouter('login')"
-      >
-        <v-icon class="mr-1">mdi-account-outline</v-icon>
-        Ingresar
-      </v-btn>
-
-      <!-- SALIR APP -->
-      <v-btn
-        v-if="isMobile == false && isAuth == true"
-        class="text-capitalize"
-        text
-        @click="HandlerLogout"
-      >
-        <v-icon class="mr-1">mdi-exit-to-app</v-icon>
-        Salir
-      </v-btn>
-
-      <v-btn
-        v-if="isMobile == true && isAuth == false"
-        class="text-capitalize"
-        text
-        @click="$router.push({ name: 'login' })"
-      >
-        <v-icon class="mr-1">mdi-account</v-icon>
-      </v-btn>
-
-      <v-btn
-        v-if="isMobile && isAuth == true"
-        @click="HandlerLogout()"
-        class="ml-0 mr-0"
-        color="black"
-        text
-        icon
-      >
-        <v-icon>mdi-exit-to-app </v-icon>
-      </v-btn>
-
-      <!-- CARRITO -->
-      <!-- <v-badge
+        <!-- CARRITO -->
+        <!-- <v-badge
         v-if="products"
         :content="products.length"
         :value="products.length"
@@ -148,83 +154,131 @@
         </v-btn>
       </v-badge> -->
 
-      <v-menu
-        open-on-hover
-        v-model="menu"
-        :close-on-content-click="false"
-        :nudge-width="200"
-        offset-x
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            @click="HandlerRouter('cart')"
-            icon
-            color="#00A0E9"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon>mdi-cart-outline</v-icon>
-          </v-btn>
-        </template>
-
-        <v-card
-          v-if="
-            productCartState.shopping_cart_items != null &&
-            productCartState.shopping_cart_items.length > 0
-          "
+        <v-menu
+          open-on-hover
+          v-model="menu"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-x
         >
-          <div
-            class="pt-3 px-5 d-flex"
-            v-for="(item, index) in productCartState.shopping_cart_items"
-            :key="index"
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              @click="HandlerRouter('cart')"
+              icon
+              color="#00A0E9"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-cart-outline</v-icon>
+            </v-btn>
+          </template>
+
+          <v-card
+            v-if="
+              productCartState.shopping_cart_items != null &&
+              productCartState.shopping_cart_items.length > 0
+            "
           >
-            <div>
-              <v-avatar tile v-if="item.publication.images == null">
-                <img
-                  height="200"
-                  width="100%"
-                  contain
-                  src="@/assets/img/no_image.jpg"
-                />
-              </v-avatar>
-              <v-avatar v-else tile size="100">
-                <v-img
-                  contain
-                  :src="item.publication.images[0]"
-                  :lazy-src="item.publication.images[0]"
-                  alt="Product Image"
-                ></v-img>
-              </v-avatar>
-            </div>
-            <div class="pl-3 align-self-center">
-              <div class="">{{ item.publication.keywords }}</div>
-              <div
-                class="mt-2"
-                v-if="
-                  item.publication != null && item.publication.price != null
-                "
-              >
-                $ {{ item.publication.price.pvp | currency }}
+            <div
+              class="pt-3 px-5 d-flex"
+              v-for="(item, index) in productCartState.shopping_cart_items"
+              :key="index"
+            >
+              <div>
+                <v-avatar tile v-if="item.publication.images == null">
+                  <img
+                    height="200"
+                    width="100%"
+                    contain
+                    src="@/assets/img/no_image.jpg"
+                  />
+                </v-avatar>
+                <v-avatar v-else tile size="100">
+                  <v-img
+                    contain
+                    :src="item.publication.images[0]"
+                    :lazy-src="item.publication.images[0]"
+                    alt="Product Image"
+                  ></v-img>
+                </v-avatar>
+              </div>
+              <div class="pl-3 align-self-center">
+                <div class="">{{ item.publication.keywords }}</div>
+                <div
+                  class="mt-2"
+                  v-if="
+                    item.publication != null && item.publication.price != null
+                  "
+                >
+                  $ {{ item.publication.price.pvp | currency }}
+                </div>
               </div>
             </div>
-          </div>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              dark
-              small
-              color="#00a0e9"
-              rounded
-              @click="HandlerRouter('cart')"
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                dark
+                small
+                color="#00a0e9"
+                rounded
+                @click="HandlerRouter('cart')"
+              >
+                Mi Carrito
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </div>
+
+      <!-- MEGA MENU -->
+      <div
+        v-if="megaMenu"
+        @mouseleave="megaMenu = false"
+        class="mega_menu animate__animated animate__fadeIn animate__faster"
+        style="background-color: white"
+      >
+        <v-container>
+          <v-row class="mb-10">
+            <v-col
+              cols="12"
+              md="3"
+              v-for="(category, index) in categories"
+              :key="index"
             >
-              Mi Carrito
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-menu>
-    </v-app-bar>
+              <div
+                @click="HandlerGetPublicProducts(category, 1)"
+                style="font-size: 1.3em; cursor: pointer"
+                class="mt-7 mb-5 text-capitalize"
+              >
+                {{ category.name }}
+              </div>
+              <div
+                v-if="
+                  category.name != 'Línea S' &&
+                  category.name != 'Gaming' &&
+                  category.name != 'Todo'
+                "
+              >
+                <div
+                  v-for="(sub_cat, j) in category.sub_category"
+                  :key="j"
+                  class="text-capitalize mb-3"
+                >
+                  <span
+                    @click="HandlerGetPublicProducts(sub_cat, 2)"
+                    style="cursor: pointer"
+                  >
+                    {{ sub_cat.name }}
+                  </span>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+    </div>
 
     <v-navigation-drawer
       v-model="drawer"
@@ -265,45 +319,6 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <!-- MEGA MENU -->
-    <div
-      v-if="megaMenu"
-      @mouseleave="megaMenu = false"
-      class="mega_menu animate__animated animate__fadeIn animate__faster"
-      style="background-color: white"
-    >
-      <v-container>
-        <v-row class="mb-10">
-          <v-col
-            cols="12"
-            md="3"
-            v-for="(category, index) in categories"
-            :key="index"
-          >
-            <div
-              @click="HandlerGetPublicProducts(category, 1)"
-              style="font-size: 1.3em; cursor: pointer"
-              class="mt-7 mb-5 text-capitalize"
-            >
-              {{ category.name }}
-            </div>
-            <div
-              v-for="(sub_cat, j) in category.sub_category"
-              :key="j"
-              class="text-capitalize mb-3"
-              v-show="category.name != 'Línea S' || category.name != 'Gaming'"
-            >
-              <span
-                @click="HandlerGetPublicProducts(sub_cat, 2)"
-                style="cursor: pointer"
-              >
-                {{ sub_cat.name }}
-              </span>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
   </v-container>
 </template>
 
@@ -433,6 +448,8 @@ export default {
           store: 3,
           page: 1,
           per_page: 10,
+          paginate: true,
+          everything: false,
         };
         const response = await this.$store.dispatch(
           "products/GET_CATEGORIES",
@@ -466,6 +483,10 @@ export default {
     activeSearch() {
       this.$store.commit("activeSearch");
     },
+
+    goTo() {
+      window.open("http://www.edifierla.com/hola/");
+    },
   },
 };
 </script>
@@ -488,6 +509,16 @@ export default {
   position: absolute;
   z-index: 1;
   width: 100%;
-  margin-left: -12px;
+  margin-left: 0px;
+}
+
+.custom-nav {
+  height: 76px;
+  position: fixed;
+  z-index: 2;
+  background-color: white;
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 </style>

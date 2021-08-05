@@ -41,6 +41,7 @@
                 <div
                   v-for="(sub_cat, index2) in category.sub_category"
                   :key="index2"
+                  class="mb-n5"
                 >
                   <v-checkbox
                     :label="subCatName(sub_cat.name)"
@@ -49,6 +50,14 @@
                     v-model="sub_cat.value"
                   ></v-checkbox>
                 </div>
+                <v-divider></v-divider>
+              </div>
+              <div
+                @click="HandlerFilterCategory({}, 3)"
+                class="text-capitalize px-5 py-5"
+                style="font-size: 17px; cursor: pointer"
+              >
+                Todo
               </div>
             </v-sheet>
           </v-col>
@@ -208,10 +217,15 @@ export default {
   },
 
   created() {
-    this.category_id =
-      this.$route.query.data == undefined ? null : this.$route.query.data;
+    if (this.$route.query.data == undefined) {
+      this.category_id = null;
+    } else {
+      this.category_id = this.$route.query.data;
+      this.categoriesArray = [];
+    }
+
     if (this.$route.query.sub_data != undefined) {
-      this.categoriesArray.push(this.$route.query.sub_data);
+      this.categoriesArray[0] = this.$route.query.sub_data;
     } else {
       this.categoriesArray = [];
     }
@@ -224,10 +238,15 @@ export default {
     },
 
     $route() {
-      this.category_id =
-        this.$route.query.data == undefined ? null : this.$route.query.data;
+      if (this.$route.query.data == undefined) {
+        this.category_id = null;
+      } else {
+        this.category_id = this.$route.query.data;
+        this.categoriesArray = [];
+      }
+
       if (this.$route.query.sub_data != undefined) {
-        this.categoriesArray.push(this.$route.query.sub_data);
+        this.categoriesArray[0] = this.$route.query.sub_data;
       } else {
         this.categoriesArray = [];
       }
@@ -271,17 +290,23 @@ export default {
   },
 
   methods: {
-    HandlerGetProducts(page, category_id, value) {
-      if (!this.isAuth) this.HandlerGetPublicProducts(page, category_id, value);
-      if (this.isAuth) this.HandlerGetAuthProducts(page, category_id, value);
+    HandlerGetProducts(page) {
+      if (!this.isAuth) this.HandlerGetPublicProducts(page);
+      if (this.isAuth) this.HandlerGetAuthProducts(page);
     },
 
-    async HandlerGetPublicProducts(page, category_id, value) {
+    async HandlerGetPublicProducts(page) {
       try {
-        if (value == 2) {
-          if (!this.categoriesArray.includes(category_id.id)) {
-            this.categoriesArray.push(category_id.id);
-          }
+        let valueNew = [];
+        for (const cat of this.categoriesArray) {
+          valueNew.push(cat.toString());
+        }
+        this.categoriesArray = [...valueNew];
+        if (
+          this.$route.query.sub_data != undefined &&
+          this.categoriesArray.length == 0
+        ) {
+          this.category_id = this.productsCategories[0].id;
         }
         this.loading = true;
         const myPage = page || 1;
@@ -311,6 +336,7 @@ export default {
             this.category_id == undefined
               ? ""
               : JSON.stringify([this.category_id]),
+          everything: 1,
         };
 
         const response = await this.$store.dispatch(
@@ -320,14 +346,13 @@ export default {
 
         // COLOCAR SUBCATEGORIA TRUE
         const categories = response.data.categories;
-        if (this.$route.query.sub_data != undefined) {
-          for (const category of categories) {
-            for (const sub_cat of category.sub_category) {
-              if (sub_cat.id == this.$route.query.sub_data) {
-                sub_cat.value = true;
-              } else {
-                sub_cat.value = false;
-              }
+
+        for (const category of categories) {
+          for (const sub_cat of category.sub_category) {
+            if (this.categoriesArray.includes(sub_cat.id.toString())) {
+              sub_cat.value = true;
+            } else {
+              sub_cat.value = false;
             }
           }
         }
@@ -422,9 +447,37 @@ export default {
     },
 
     HandlerFilterCategory(value, action) {
-      console.log(value)
-      console.log(action)
-    }
+      if (action == 2) {
+        if (this.categoriesArray.includes(value.id.toString())) {
+          const indexDelete = this.categoriesArray.findIndex(
+            (val) => val == value.id.toString()
+          );
+          this.categoriesArray.splice(indexDelete, 1);
+        } else {
+          this.categoriesArray.push(value.id.toString());
+        }
+        // const query = {
+        //   ...this.$route.query,
+        //   sub_data: this.categoriesArray[0],
+        // };
+        // this.$router.push({ query });
+        this.$router.push({
+          path: this.$route.path,
+          query: { sub_data: this.categoriesArray[0] },
+        });
+        this.HandlerGetProducts(this.page);
+      } else if (action == 1) {
+        this.categoriesArray = [];
+        this.category_id = value.id;
+        this.HandlerGetProducts(this.page);
+      } else {
+        console.log("Filtrar por todos");
+        this.categoriesArray = [];
+        this.category_id = null;
+        this.$router.push(this.$route.path);
+        this.HandlerGetProducts(this.page);
+      }
+    },
   },
 };
 </script>
