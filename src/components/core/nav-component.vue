@@ -262,13 +262,19 @@
               v-for="(category, index) in categories"
               :key="index"
             >
-              <div
-                @click="HandlerGetPublicProducts(category, 1)"
-                style="font-size: 1.3em; cursor: pointer"
-                class="mt-7 mb-5 text-capitalize"
-              >
-                {{ category.name }}
-              </div>
+              <v-hover v-slot="{ hover }">
+                <div
+                  @click="HandlerGetPublicProducts(category, 1)"
+                  :style="
+                    hover
+                      ? 'font-size: 1.3em; cursor: pointer; color: #00A0E9'
+                      : 'font-size: 1.3em; cursor: pointer'
+                  "
+                  class="mt-7 mb-5 text-capitalize"
+                >
+                  {{ category.name }}
+                </div>
+              </v-hover>
               <div
                 v-if="
                   category.name != 'Línea S' &&
@@ -531,9 +537,11 @@ export default {
   height: 76px;
   position: fixed;
   z-index: 2;
-  background-color: white;
+  background-color: #fff;
   width: 100%;
   top: 0;
   left: 0;
+  -webkit-box-shadow: 0 3px 5px 0 rgb(0 0 0 / 30%);
+  box-shadow: 0 3px 5px 0 rgb(0 0 0 / 30%);
 }
 </style>

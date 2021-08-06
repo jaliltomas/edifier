@@ -82,7 +82,7 @@
                   <span
                     v-if="dataProduct.price != null"
                     class="font-weight-light"
-                    style="font-size: 40px"
+                    style="font-size: 35px"
                   >
                     $ {{ dataProduct.price.pvp | currencyPVP }}
                   </span>
