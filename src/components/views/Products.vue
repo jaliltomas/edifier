@@ -376,13 +376,27 @@ export default {
 
         // COLOCAR SUBCATEGORIA TRUE
         const categories = response.data.categories;
-
+        let arrayName = [];
         for (const category of categories) {
           for (const sub_cat of category.sub_category) {
             if (this.categoriesArray.includes(sub_cat.id.toString())) {
               sub_cat.value = true;
             } else {
               sub_cat.value = false;
+            }
+          }
+          for (const features of category.features) {
+            if (arrayName.includes(features.name)) {
+              features.isRepit = true;
+            } else {
+              arrayName.push(features.name);
+              features.isRepit = false;
+            }
+            const featuresID = features.id.toString();
+            if (this.feature_ids.includes(featuresID)) {
+              features.value = true;
+            } else {
+              features.value = false;
             }
           }
         }
@@ -452,7 +466,6 @@ export default {
 
         // COLOCAR SUBCATEGORIA TRUE
         const categories = response.data.categories;
-        console.log(this.feature_ids);
         let arrayName = [];
         for (const category of categories) {
           for (const sub_cat of category.sub_category) {
@@ -556,6 +569,7 @@ export default {
         this.category_id = null;
         this.$router.push(this.$route.path).catch((err) => err);
         this.everything = 0;
+        this.feature_ids = [];
         this.HandlerGetProducts(this.page);
       }
     },
