@@ -31,24 +31,31 @@
           .
         </div>
         <div v-if="!isMobile">
-          <span @mouseover="megaMenu = true" style="cursor: pointer">
+          <span
+            @mouseover="megaMenu = true"
+            :style="
+              $route.name == 'products'
+                ? 'cursor: pointer; color: #00A0E9'
+                : 'cursor: pointer;'
+            "
+          >
             Productos
           </span>
           <span
-            @click="goTo()"
             @mouseover="megaMenu = false"
+            @click="goTo()"
             class="text-capitalize px-10"
             style="cursor: pointer"
           >
-            Soporte
+            Contacto
           </span>
           <span
-            @mouseover="megaMenu = false"
             @click="goTo()"
+            @mouseover="megaMenu = false"
             class="text-capitalize"
             style="cursor: pointer"
           >
-            Contacto
+            Soporte técnico
           </span>
         </div>
 
