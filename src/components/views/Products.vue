@@ -34,7 +34,7 @@
                 <div
                   @click="HandlerFilterCategory(category, 1)"
                   class="text-capitalize"
-                  style="font-size: 17px"
+                  style="font-size: 17px; cursor: pointer"
                 >
                   {{ category.name }}
                 </div>
@@ -51,6 +51,28 @@
                   ></v-checkbox>
                 </div>
                 <v-divider></v-divider>
+              </div>
+              <div class="text-capitalize px-5 pt-5" style="font-size: 17px">
+                Caracteristicas
+              </div>
+              <div
+                v-for="(category, u) in productsCategories"
+                :key="u + 'w'"
+                class="px-5"
+              >
+                <div
+                  v-for="(features, e) in category.features"
+                  :key="e + 'n'"
+                  class="mb-n5"
+                >
+                  <v-checkbox
+                    v-if="!features.isRepit"
+                    :label="subCatName(features.name)"
+                    color="#00A0E9"
+                    v-model="features.value"
+                    @change="HandlerFilterFeatures(features)"
+                  ></v-checkbox>
+                </div>
               </div>
               <div
                 @click="HandlerFilterCategory({}, 3)"
@@ -213,6 +235,8 @@ export default {
       sub_category_id: "",
       categoriesArray: [],
       selected: [],
+      everything: 1,
+      feature_ids: [],
     };
   },
 
@@ -341,7 +365,8 @@ export default {
             this.category_id == undefined
               ? ""
               : JSON.stringify([this.category_id]),
-          everything: 1,
+          everything: this.everything,
+          feature_ids: JSON.stringify(this.feature_ids),
         };
 
         const response = await this.$store.dispatch(
@@ -372,18 +397,40 @@ export default {
 
     async HandlerGetAuthProducts(page) {
       try {
+        let valueNew = [];
+        for (const cat of this.categoriesArray) {
+          valueNew.push(cat.toString());
+        }
+        this.categoriesArray = [...valueNew];
+        if (
+          this.$route.query.sub_data != undefined &&
+          this.categoriesArray.length == 0
+        ) {
+          console.log("Filtrar padre", this.productsCategories);
+          this.category_id = this.productsCategories[0].id;
+          this.$router.push({
+            path: this.$route.path,
+            query: { data: this.category_id },
+          });
+        }
         this.loading = true;
         const myPage = page || 1;
+        const warehouse_id =
+          sessionStorage.getItem("region") == null
+            ? 1
+            : parseInt(sessionStorage.getItem("region"));
+
         const request = {
+          store: 3,
           page: myPage,
           per_page: 12,
           paginate: true,
+          warehouse_id: warehouse_id,
           keywords:
             this.$route.query.product == undefined
               ? ""
               : this.$route.query.product,
-          brand_ids:
-            this.brandIds.length == 0 ? "" : JSON.stringify(this.brandIds),
+          brand_ids: "",
           sub_category_ids:
             this.categoriesArray.length == 0
               ? ""
@@ -394,13 +441,44 @@ export default {
             this.category_id == undefined
               ? ""
               : JSON.stringify([this.category_id]),
+          everything: this.everything,
+          feature_ids: JSON.stringify(this.feature_ids),
         };
+
         const response = await this.$store.dispatch(
           "products/GET_AUTH_PRODUCTS",
           request
         );
-        console.log(response.data);
-        this.productsCategories = response.data.categories;
+
+        // COLOCAR SUBCATEGORIA TRUE
+        const categories = response.data.categories;
+        console.log(this.feature_ids);
+        let arrayName = [];
+        for (const category of categories) {
+          for (const sub_cat of category.sub_category) {
+            if (this.categoriesArray.includes(sub_cat.id.toString())) {
+              sub_cat.value = true;
+            } else {
+              sub_cat.value = false;
+            }
+          }
+          for (const features of category.features) {
+            if (arrayName.includes(features.name)) {
+              features.isRepit = true;
+            } else {
+              arrayName.push(features.name);
+              features.isRepit = false;
+            }
+            const featuresID = features.id.toString();
+            if (this.feature_ids.includes(featuresID)) {
+              features.value = true;
+            } else {
+              features.value = false;
+            }
+          }
+        }
+
+        this.productsCategories = categories;
       } catch (error) {
         console.log(error);
       } finally {
@@ -413,7 +491,6 @@ export default {
         publication.product.id.toString(),
         "MyS3c3rtIdPr0Duct"
       ).toString();
-      console.log(encryptedID);
       this.$router.push({
         name: "product_details",
         query: { data: encryptedID },
@@ -439,14 +516,6 @@ export default {
       this.HandlerGetProducts(this.page);
     },
 
-    cleanFilters() {
-      console.log(this.selected);
-      this.$refs.n.forEach((val, index) => {
-        console.log(val);
-        this.selected[index] = false;
-      });
-    },
-
     subCatName(name) {
       return name[0].toUpperCase() + name.slice(1);
     },
@@ -462,26 +531,45 @@ export default {
           this.categoriesArray.push(value.id.toString());
         }
         if (this.categoriesArray.length > 0) {
-          this.$router.push({
-            path: this.$route.path,
-            query: { sub_data: this.categoriesArray[0] },
-          }).catch(err => err);
+          this.$router
+            .push({
+              path: this.$route.path,
+              query: { sub_data: this.categoriesArray[0] },
+            })
+            .catch((err) => err);
         }
+        this.everything = 1;
         this.HandlerGetProducts(this.page);
       } else if (action == 1) {
         this.categoriesArray = [];
         this.category_id = value.id;
-        this.$router.push({
-          path: this.$route.path,
-          query: { data: this.category_id },
-        }).catch(err => err);
+        this.$router
+          .push({
+            path: this.$route.path,
+            query: { data: this.category_id },
+          })
+          .catch((err) => err);
+        this.everything = 1;
         this.HandlerGetProducts(this.page);
       } else {
         this.categoriesArray = [];
         this.category_id = null;
-        this.$router.push(this.$route.path).catch(err => err);
+        this.$router.push(this.$route.path).catch((err) => err);
+        this.everything = 0;
         this.HandlerGetProducts(this.page);
       }
+    },
+    HandlerFilterFeatures(feature) {
+      if (this.feature_ids.includes(feature.id.toString())) {
+        const indexDelete = this.feature_ids.findIndex(
+          (val) => val == feature.id.toString()
+        );
+        this.feature_ids.splice(indexDelete, 1);
+      } else {
+        this.feature_ids.push(feature.id.toString());
+      }
+      this.everything = 1;
+      this.HandlerGetProducts(this.page);
     },
   },
 };

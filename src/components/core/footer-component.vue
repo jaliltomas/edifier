@@ -9,7 +9,11 @@
             src="@/assets/img/edifier-logo-gris.svg"
           ></v-img>
           <div class="mt-5">
-            <a @click.prevent="() => {}" style="color: black; text-decoration: none" href="">
+            <a
+              @click.prevent="() => {}"
+              style="color: black; text-decoration: none"
+              href=""
+            >
               Política de privacidad
             </a>
           </div>
@@ -22,9 +26,37 @@
         </v-col>
         <v-col cols="12" md="4">
           <div class="d-flex justify-start justify-md-end">
-            <v-icon class="black--text">mdi-facebook</v-icon>
-            <v-icon class="black--text mx-1">mdi-instagram</v-icon>
-            <v-icon class="black--text mx-1">mdi-youtube</v-icon>
+            <v-icon
+              class="black--text"
+              @click="
+                HandlerSocialLink('https://www.facebook.com/edifier.argentina/')
+              "
+              style="cursor: pointer"
+            >
+              mdi-facebook
+            </v-icon>
+            <v-icon
+              class="black--text mx-1"
+              @click="
+                HandlerSocialLink(
+                  'https://www.instagram.com/edifier.argentina/'
+                )
+              "
+              style="cursor: pointer"
+            >
+              mdi-instagram
+            </v-icon>
+            <v-icon
+              class="black--text mx-1"
+              @click="
+                HandlerSocialLink(
+                  'https://www.youtube.com/channel/UCL3TSzB0rmeBxL0PMkPA18w'
+                )
+              "
+              style="cursor: pointer"
+            >
+              mdi-youtube
+            </v-icon>
           </div>
           <div class="d-md-flex mt-2">
             <span class="text-end mr-5" style="font-size: 15px">
@@ -88,6 +120,9 @@ export default {
       window.open(
         "https://serviciosweb.afip.gob.ar/clavefiscal/qr/publicInfoD.aspx"
       );
+    },
+    HandlerSocialLink(social) {
+      window.open(social);
     },
   },
 };

@@ -53,7 +53,7 @@ const actions = {
   async GET_AUTH_PRODUCTS({ commit }, payload) {
     try {
       const response = await store.get(
-        `/api/publication/products_store_data_auth?page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}&sub_category_ids=${payload.sub_category_ids}&category_ids=${payload.category_ids}`
+        `/api/publication/products_store_data_auth?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&warehouse_id=${payload.warehouse_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}&sub_category_ids=${payload.sub_category_ids}&category_ids=${payload.category_ids}&everything=${payload.everything}&feature_ids=${payload.feature_ids}`
       );
       commit("SET_PRODUCT", response.data.data);
       return response;

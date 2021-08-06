@@ -35,10 +35,17 @@ const routes = [
 
 const router = new VueRouter({
     mode: 'history',
-    scrollBehavior() {
-        return {
-            x: 0,
-            y: 0
+    scrollBehavior(to, from) {
+        console.log("Estoy en,", to)
+        console.log("Vengo de,", from)
+        if (to.name == "products" && from.name == to.name) {
+            return {}
+        } else {
+            return {
+                x: 0,
+                y: 0
+            }
+
         }
     },
     base: process.env.BASE_URL,

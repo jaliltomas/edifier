@@ -4,7 +4,7 @@
       v-model="item"
       hide-delimiters
       height="100%"
-      :interval="12000"
+      :interval="24000"
       :hide-delimiter-background="false"
       :show-arrows-on-hover="false"
       :show-arrows="false"
