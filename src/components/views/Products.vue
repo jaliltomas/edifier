@@ -31,19 +31,26 @@
                 v-for="(category, index) in productsCategories"
                 :key="index"
               >
-                <div
-                  @click="HandlerFilterCategory(category, 1)"
-                  class="text-capitalize"
-                  style="font-size: 17px; cursor: pointer"
-                >
-                  {{ category.name }}
-                </div>
+                <v-hover v-slot="{ hover }">
+                  <div
+                    @click="HandlerFilterCategory(category, 1)"
+                    class="text-capitalize"
+                    :style="
+                      hover
+                        ? 'font-size: 17px; cursor: pointer; color: #00A0E9'
+                        : 'font-size: 17px; cursor: pointer;'
+                    "
+                  >
+                    {{ category.name }}
+                  </div>
+                </v-hover>
                 <div
                   v-for="(sub_cat, index2) in category.sub_category"
                   :key="index2"
-                  class="mb-n5"
+                  :class="!sub_cat.can_see ? 'mb-5' : 'mb-n5'"
                 >
                   <v-checkbox
+                    v-if="sub_cat.can_see"
                     :label="subCatName(sub_cat.name)"
                     color="#00A0E9"
                     @change="HandlerFilterCategory(sub_cat, 2)"
@@ -473,6 +480,15 @@ export default {
               sub_cat.value = true;
             } else {
               sub_cat.value = false;
+            }
+            if (
+              sub_cat.name == "Portátiles" ||
+              sub_cat.name == "Gaming" ||
+              sub_cat.name == "Línea S"
+            ) {
+              sub_cat.can_see = false;
+            } else {
+              sub_cat.can_see = true;
             }
           }
           for (const features of category.features) {

@@ -31,32 +31,40 @@
           .
         </div>
         <div v-if="!isMobile">
-          <span
-            @mouseover="megaMenu = true"
-            :style="
-              $route.name == 'products'
-                ? 'cursor: pointer; color: #00A0E9'
-                : 'cursor: pointer;'
-            "
-          >
-            Productos
-          </span>
-          <span
-            @mouseover="megaMenu = false"
-            @click="goTo()"
-            class="text-capitalize px-10"
-            style="cursor: pointer"
-          >
-            Contacto
-          </span>
-          <span
-            @click="goTo()"
-            @mouseover="megaMenu = false"
-            class="text-capitalize"
-            style="cursor: pointer"
-          >
-            Soporte técnico
-          </span>
+          <v-hover v-slot="{ hover }">
+            <span
+              @mouseover="megaMenu = true"
+              :style="
+                hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
+              "
+            >
+              Productos
+            </span>
+          </v-hover>
+          <v-hover v-slot="{ hover }">
+            <span
+              @mouseover="megaMenu = false"
+              @click="goTo()"
+              class="text-capitalize px-10"
+              :style="
+                hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
+              "
+            >
+              Contacto
+            </span>
+          </v-hover>
+          <v-hover v-slot="{ hover }">
+            <span
+              @click="goTo()"
+              @mouseover="megaMenu = false"
+              class="text-capitalize"
+              :style="
+                hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
+              "
+            >
+              Soporte técnico
+            </span>
+          </v-hover>
         </div>
 
         <v-spacer></v-spacer>
