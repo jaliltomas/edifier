@@ -1,13 +1,20 @@
 <template>
   <div>
     <v-sheet>
-      <v-img src="@/assets/img/carrousel/Carrusel01.jpg">
+      <v-img
+        v-if="
+          productsCategories.length > 0 &&
+          productsCategories[0].image_path != null
+        "
+        :src="productsCategories[0].image_path"
+        :lazy-src="productsCategories[0].image_path"
+      >
         <v-container fill-height>
           <v-row justify="center" no-gutters>
             <v-col cols="12" class="d-flex justify-center">
               <div class="font-weight-bold d-flex">
                 <span style="color: #00a0e9; font-size: 2.5em">
-                  Auriculares
+                  {{ productsCategories[0].name }}
                 </span>
               </div>
             </v-col>
@@ -19,6 +26,12 @@
           </v-row>
         </v-container>
       </v-img>
+      <v-skeleton-loader
+        v-else
+        class="mx-auto"
+        max-width="100%"
+        type="image"
+      ></v-skeleton-loader>
     </v-sheet>
 
     <v-sheet color="#F1F1F1">
@@ -57,7 +70,7 @@
                     v-model="sub_cat.value"
                   ></v-checkbox>
                 </div>
-                <v-divider></v-divider>
+                <v-divider class="mt-5"></v-divider>
               </div>
               <div class="text-capitalize px-5 pt-5" style="font-size: 17px">
                 Caracteristicas
@@ -81,12 +94,23 @@
                   ></v-checkbox>
                 </div>
               </div>
+              <v-divider class="mx-5 mt-5"></v-divider>
               <div
                 @click="HandlerFilterCategory({}, 3)"
-                class="text-capitalize px-5 py-5"
-                style="font-size: 17px; cursor: pointer"
+                class="text-capitalize px-5 pt-10"
               >
-                Todo
+                <v-hover v-slot="{ hover }">
+                  <div
+                    class="text-capitalize"
+                    :style="
+                      hover
+                        ? 'font-size: 17px; cursor: pointer; color: #00A0E9'
+                        : 'font-size: 17px; cursor: pointer;'
+                    "
+                  >
+                    Todo
+                  </div>
+                </v-hover>
               </div>
             </v-sheet>
           </v-col>
@@ -274,12 +298,14 @@ export default {
       } else {
         this.category_id = this.$route.query.data;
         this.categoriesArray = [];
+        this.everything = 1;
       }
 
       if (this.$route.query.sub_data != undefined) {
         this.categoriesArray[0] = this.$route.query.sub_data;
       } else {
         this.categoriesArray = [];
+        this.everything = 1;
       }
       this.HandlerGetProducts(this.page);
     },

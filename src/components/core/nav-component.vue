@@ -279,7 +279,8 @@
                 v-if="
                   category.name != 'Línea S' &&
                   category.name != 'Gaming' &&
-                  category.name != 'Todo'
+                  category.name != 'Todo' &&
+                  category.name != 'Portátiles'
                 "
               >
                 <div
