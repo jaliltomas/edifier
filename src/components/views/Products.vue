@@ -391,6 +391,15 @@ export default {
             } else {
               sub_cat.value = false;
             }
+            if (
+              sub_cat.name == "Portátiles" ||
+              sub_cat.name == "Gaming" ||
+              sub_cat.name == "Línea S"
+            ) {
+              sub_cat.can_see = false;
+            } else {
+              sub_cat.can_see = true;
+            }
           }
           for (const features of category.features) {
             if (arrayName.includes(features.name)) {
