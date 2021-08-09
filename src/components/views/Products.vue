@@ -4,10 +4,37 @@
       <v-img
         v-if="
           productsCategories.length > 0 &&
-          productsCategories[0].image_path != null
+          productsCategories[0].image_path != null &&
+          !loadingProducts
         "
         :src="productsCategories[0].image_path"
         :lazy-src="productsCategories[0].image_path"
+      >
+        <v-container fill-height>
+          <v-row justify="center" no-gutters>
+            <v-col cols="12" class="d-flex justify-center">
+              <div class="font-weight-bold d-flex">
+                <span style="color: #00a0e9; font-size: 2.5em">
+                  {{ productsCategories[0].name }}
+                </span>
+              </div>
+            </v-col>
+            <v-col cols="12" class="d-flex justify-center">
+              <div style="color: white" class="d-flex">
+                Descubre tu mejor opción
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-img>
+      <v-img
+        v-else-if="
+          productsCategories.length > 0 &&
+          productsCategories[0].image_path == null &&
+          !loadingProducts
+        "
+        src="@/assets/img/categoria/category_all.png"
+        lazy-src="@/assets/img/categoria/category_all.png"
       >
         <v-container fill-height>
           <v-row justify="center" no-gutters>
@@ -268,6 +295,7 @@ export default {
       selected: [],
       everything: 1,
       feature_ids: [],
+      loadingProducts: false,
     };
   },
 
@@ -363,7 +391,6 @@ export default {
           this.$route.query.sub_data != undefined &&
           this.categoriesArray.length == 0
         ) {
-          console.log("Filtrar padre", this.productsCategories);
           this.category_id = this.productsCategories[0].id;
           this.$router.push({
             path: this.$route.path,
@@ -453,6 +480,7 @@ export default {
 
     async HandlerGetAuthProducts(page) {
       try {
+        this.loadingProducts = true;
         let valueNew = [];
         for (const cat of this.categoriesArray) {
           valueNew.push(cat.toString());
@@ -462,7 +490,6 @@ export default {
           this.$route.query.sub_data != undefined &&
           this.categoriesArray.length == 0
         ) {
-          console.log("Filtrar padre", this.productsCategories);
           this.category_id = this.productsCategories[0].id;
           this.$router.push({
             path: this.$route.path,
@@ -546,7 +573,7 @@ export default {
       } catch (error) {
         console.log(error);
       } finally {
-        this.loading = false;
+        this.loadingProducts = false;
       }
     },
 
