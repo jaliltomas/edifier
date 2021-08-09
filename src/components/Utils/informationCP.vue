@@ -33,7 +33,7 @@
             }}
           </span>
           <span v-else>
-            <v-btn outlined rounded color="#15A7EB">Reservá el tuyo</v-btn>
+            <v-btn outlined rounded color="#15A7EB">1 Reservá el tuyo</v-btn>
           </span>
         </p>
       </div>
@@ -69,14 +69,14 @@
             }}
           </span>
           <span v-else>
-            <!-- {{dataProduct.user_product_notification}} -->
             <v-btn
               outlined
               rounded
               color="#15A7EB"
               v-if="dataProduct.user_product_notification == null"
-              >Reservá el tuyo</v-btn
             >
+              Reservá el tuyo
+            </v-btn>
             <v-btn text rounded v-else class="blue--text"> Reservado </v-btn>
           </span>
         </p>
@@ -109,6 +109,7 @@
               v-slot="{ errors }"
             >
               <v-text-field
+                @keyup="passes(HandlerNotification)"
                 filled
                 rounded
                 v-model="authUserData.buyer.first_name"
@@ -122,6 +123,7 @@
               v-slot="{ errors }"
             >
               <v-text-field
+                @keyup="passes(HandlerNotification)"
                 filled
                 rounded
                 label="Email"
@@ -135,6 +137,7 @@
               v-slot="{ errors }"
             >
               <v-text-field
+                @keyup="passes(HandlerNotification)"
                 filled
                 rounded
                 label="Teléfono"
@@ -174,6 +177,7 @@ export default {
   components: {
     notification_componenet: NotificationComponent,
   },
+
   props: {
     dataProduct: {
       type: Object,
@@ -314,9 +318,9 @@ export default {
           store_id: 3,
           product_id: this.dataProduct.product_id,
           publication_id: this.dataProduct.id,
-          email: this.email,
-          name: this.name,
-          phone: this.phone,
+          email: this.authUserData.buyer.email,
+          name: this.authUserData.buyer.first_name,
+          phone: this.authUserData.buyer.phone,
         };
 
         await this.$store.dispatch(
@@ -325,9 +329,7 @@ export default {
         );
 
         this.showModalReserve = false;
-        this.email = "";
-        this.name = "";
-        this.phone = "";
+        this.dataProduct.user_product_notification = true;
 
         // this.activeNotificacion = true;
         // this.textNotification = "Se ha registrado la información";

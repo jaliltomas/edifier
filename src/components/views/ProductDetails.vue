@@ -78,7 +78,7 @@
             </div>
             <div class="mt-auto">
               <div class="d-md-flex">
-                <p>
+                <p class="mb-0 mt-2">
                   <span
                     v-if="dataProduct.price != null"
                     class="font-weight-light"

@@ -172,86 +172,99 @@
               Nuestros recomendados para vos
             </span>
           </div>
-
-          <v-row justify="center">
-            <v-col cols="12" md="11">
-              <carousel
-                :perPage="$vuetify.breakpoint.smAndDown ? 1 : 3"
-                paginationColor="#3FB7EE"
-                class="mt-10"
+          <v-container :fluid="breakpoint > 900">
+            <v-row justify="center">
+              <v-col
+                cols="12"
+                :sm="breakpoint < 795 ? '12' : '10'"
+                :md="breakpoint < 980 ? '10' : '12'"
+                lg="10"
+                xl="10"
               >
-                <slide
-                  v-for="(item, index) in featuredProductsFirst"
-                  :key="index"
-                  class="d-flex justify-center"
+                <carousel
+                  :perPage="
+                    breakpoint < 650
+                      ? 1
+                      : breakpoint > 650 && breakpoint < 980
+                      ? 2
+                      : 3
+                  "
+                  paginationColor="#3FB7EE"
+                  class="mt-10"
                 >
-                  <v-card
-                    :width="$vuetify.breakpoint.smAndDown ? '20em' : '27em'"
-                    height="auto"
+                  <slide
+                    v-for="(item, index) in featuredProductsFirst"
+                    :key="index"
+                    class="d-flex justify-center"
                   >
-                    <v-img
-                      @click="HandlerProductDetails(item)"
-                      style="cursor: pointer"
-                      cover
-                      class="mx-7 my-7"
-                      width="auto"
-                      height="300px"
-                      :src="item.images[0]"
+                    <v-card
+                      :width="breakpoint < 1200 ? '20em' : '22em'"
+                      height="auto"
                     >
-                    </v-img>
-                    <v-card-text class="mx-3">
-                      <v-row style="height: auto">
-                        <v-col cols="12" class="mt-n5">
-                          <span
-                            @click="HandlerProductDetails(item)"
-                            class="black--text text-uppercase"
-                            style="
-                              font-weight: 600;
-                              font-size: 1.3em;
-                              cursor: pointer;
-                            "
-                          >
-                            {{ item.keywords }}
-                          </span>
-                        </v-col>
-                        <v-col cols="12">
-                          <div class="mr-3 mt-n5" v-html="item.resume"></div>
-                        </v-col>
-                        <v-col cols="12" class="align-self-end">
-                          <div
-                            v-if="item.price != null"
-                            class="my-auto black--text"
-                            style="font-weight: 600; font-size: 1.3em"
-                          >
-                            $ {{ item.price.pvp | currency }}
-                          </div>
-                        </v-col>
+                      <v-img
+                        @click="HandlerProductDetails(item)"
+                        style="cursor: pointer"
+                        contain
+                        class="mx-7 my-7"
+                        width="auto"
+                        height="300px"
+                        :src="item.images[0]"
+                      >
+                      </v-img>
+                      <v-card-text class="mx-3">
+                        <v-row style="height: auto">
+                          <v-col cols="12" class="mt-n5">
+                            <span
+                              @click="HandlerProductDetails(item)"
+                              class="black--text text-uppercase"
+                              style="
+                                font-weight: 600;
+                                font-size: 1.3em;
+                                cursor: pointer;
+                              "
+                            >
+                              {{ item.keywords }}
+                            </span>
+                          </v-col>
+                          <v-col cols="12">
+                            <div class="mr-3 mt-n5" v-html="item.resume"></div>
+                          </v-col>
+                          <v-col cols="12" class="align-self-end">
+                            <div
+                              v-if="item.price != null"
+                              class="my-auto black--text"
+                              style="font-weight: 600; font-size: 1.3em"
+                            >
+                              $ {{ item.price.pvp | currency }}
+                            </div>
+                          </v-col>
 
-                        <v-col>
-                          <information-cp
-                            class="text-start"
-                            :dataProduct="item"
-                            :authUser="authUser"
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
-                </slide>
-              </carousel>
-            </v-col>
-            <v-col cols="12" md="12" class="d-flex justify-center mb-15">
-              <v-btn
-                dark
-                @click="$router.push({ name: 'products' })"
-                style="border-width: medium"
-                rounded
-                color="#00A0E9"
-              >
-                <span class="font-weight-medium"> Ir a la tienda </span>
-              </v-btn>
-            </v-col>
-          </v-row>
+                          <v-col>
+                            <information-cp
+                              class="text-start"
+                              :dataProduct="item"
+                              :authUser="authUser"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-card-text>
+                    </v-card>
+                  </slide>
+                </carousel>
+              </v-col>
+              <v-col cols="12" md="12" class="d-flex justify-center mb-15">
+                <v-btn
+                  dark
+                  @click="$router.push({ name: 'products' })"
+                  style="border-width: medium"
+                  rounded
+                  color="#00A0E9"
+                >
+                  <span class="font-weight-medium"> Ir a la tienda </span>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-sheet>
       </v-responsive>
     </section>
@@ -322,6 +335,11 @@ export default {
 
     authUser() {
       return this.$store.getters["auth/GET_PROFILE"];
+    },
+
+    breakpoint() {
+      console.log(this.$vuetify.breakpoint.name);
+      return this.$vuetify.breakpoint.width;
     },
   },
 
