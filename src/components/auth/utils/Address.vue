@@ -1,6 +1,6 @@
 <template>
   <ValidationObserver ref="obs" v-slot="{ passes }">
-    <v-card color="#E9E9E9" tile class="elevation-0 py-5 d-flex justify-center">
+    <v-card color="white" tile class="elevation-0 py-5 d-flex justify-center">
       <v-card-text>
         <v-row class="mx-1">
           <!-- MOSTRAR MENSAJE NO HAY DIRECCION -->
@@ -42,7 +42,7 @@
                       {{ item.street_number }}
                       {{ item.floor_number }}
                       {{ item.department_number }}
-                      {{item.location}}
+                      {{ item.location }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
                       <span class="font-weight-bold text-capitalize">
@@ -89,315 +89,309 @@
           </v-col>
           <!-- MOSTRAR FORMULARIO PARA REGISTRAR DIRECCION -->
           <v-col cols="12" sm="12" md="12" lg="12" v-if="canRegister">
-            <v-row justify="center">
-              <v-col cols="12" sm="6" md="8" lg="8">
-                <v-row>
-                  <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-0">
-                    <label for="zip-code" class="text-capitalize">
-                      Código postal
-                    </label>
-                    <ValidationProvider
-                      name="Código Postal"
-                      rules="required|numeric|max:4|min:4"
-                      v-slot="{ errors }"
-                    >
-                      <v-text-field
-                        v-model="zipcode"
-                        class="mt-2 elevation-0"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Código postal"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-0">
-                    <label for="provincia" class="text-capitalize"
-                      >Seleccione provincia</label
-                    >
-                    <ValidationProvider
-                      name="Provincia"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <v-autocomplete
-                        :items="dataState"
-                        item-text="name"
-                        item-value="id"
-                        v-model="state_id"
-                        class="mt-2 elevation-0"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Seleccione provincia"
-                        :error-messages="errors"
-                      ></v-autocomplete>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                    <label for="localidad" class="text-capitalize">
-                      Seleccione Localidad
-                    </label>
-                    <ValidationProvider
-                      name="Tipo de documento"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <v-text-field
-                        v-model="localite_id"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Selecciona localidad"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                    <label for="email" class="text-capitalize"> Calle </label>
-                    <ValidationProvider
-                      name="Calle"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <v-text-field
-                        v-model="street"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Calle"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4" class="mt-md-n5">
-                    <label for="email" class="text-capitalize"> Numero </label>
-                    <ValidationProvider
-                      name="Numero"
-                      rules="required|numeric"
-                      v-slot="{ errors }"
-                    >
-                      <v-text-field
-                        v-model="street_number"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Numero"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4" class="mt-md-n5">
-                    <ValidationProvider
-                      name="Piso"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label for="email" class="text-capitalize"> Piso </label>
-                      <v-text-field
-                        v-model="floor_number"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Piso"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4" class="mt-md-n5">
-                    <ValidationProvider
-                      name="Departamento"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label for="email" class="text-capitalize">
-                        Departamento
+            <v-row class="mx-5 my-5">
+              <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-0">
+                <label for="zip-code" class="text-uppercase font-weight-bold">
+                  Código postal
+                </label>
+                <ValidationProvider
+                  name="Código Postal"
+                  rules="required|numeric|max:4|min:4"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="zipcode"
+                    class="mt-2 elevation-0"
+                    color="#00A0E9"
+                    filled
+                    dense
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-0">
+                <label for="provincia" class="text-uppercase font-weight-bold">
+                  Seleccione provincia
+                </label>
+                <ValidationProvider
+                  name="Provincia"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <v-autocomplete
+                    :items="dataState"
+                    item-text="name"
+                    item-value="id"
+                    v-model="state_id"
+                    class="mt-2 elevation-0"
+                    color="#00A0E9"
+                    filled
+                    dense
+                    flat
+                    :error-messages="errors"
+                  ></v-autocomplete>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                <label for="localidad" class="text-capitalize font-weight-bold">
+                  Seleccione Localidad
+                </label>
+                <ValidationProvider
+                  name="Tipo de documento"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="localite_id"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                <label for="email" class="text-uppercase font-weight-bold">
+                  Calle
+                </label>
+                <ValidationProvider
+                  name="Calle"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="street"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="4" class="mt-md-n5">
+                <label for="email" class="text-uppercase font-weight-bold">
+                  Numero
+                </label>
+                <ValidationProvider
+                  name="Numero"
+                  rules="required|numeric"
+                  v-slot="{ errors }"
+                >
+                  <v-text-field
+                    v-model="street_number"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="4" class="mt-md-n5">
+                <ValidationProvider
+                  name="Piso"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label for="email" class="text-uppercase font-weight-bold">
+                    Piso
+                  </label>
+                  <v-text-field
+                    v-model="floor_number"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="4" class="mt-md-n5">
+                <ValidationProvider
+                  name="Departamento"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label for="email" class="text-uppercase font-weight-bold">
+                    Departamento
+                  </label>
+                  <v-text-field
+                    v-model="department_number"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                <ValidationProvider
+                  name="Entre calles"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label for="email" class="text-uppercase font-weight-bold">
+                    Entre calles
+                  </label>
+                  <v-text-field
+                    v-model="between_streets"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                <ValidationProvider
+                  name="Observaciones"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label for="email" class="text-uppercase font-weight-bold">
+                    Observaciones del domicilio
+                  </label>
+                  <v-text-field
+                    v-model="observations"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                <ValidationProvider
+                  name="Nombre"
+                  rules="required"
+                  v-slot="{ errors }"
+                >
+                  <label for="email" class="text-uppercase font-weight-bold">
+                    Quien recibe
+                  </label>
+                  <v-text-field
+                    v-model="contact_name"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" class="mt-md-n5">
+                <ValidationProvider
+                  name="Telefono"
+                  rules="required|numeric"
+                  v-slot="{ errors }"
+                >
+                  <label for="email" class="text-uppercase font-weight-bold">
+                    Telefono de contacto
+                  </label>
+                  <v-text-field
+                    v-model="contact_phone"
+                    class="mt-2"
+                    color="#00A0E9"
+                    dense
+                    filled
+                    flat
+                    :error-messages="errors"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
+              <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-n10">
+                <div class="d-flex">
+                  <v-checkbox color="#00A0E9" v-model="isFirst" type="checkbox" required>
+                    <template v-slot:label>
+                      <label
+                        style="font-size: 14px"
+                        class="text-uppercase font-weight-bold"
+                      >
+                        Registrar como principal
                       </label>
-                      <v-text-field
-                        v-model="department_number"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Departamento"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                    <ValidationProvider
-                      name="Entre calles"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label for="email" class="text-capitalieze">
-                        Entre calles
-                      </label>
-                      <v-text-field
-                        v-model="between_streets"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Entre calles"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                    <ValidationProvider
-                      name="Observaciones"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label for="email" class="text-capitalize">
-                        Observaciones del domicilio
-                      </label>
-                      <v-text-field
-                        v-model="observations"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Observaciones del domicilio"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                    <ValidationProvider
-                      name="Nombre"
-                      rules="required"
-                      v-slot="{ errors }"
-                    >
-                      <label for="email" class="text-capitalize">
-                        Quien recibe
-                      </label>
-                      <v-text-field
-                        v-model="contact_name"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Quien recibe"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                    <ValidationProvider
-                      name="Telefono"
-                      rules="required|numeric"
-                      v-slot="{ errors }"
-                    >
-                      <label for="email" class="text-capitalize">
-                        Telefono de contacto
-                      </label>
-                      <v-text-field
-                        v-model="contact_phone"
-                        class="mt-2"
-                        color="black"
-                        dense
-                        solo
-                        flat
-                        placeholder="Telefono de contacto"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-n10">
-                    <div class="d-flex">
-                      <v-checkbox
-                        v-model="isFirst"
-                        type="checkbox"
-                        required
-                        label="Registrar como principal"
-                      ></v-checkbox>
-                    </div>
-                  </v-col>
-                </v-row>
+                    </template>
+                  </v-checkbox>
+                </div>
               </v-col>
             </v-row>
           </v-col>
         </v-row>
+        <div class="d-flex justify-center mt-5">
+          <v-btn
+            v-if="!canRegister"
+            :loading="loading"
+            @click="
+              () => {
+                canRegister = !canRegister;
+                goUpdate = false;
+                clearFill();
+              }
+            "
+            rounded
+            elevation="0"
+            dark
+            width="250"
+            color="#00A0E9"
+            class="text-capitalize"
+          >
+            Agregar dirección
+          </v-btn>
+          <v-btn
+            v-if="canRegister && !goUpdate"
+            :loading="loading"
+            @click="passes(HandlerRegister)"
+            elevation="0"
+            dark
+            rounded
+            width="250"
+            color="#00A0E9"
+            class="text-capitalize"
+          >
+            Registrar
+          </v-btn>
+          <v-btn
+            v-if="canRegister && goUpdate"
+            :loading="loading"
+            @click="passes(() => HandlerUpdate({}, 0))"
+            elevation="0"
+            dark
+            rounded
+            width="250"
+            color="#00A0E9"
+            class="text-capitalize"
+          >
+            Actualizar
+          </v-btn>
+          <v-btn
+            v-if="canRegister"
+            :loading="loading"
+            @click="canRegister = !canRegister"
+            elevation="0"
+            rounded
+            dark
+            width="250"
+            color="#00A0E9"
+            class="text-capitalize ml-2"
+          >
+            Cancelar
+          </v-btn>
+        </div>
       </v-card-text>
-      <v-card-actions> </v-card-actions>
     </v-card>
-    <div class="d-flex justify-center mt-5">
-      <v-btn
-        v-if="!canRegister"
-        :loading="loading"
-        @click="
-          () => {
-            canRegister = !canRegister;
-            goUpdate = false;
-            clearFill();
-          }
-        "
-        tile
-        elevation="0"
-        large
-        dark
-        color="black"
-        class="text-capitalize"
-      >
-        Agregar dirección
-      </v-btn>
-      <v-btn
-        v-if="canRegister && !goUpdate"
-        :loading="loading"
-        @click="passes(HandlerRegister)"
-        tile
-        elevation="0"
-        large
-        dark
-        color="black"
-        class="text-capitalize"
-      >
-        Registrar
-      </v-btn>
-      <v-btn
-        v-if="canRegister && goUpdate"
-        :loading="loading"
-        @click="passes(() => HandlerUpdate({}, 0))"
-        tile
-        elevation="0"
-        large
-        dark
-        color="black"
-        class="text-capitalize"
-      >
-        Actualizar
-      </v-btn>
-      <v-btn
-        v-if="canRegister"
-        :loading="loading"
-        @click="canRegister = !canRegister"
-        tile
-        elevation="0"
-        large
-        dark
-        color="black"
-        class="text-capitalize ml-2"
-      >
-        Cancelar
-      </v-btn>
-    </div>
   </ValidationObserver>
 </template>
 

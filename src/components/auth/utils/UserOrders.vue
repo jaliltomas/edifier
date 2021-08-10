@@ -1,7 +1,7 @@
 <template>
-  <v-card color="#E9E9E9" tile class="elevation-0 py-5 d-flex justify-center">
+  <v-card color="white" tile class="elevation-0 py-5 d-flex justify-center">
     <v-row justify="center">
-      <v-col cols="12" sm="12" md="10">
+      <v-col cols="12" sm="12" md="12">
         <v-data-table
           v-if="!showDetailsOrder"
           tile
@@ -9,6 +9,7 @@
           :items="dataResponse"
           :items-per-page="5"
           class="elevation-0"
+          width="100%"
         >
           <template v-slot:[`item.date_created`]="{ item }">
             {{ item.date_created | date }}
@@ -39,7 +40,9 @@
         </v-data-table>
         <div v-if="showDetailsOrder">
           <details-component :dataOrder="dataOrder" />
-          <v-btn class="mt-2" @click="showDetailsOrder = !showDetailsOrder">Cerrar</v-btn>
+          <v-btn class="mt-2" @click="showDetailsOrder = !showDetailsOrder"
+            >Cerrar</v-btn
+          >
         </div>
       </v-col>
     </v-row>
@@ -69,12 +72,13 @@ export default {
           align: "start",
           sortable: false,
           value: "date_created",
+          class: "header-text",
         },
-        { text: "#ID", value: "meli_id" },
-        { text: "Productos", value: "order_item" },
-        { text: "Estado", value: "order_status" },
-        { text: "Total", value: "total_amount" },
-        { text: "Acción", value: "action" },
+        { text: "#ID", value: "meli_id", class: "header-text" },
+        { text: "Productos", value: "order_item", class: "header-text" },
+        { text: "Estado", value: "order_status", class: "header-text" },
+        { text: "Total", value: "total_amount", class: "header-text" },
+        { text: "Acción", value: "action", class: "header-text" },
       ],
       dataTable: [],
 
@@ -122,4 +126,9 @@ export default {
 </script>
 
 <style>
+.header-text {
+  font-size: 14px !important;
+  color: #00a0e9 !important;
+  font-weight: bold;
+}
 </style>

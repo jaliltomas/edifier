@@ -474,7 +474,6 @@ export default {
           request
         );
         this.categories = response.data.data.data;
-        console.log("Categorias****", response);
       } catch (error) {
         console.log(error);
       }
