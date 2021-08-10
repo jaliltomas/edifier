@@ -101,7 +101,6 @@
               </div>
               <div class="text-capitalize px-5 pt-5" style="font-size: 17px">
                 Caracteristicas
-                {{feature_ids}}
               </div>
               <div
                 v-for="(feature, u) in productsFeature"
