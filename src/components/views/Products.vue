@@ -124,7 +124,7 @@
               <v-divider class="mx-5 mt-5"></v-divider>
               <div
                 @click="HandlerFilterCategory({}, 3)"
-                class="text-capitalize px-5 pt-10"
+                class="text-capitalize px-5 py-10"
               >
                 <v-hover v-slot="{ hover }">
                   <div

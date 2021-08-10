@@ -42,7 +42,17 @@
                   class="mb-0"
                   :style="`font-size: 3vmax; color: ${item.color}`"
                 >
-                  {{ item.price }}
+                    <div v-if="item.price == ' ' || item.price == null">
+                      <br>
+                    </div>
+                    <div v-else>
+                      {{item.price}}
+                    </div>
+                  <!-- <span v-if="item.price !== null"> -->
+
+                  <!-- {{ item.price }}
+                  </span>
+                  <span v-else>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores distinctio autem nesciunt blanditiis esse exercitationem rerum, molestiae non deleniti iste quos nemo sed perferendis omnis natus eos accusantium obcaecati quibusdam.</span> -->
                 </div>
               </v-col>
               <v-col cols="12" md="12">
@@ -198,7 +208,7 @@
                     class="d-flex justify-center"
                   >
                     <v-card
-                      :width="breakpoint < 1200 ? '20em' : '22em'"
+                      :width="breakpoint < 1200 ? '20vmax' : '24vmax'"
                       height="auto"
                     >
                       <v-img
