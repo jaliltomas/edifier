@@ -42,6 +42,7 @@
                   class="mb-0"
                   :style="`font-size: 3vmax; color: ${item.color}`"
                 >
+                <!-- {{item}} -->
                     <div v-if="item.price == ' ' || item.price == null">
                       <br>
                     </div>
@@ -208,7 +209,7 @@
                     class="d-flex justify-center"
                   >
                     <v-card
-                      :width="breakpoint < 1200 ? '20vmax' : '24vmax'"
+                      :width="breakpoint < 1200 ? '31vw' : '25.3vw'"
                       height="auto"
                     >
                       <v-img
