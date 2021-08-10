@@ -218,7 +218,8 @@ export default {
           password: this.password,
         };
         await this.$store.dispatch("auth/REGISTER", request);
-        this.emitVerification();
+        this.emitEvent();
+        // this.emitVerification();
       } catch (error) {
         console.log(error);
 

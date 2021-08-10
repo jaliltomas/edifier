@@ -3,7 +3,7 @@
     <div
       :style="
         sticky
-          ? 'background-color: #ffffff; height: 60px'
+          ? 'background-color: #ffffff; height: auto'
           : 'background-color: #ffffff; height: auto'
       "
       :class="sticky ? 'header-sticky' : ''"
@@ -23,7 +23,10 @@
         <v-tab @click="$vuetify.goTo('#especificaciones')">
           Especificaciones
         </v-tab>
-        <v-tab @click="HandlerDowloadManual">
+        <v-tab
+          @click="HandlerDowloadManual"
+          v-if="dataProduct.product.product_manual !== null"
+        >
           <span v-if="!loadingManual">MANUAL DE USUARIO</span>
           <span v-else>...</span>
         </v-tab>
@@ -739,8 +742,8 @@ export default {
 .header-sticky {
   position: fixed;
   width: 100%;
-  top: 0;
-  z-index: 100;
+  /* top: 0; */
+  z-index: 1;
   margin-bottom: 500px !important;
 }
 
