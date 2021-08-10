@@ -12,6 +12,7 @@ import Profile from '../components/auth/Profile.vue'
 import Checkout from '../components/views/Checkout.vue'
 import CheckoutNotification from '../components/views/CheckoutNotification.vue'
 import OrderDetails from '../components/auth/utils/UserDetailsOrder.vue'
+import ContactAccount from '../components/views/ContactAccount'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -30,14 +31,21 @@ const routes = [
     { path: '/profile', component: Profile, name: 'profile' },
     { path: '/order_details', component: OrderDetails, name: 'order_details' },
     { path: '/checkout', component: Checkout, name: 'checkout' },
-    { path: '/checkout_notification', component: CheckoutNotification, name: 'checkout_notifiction' },
+    {
+        path: '/checkout_notification',
+        component: CheckoutNotification,
+        name: 'checkout_notifiction'
+    },
+    {
+        path: '/contact',
+        component: ContactAccount,
+        name: 'contact'
+    },
 ]
 
 const router = new VueRouter({
     mode: 'history',
     scrollBehavior(to, from) {
-        console.log("Estoy en,", to)
-        console.log("Vengo de,", from)
         if (to.name == "products" && from.name == to.name) {
             return {}
         } else {

@@ -1,7 +1,10 @@
 <template>
   <v-container fluid class="mx-0 px-0 py-0 my-0">
     <v-row justify="center" align="center" no-gutters>
-      <information-component />
+      <information-component
+        :message="'Inicia sesión para mantenerte informado de los productos y servicios que tenemos para ti'"
+        :logo="true"
+      />
       <v-col cols="12" md="7">
         <v-img
           v-if="$vuetify.breakpoint.smAndDown"

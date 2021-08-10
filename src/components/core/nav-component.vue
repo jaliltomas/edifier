@@ -44,7 +44,7 @@
           <v-hover v-slot="{ hover }">
             <span
               @mouseover="megaMenu = false"
-              @click="goTo()"
+              @click="goToContact"
               class="text-capitalize px-10"
               :style="
                 hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
@@ -343,7 +343,6 @@
     </v-navigation-drawer>
   </v-container>
 </template>
-
 <script>
 export default {
   data() {
@@ -351,6 +350,7 @@ export default {
       drawer: false,
       megaMenu: false,
       group: null,
+      showModalContact: false,
 
       // Loading
       loadingProducts: false,
@@ -389,10 +389,6 @@ export default {
     },
 
     favoriteProduct() {
-      console.log(
-        "Productos favoritos",
-        this.$store.getters["products/GET_PRODUCT_FAVORITES"]
-      );
       return this.$store.getters["products/GET_PRODUCT_FAVORITES"];
     },
 
@@ -509,6 +505,11 @@ export default {
     goTo() {
       window.open("http://www.edifierla.com/hola/");
     },
+
+    goToContact() {
+      const url = process.env.VUE_APP_CHECKOUT
+      location.href = `${url}/contact`
+    }
   },
 };
 </script>

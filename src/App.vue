@@ -8,7 +8,9 @@
       <!-- @dblclick.native="activeSearchFun" -->
       <div class="d-flex" style="z-index: 100">
         <h1 class="mr-15">Buscar</h1>
-        <v-icon @click="activeSearchFun" class="ml-15 pl-15 mt-1">mdi-close</v-icon>
+        <v-icon @click="activeSearchFun" class="ml-15 pl-15 mt-1"
+          >mdi-close</v-icon
+        >
       </div>
       <v-text-field
         :autofocus="true"
@@ -28,7 +30,7 @@
       <div v-if="$route.name != 'login'" style="padding-top: 51px"></div>
       <router-view />
     </v-main>
-    <footer-component v-if="$route.name != 'login'"/>
+    <footer-component v-if="$route.name != 'login'" />
     <vue-snotify></vue-snotify>
   </v-app>
 </template>
@@ -78,7 +80,7 @@ export default {
 };
 </script>
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap");
 @import "./assets/styles/index.scss";
 // @import "~vue-wysiwyg/dist/vueWysiwyg.css";
 

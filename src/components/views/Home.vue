@@ -89,6 +89,15 @@
       </v-carousel-item>
     </v-carousel>
 
+    <!-- <v-sheet color="green">
+      <h1>Prueba</h1>
+      <div data-reamaze-embed="contact" data-reamaze-embed-form-id="27495"></div>
+      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure hic, sed
+      corporis quam omnis perspiciatis officia, aut obcaecati nihil
+      reprehenderit dolor doloribus nemo, ut numquam consectetur a quis modi
+      nam.
+    </v-sheet> -->
+
     <v-container fluid>
       <section id="categorias" class="mt-15">
         <v-row :no-gutters="$vuetify.breakpoint.smAndDown ? true : false">
@@ -320,6 +329,14 @@ export default {
     // this.HandlerGetProduct();
     this.HandlerGetProductFeatured();
     this.HandlerGetListPromotions();
+  },
+
+  mounted() {
+    const remaze = window._support || { ui: {}, user: {} };
+    remaze["account"] = "edifier";
+    remaze["contact_custom_fields"] = remaze["contact_custom_fields"] || {};
+    remaze["contact_custom_fields"]["rmz_form_id_27495"] = {};
+    this.$refs.remaze = remaze;
   },
 
   watch: {

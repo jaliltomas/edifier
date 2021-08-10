@@ -124,8 +124,6 @@ export default {
   },
 
   created() {
-    console.log("email login", this.emailUser);
-    console.log("pass login", this.passwordUser);
     this.email = this.emailUser;
     this.password = this.passwordUser;
   },
