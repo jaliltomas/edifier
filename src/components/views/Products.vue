@@ -87,7 +87,7 @@
                 <div
                   v-for="(sub_cat, index2) in category.sub_category"
                   :key="index2"
-                  :class="!sub_cat.can_see ? 'mb-5' : 'mb-n5'"
+                  :class="!sub_cat.can_see ? 'mb-5' : 'mb-n6'"
                 >
                   <v-checkbox
                     v-if="sub_cat.can_see"
@@ -101,25 +101,28 @@
               </div>
               <div class="text-capitalize px-5 pt-5" style="font-size: 17px">
                 Caracteristicas
+                {{feature_ids}}
               </div>
               <div
-                v-for="(category, u) in productsCategories"
+                v-for="(feature, u) in productsFeature"
                 :key="u + 'w'"
                 class="px-5"
               >
-                <div
+              <!-- {{feature}} -->
+                <!-- <div
                   v-for="(features, e) in category.features"
                   :key="e + 'n'"
                   class="mb-n5"
-                >
+                > -->
+                <div class="mb-n6">
                   <v-checkbox
-                    v-if="!features.isRepit"
-                    :label="subCatName(features.name)"
+                    :label="subCatName(feature.name)"
                     color="#00A0E9"
-                    v-model="features.value"
-                    @change="HandlerFilterFeatures(features)"
+                    v-model="feature.value"
+                    @change="HandlerFilterFeatures(feature)"
                   ></v-checkbox>
                 </div>
+                <!-- </div> -->
               </div>
               <v-divider class="mx-5 mt-5"></v-divider>
               <div
@@ -277,6 +280,7 @@ export default {
       dataProducts: [],
       dataCategories: [],
       productsCategories: [],
+      productsFeature: [],
       paginate: {},
       firstImage: null,
 
@@ -454,13 +458,13 @@ export default {
               sub_cat.can_see = true;
             }
           }
-          for (const features of category.features) {
-            if (arrayName.includes(features.name)) {
-              features.isRepit = true;
-            } else {
-              arrayName.push(features.name);
-              features.isRepit = false;
-            }
+          for (const features of response.data.feature) {
+            // if (arrayName.includes(features.name)) {
+            //   features.isRepit = true;
+            // } else {
+            //   arrayName.push(features.name);
+            //   features.isRepit = false;
+            // }
             const featuresID = features.id.toString();
             if (this.feature_ids.includes(featuresID)) {
               features.value = true;
@@ -471,6 +475,8 @@ export default {
         }
 
         this.productsCategories = categories;
+        this.productsFeature = response.data.feature;
+
       } catch (error) {
         console.log(error);
       } finally {
@@ -553,13 +559,13 @@ export default {
               sub_cat.can_see = true;
             }
           }
-          for (const features of category.features) {
-            if (arrayName.includes(features.name)) {
-              features.isRepit = true;
-            } else {
-              arrayName.push(features.name);
-              features.isRepit = false;
-            }
+          for (const features of response.data.feature) {
+            // if (arrayName.includes(features.name)) {
+            //   features.isRepit = true;
+            // } else {
+            //   arrayName.push(features.name);
+            //   features.isRepit = false;
+            // }
             const featuresID = features.id.toString();
             if (this.feature_ids.includes(featuresID)) {
               features.value = true;
@@ -570,6 +576,8 @@ export default {
         }
 
         this.productsCategories = categories;
+        this.productsFeature = response.data.feature;
+
       } catch (error) {
         console.log(error);
       } finally {
