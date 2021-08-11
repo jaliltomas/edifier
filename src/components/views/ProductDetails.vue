@@ -228,7 +228,8 @@
                 style="color: #00a0e9; cursor: pointer"
                 @click="$router.push({ name: 'cart' })"
               >
-                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. Ir al carrito
+                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. Ir al
+                carrito
               </p>
             </div>
             <!-- <div
@@ -534,6 +535,7 @@ export default {
     },
 
     HandlerQuantity(quantity) {
+      this.messageProductAdd = false;
       if (this.quantity == 1 && quantity == "minus") {
         return;
       } else if (quantity == "plus" && this.quantity < 4) {
@@ -612,7 +614,6 @@ export default {
                 quantity: prod.original_quantity,
               };
             });
-
             await this.$store.dispatch("cart/CREATE_CART", {
               items: [...request],
             });
@@ -645,11 +646,9 @@ export default {
             await this.$store.dispatch("cart/CREATE_CART", {
               items: [...itemFilter],
             });
+
+            await this.$store.dispatch("cart/GET_CURRENT_CART");
           }
-          // this.$snotify.success(
-          //   "Has agregado al carrito el producto",
-          //   "Excelente"
-          // );
           this.messageProductAdd = true;
         } else {
           this.$router.push({ name: "login" });
