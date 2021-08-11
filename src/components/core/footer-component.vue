@@ -58,7 +58,7 @@
               mdi-youtube
             </v-icon>
           </div>
-          <div class="d-md-flex mt-2">
+          <!-- <div class="d-md-flex mt-2">
             <span class="text-end mr-5" style="font-size: 15px">
               Cumplimos con la Resolución 270/2020 de la Secretaría de Comercio
               Interior del Ministerio de Desarrollo Productivo sobre la
@@ -77,7 +77,7 @@
                 src="@/assets/img/data-fiscal.jpeg"
               ></v-img>
             </a>
-          </div>
+          </div> -->
         </v-col>
       </v-row>
     </v-card>
