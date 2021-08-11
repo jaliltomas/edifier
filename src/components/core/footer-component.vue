@@ -1,14 +1,56 @@
 <template>
   <v-footer :padless="true">
-    <v-card flat tile width="100%" color="#EBF1F7" class="text-start py-15">
-      <v-row class="mx-0 my-0" justify="space-around">
-        <v-col cols="12" md="4">
-          <v-img
-            width="250"
-            contain
-            src="@/assets/img/edifier-logo-gris.svg"
-          ></v-img>
-          <div class="mt-5">
+    <v-card flat tile width="100%" color="#EBF1F7" class="text-start">
+      <v-container>
+        <v-row class="mx-0 my-0">
+          <v-col cols="12" md="3">
+            <v-img
+              width="150"
+              contain
+              src="@/assets/img/edifier-logo-gris.svg"
+            ></v-img>
+            <div class="mt-10">
+              <div style="color: #67696b">Seguinos</div>
+              <div class="d-flex justify-start justify-md-start mt-1">
+                <v-icon
+                  color="#67696B"
+                  class="mx-0 px-0"
+                  @click="
+                    HandlerSocialLink(
+                      'https://www.facebook.com/edifier.argentina/'
+                    )
+                  "
+                  style="cursor: pointer"
+                >
+                  mdi-facebook
+                </v-icon>
+                <v-icon
+                  color="#67696B"
+                  class="mx-2"
+                  @click="
+                    HandlerSocialLink(
+                      'https://www.instagram.com/edifier.argentina/'
+                    )
+                  "
+                  style="cursor: pointer"
+                >
+                  mdi-instagram
+                </v-icon>
+                <v-icon
+                  color="#67696B"
+                  class="mx-0"
+                  @click="
+                    HandlerSocialLink(
+                      'https://www.youtube.com/channel/UCL3TSzB0rmeBxL0PMkPA18w'
+                    )
+                  "
+                  style="cursor: pointer"
+                >
+                  mdi-youtube
+                </v-icon>
+              </div>
+            </div>
+            <!-- <div class="mt-5">
             <a
               @click.prevent="() => {}"
               style="color: black; text-decoration: none"
@@ -22,65 +64,112 @@
               Términos de uso
             </a>
           </div>
-          <div>© EDIFIER 2021 Todos los derechos reservados</div>
-        </v-col>
-        <v-col cols="12" md="4">
-          <div class="d-flex justify-start justify-md-end">
-            <v-icon
-              class="black--text"
-              @click="
-                HandlerSocialLink('https://www.facebook.com/edifier.argentina/')
-              "
+          <div>© EDIFIER 2021 Todos los derechos reservados</div> -->
+          </v-col>
+          <v-col cols="12" md="3" class="d-flex justify-center">
+            <div style="border-left: 1px solid #b7b6b6">
+              <div
+                style="color: #3f4144; font-size: 1.15em"
+                class="d-flex justify-start algin-start font-weight-bold ml-2"
+              >
+                Productos
+              </div>
+              <div
+                v-for="(item, index) in categories"
+                :key="index"
+                style="color: #67696b"
+                class="ml-2 mt-1"
+                @click="productsCategores(item)"
+              >
+                <v-hover v-slot="{ hover }">
+                  <span
+                    :style="
+                      hover
+                        ? 'color: #00A0E9; cursor: pointer'
+                        : '#67696b; cursor: pointer'
+                    "
+                  >
+                    {{ item.name }}
+                  </span>
+                </v-hover>
+              </div>
+            </div>
+          </v-col>
+          <v-col cols="12" md="3" class="d-flex justify-center">
+            <div style="border-left: 1px solid #b7b6b6">
+              <div
+                style="color: #3f4144; font-size: 1.15em"
+                class="d-flex justify-start algin-start font-weight-bold ml-2"
+              >
+                Soporte
+              </div>
+              <div
+                v-for="(item, index) in support"
+                :key="index"
+                :style="item.name == '.' ? 'color: #EBF1F7' : 'color: #67696b'"
+                class="ml-2 mt-1"
+              >
+                <v-hover v-slot="{ hover }">
+                  <span
+                    :style="
+                      hover
+                        ? 'color: #00A0E9; cursor: pointer'
+                        : '#67696b; cursor: pointer'
+                    "
+                  >
+                    {{ item.name }}
+                  </span>
+                </v-hover>
+              </div>
+            </div>
+          </v-col>
+          <v-col cols="12" md="3" class="d-flex justify-center">
+            <div style="border-left: 1px solid #b7b6b6">
+              <div
+                style="color: #3f4144; font-size: 1.15em"
+                class="d-flex justify-start algin-start font-weight-bold ml-2"
+              >
+                Empresa
+              </div>
+              <div
+                v-for="(item, index) in company"
+                :key="index"
+                :style="item.name == '.' ? 'color: #EBF1F7' : 'color: #67696b'"
+                class="ml-2 mt-1"
+              >
+                <v-hover v-slot="{ hover }">
+                  <span
+                    :style="
+                      hover
+                        ? 'color: #00A0E9; cursor: pointer'
+                        : '#67696b; cursor: pointer'
+                    "
+                  >
+                    {{ item.name }}
+                  </span>
+                </v-hover>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+      <div style="height: auto; background-color: black">
+        <v-container>
+          <span style="color: #67696b">
+            © EDIFIER 2021 Todos los derechos reservados.
+            <span class="ml-md-15">Politica de privacidad.</span>
+            <span
               style="cursor: pointer"
+              class="ml-md-15"
+              @click.prevent="showTerms = true"
             >
-              mdi-facebook
-            </v-icon>
-            <v-icon
-              class="black--text mx-1"
-              @click="
-                HandlerSocialLink(
-                  'https://www.instagram.com/edifier.argentina/'
-                )
-              "
-              style="cursor: pointer"
-            >
-              mdi-instagram
-            </v-icon>
-            <v-icon
-              class="black--text mx-1"
-              @click="
-                HandlerSocialLink(
-                  'https://www.youtube.com/channel/UCL3TSzB0rmeBxL0PMkPA18w'
-                )
-              "
-              style="cursor: pointer"
-            >
-              mdi-youtube
-            </v-icon>
-          </div>
-          <!-- <div class="d-md-flex mt-2">
-            <span class="text-end mr-5" style="font-size: 15px">
-              Cumplimos con la Resolución 270/2020 de la Secretaría de Comercio
-              Interior del Ministerio de Desarrollo Productivo sobre la
-              protección del Consumidor en el Comercio Electrónico
+              Terminos de uso
             </span>
-            <a
-              href="http://qr.afip.gob.ar/?qr=r7epRpZXgrfD0k_uD6_73w,,"
-              target="_F960AFIPInfo"
-            >
-              <v-img
-                style="cursor: pointer; filter: grayscale(100%)"
-                class="mt-2 mt-md-0 d-flex justify-end"
-                contain
-                width="5em"
-                height="7em"
-                src="@/assets/img/data-fiscal.jpeg"
-              ></v-img>
-            </a>
-          </div> -->
-        </v-col>
-      </v-row>
+          </span>
+        </v-container>
+      </div>
     </v-card>
+
     <v-dialog v-if="showTerms" v-model="showTerms" max-width="800">
       <v-card style="padding: 0 17px 17px">
         <v-card-text>
@@ -113,7 +202,29 @@ export default {
   data() {
     return {
       showTerms: false,
+      categories: [],
+      support: [
+        { name: "Póliza de garantía" },
+        { name: "Soporte de producto" },
+        { name: "Servicio al cliente" },
+        { name: "Descarga de la aplicación" },
+        { name: "." },
+        { name: "." },
+        { name: "." },
+      ],
+      company: [
+        { name: "Sobre nosotros" },
+        { name: "Contáctenos" },
+        { name: "." },
+        { name: "." },
+        { name: "." },
+        { name: "." },
+        { name: "." },
+      ],
     };
+  },
+  created() {
+    this.GetCategories();
   },
   methods: {
     goTO() {
@@ -121,8 +232,34 @@ export default {
         "https://serviciosweb.afip.gob.ar/clavefiscal/qr/publicInfoD.aspx"
       );
     },
+
     HandlerSocialLink(social) {
       window.open(social);
+    },
+
+    async GetCategories() {
+      try {
+        const request = {
+          store: 3,
+          page: 1,
+          per_page: 10,
+          paginate: true,
+          everything: false,
+        };
+        const response = await this.$store.dispatch(
+          "products/GET_CATEGORIES",
+          request
+        );
+        this.categories = response.data.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    productsCategores(item) {
+      const category_id = JSON.parse(item.id);
+      this.$router
+        .push({ name: "products", query: { data: category_id } })
+        .catch((err) => err);
     },
   },
 };
