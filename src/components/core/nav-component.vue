@@ -252,7 +252,7 @@
         v-if="megaMenu"
         @mouseleave="megaMenu = false"
         class="mega_menu animate__animated animate__fadeIn animate__faster"
-        style="background-color: white"
+        style="background-color: #f8f8f8"
       >
         <v-container>
           <v-row class="mb-10">
@@ -506,9 +506,9 @@ export default {
     },
 
     goToContact() {
-      const url = process.env.VUE_APP_CHECKOUT
-      location.href = `${url}/contact`
-    }
+      const url = process.env.VUE_APP_CHECKOUT;
+      location.href = `${url}/contact`;
+    },
   },
 };
 </script>
@@ -532,6 +532,8 @@ export default {
   z-index: 1;
   width: 100%;
   margin-left: 0px;
+  -webkit-box-shadow: 0px 0px 4px 0px rgb(0 0 0 / 30%);
+  box-shadow: 0px 0px 4px 0px rgb(0 0 0 / 30%);
 }
 
 .custom-nav {

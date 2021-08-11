@@ -9,7 +9,7 @@
       :class="sticky ? 'header-sticky' : ''"
       v-scroll="onScroll"
     >
-      <div style="background-color: #c9cdd9; height: 5px"></div>
+      <div style="background-color: #c9cdd9; height: 0px"></div>
       <v-tabs
         class="d-flex justify-center"
         color="#797A7E"
@@ -33,6 +33,7 @@
       </v-tabs>
     </div>
     <v-sheet color="#EBF1F7" id="product">
+      <div class="py-15" v-if="sticky"></div>
       <v-container
         :fluid="
           $vuetify.breakpoint.name == 'lg' || $vuetify.breakpoint.name == 'xl'
@@ -90,17 +91,18 @@
                     $ {{ dataProduct.price.pvp | currencyPVP }}
                   </span>
                 </p>
-                <v-chip
-                  color="#5A5855"
-                  class="align-self-center ml-md-3 mb-4"
-                  style="font-size: 16px; color: #424242; font-weight: 400"
-                >
-                  <span class="white--text" v-if="dataProduct.price != null">
-                    18 cuotas sin interés de $
-                    {{ `${dataProduct.price.pvp / 18}` | currency }}
-                  </span>
-                </v-chip>
               </div>
+
+              <v-chip
+                color="#5A5855"
+                class="align-self-center my-3"
+                style="font-size: 16px; color: #424242; font-weight: 400"
+              >
+                <span class="white--text" v-if="dataProduct.price != null">
+                  18 cuotas sin interés de $
+                  {{ `${dataProduct.price.pvp / 18}` | currency }}
+                </span>
+              </v-chip>
 
               <div class="d-flex justify-space-between mt-5">
                 <cp-information
@@ -221,7 +223,15 @@
             ></div>
           </v-col>
           <v-col offset-md="6" md="6" v-if="messageProductAdd">
-            <div
+            <div class="mb-15 d-flex ml-7">
+              <p
+                style="color: #00a0e9; cursor: pointer"
+                @click="$router.push({ name: 'cart' })"
+              >
+                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. Ir al carrito
+              </p>
+            </div>
+            <!-- <div
               class="mb-15 d-flex ml-7"
               style="background-color: #00a0e9; border-radius: 5px; width: 80%"
             >
@@ -237,7 +247,7 @@
               <v-btn icon small @click="messageProductAdd = false">
                 <v-icon size="20" color="white">mdi-close</v-icon>
               </v-btn>
-            </div>
+            </div> -->
           </v-col>
         </v-row>
       </v-container>
@@ -744,7 +754,7 @@ export default {
   width: 100%;
   /* top: 0; */
   z-index: 1;
-  margin-bottom: 500px !important;
+  margin-bottom: 50px !important;
 }
 
 .v-dialog {
