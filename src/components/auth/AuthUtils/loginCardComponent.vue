@@ -61,7 +61,7 @@
         <v-btn
           :loading="loading"
           @click="passes(HandlerLogin)"
-          tile
+          rounded
           elevation="0"
           large
           block
@@ -74,7 +74,7 @@
         <v-btn
           :loading="loading"
           @click="emitEvent"
-          tile
+          rounded
           elevation="0"
           large
           block

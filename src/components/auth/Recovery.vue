@@ -1,30 +1,44 @@
 <template>
   <v-container
-    style="background-color: #e9e9e9"
+    style="background-color: #ebf1f7"
     fill-height
     fluid
     class="mx-0 px-0"
   >
     <v-row justify="center" align="center">
       <ValidationObserver ref="obs" v-slot="{ passes }">
-        <v-card v-if="!loading && showContent">
+        <v-img
+          @click="$router.push('/')"
+          style="cursor: pointer"
+          class="mx-auto mt-10"
+          contain
+          width="250"
+          src="@/assets/img/edifier-logo-color.svg"
+        ></v-img>
+        <v-card v-if="!loading" class="mt-5">
           <v-card-title>
             Ingresa tu nueva contraseña para ingresar a tu cuenta
           </v-card-title>
-          <v-card-text>
+          <v-col cols="12" md="12">
+            <label for="email">Contraseña</label>
             <ValidationProvider
               name="contraseña"
               rules="required|confirmed:confirmation"
               v-slot="{ errors }"
             >
               <v-text-field
-                v-model="password"
                 type="password"
-                solo
-                label="Contraseña"
+                v-model="password"
+                class="mt-2"
+                color="#00A0E9"
+                dense
+                outlined
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
+          </v-col>
+          <v-col cols="12" md="12" class="mt-n5">
+            <label for="confirm">Confirmar Contraseña</label>
             <ValidationProvider
               name="confirmar contraseña"
               rules="required"
@@ -32,38 +46,34 @@
               vid="confirmation"
             >
               <v-text-field
-                v-model="confirm_password"
+                @keyup.enter="passes(HandlerChangePassword)"
                 type="password"
-                solo
-                label="Confirmar contraseña"
+                v-model="confirm_password"
+                class="mt-2"
+                color="#00A0E9"
+                dense
+                outlined
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="passes(HandlerChangePassword)" color="black" dark>
+          </v-col>
+          <v-col cols="12" md="12">
+            <v-btn
+              :loading="loading"
+              @click="passes(HandlerChangePassword)"
+              rounded
+              elevation="0"
+              large
+              block
+              dark
+              color="#00A0E9"
+              class="text-capitalize"
+            >
               Continuar
             </v-btn>
-          </v-card-actions>
+          </v-col>
         </v-card>
       </ValidationObserver>
-
-      <v-alert
-        v-if="!showContent"
-        outlined
-        type="warning"
-        prominent
-        border="left"
-      >
-        {{ errorContent }}
-      </v-alert>
-
-      <v-progress-circular
-        v-if="loading"
-        indeterminate
-        color="primary"
-      ></v-progress-circular>
     </v-row>
   </v-container>
 </template>
@@ -80,10 +90,6 @@ export default {
     };
   },
 
-  created() {
-    this.HandlerVerifyCode();
-  },
-
   methods: {
     async HandlerVerifyCode() {
       try {
@@ -92,6 +98,8 @@ export default {
           "auth/VERIFY_CODE",
           request
         );
+
+        console.log("respuesta****", response);
 
         if (response.data.message == "Codigo habilitado") {
           this.showContent = true;

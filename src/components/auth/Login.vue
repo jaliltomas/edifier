@@ -46,9 +46,13 @@
     <!-- RECUPERAR CONTRASEÑA -->
     <v-dialog v-model="showRecovery" max-width="500">
       <ValidationObserver ref="obsRec" v-slot="{ passes }">
-        <v-card :loading="loading_verification">
+        <v-card
+          class="animate__animated animate__fadeIn animate__faster"
+          :loading="loading_verification"
+          v-if="!showNotificationEmail"
+        >
           <v-card-title>
-            Ingresa tu correo para que recuperar tu cuenta
+            Ingresa tu correo para recuperar tu cuenta
           </v-card-title>
           <v-card-text class="mt-2 mb-0 pb-0">
             <ValidationProvider
@@ -62,6 +66,7 @@
                 label="Correo Electrónico"
                 dense
                 outlined
+                color="#00A0E9"
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
@@ -73,6 +78,7 @@
               @click="showRecovery = false"
               dark
               color="grey darken-3"
+              text
             >
               Cancelar
             </v-btn>
@@ -81,9 +87,34 @@
               :loading="loading_verification"
               @click="passes(HandlerRecoveryAccount)"
               dark
+              rounded
             >
               Recuperar
             </v-btn>
+          </v-card-actions>
+        </v-card>
+        <v-card
+          v-else
+          class="animate__animated animate__fadeIn animate__faster"
+        >
+          <v-card-text>
+            <v-alert
+              class="pt-7"
+              icon="mdi-check-outline"
+              prominent
+              text
+              type="success"
+            >
+              Se ha enviado un correo para que modifique su contraseña
+            </v-alert>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="() => {
+              showRecovery = false;
+              showNotificationEmail = false;
+              email_verifiction = '';
+            }">Cancelar</v-btn>
           </v-card-actions>
         </v-card>
       </ValidationObserver>
@@ -107,6 +138,7 @@ export default {
     return {
       isLogin: true,
       showVerification: false,
+      showNotificationEmail: false,
       showNotification: false,
       showRecovery: false,
       statusRegister: false,
@@ -134,6 +166,7 @@ export default {
         this.loading_verification = true;
         const request = {
           email: this.email_verifiction,
+          url_base: process.env.VUE_APP_CHECKOUT,
           store_id: 3,
         };
         const response = await this.$store.dispatch(
@@ -141,6 +174,7 @@ export default {
           request
         );
         console.log(response);
+        this.showNotificationEmail = true;
       } catch (error) {
         console.log(error);
         this.$snotify.error(error.response.data.error.err_message, "Error!");

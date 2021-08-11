@@ -26,11 +26,18 @@
       </v-text-field>
     </v-overlay>
     <v-main>
-      <nav-component v-if="$route.name != 'login'" />
-      <div v-if="$route.name != 'login'" style="padding-top: 51px"></div>
+      <nav-component
+        v-if="$route.name != 'login' && $route.name != 'recovery'"
+      />
+      <div
+        v-if="$route.name != 'login' && $route.name != 'recovery'"
+        style="padding-top: 51px"
+      ></div>
       <router-view />
     </v-main>
-    <footer-component v-if="$route.name != 'login'" />
+    <footer-component
+      v-if="$route.name != 'login' && $route.name != 'recovery'"
+    />
     <vue-snotify></vue-snotify>
   </v-app>
 </template>

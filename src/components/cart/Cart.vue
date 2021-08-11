@@ -1,97 +1,109 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" md="12">
-        <navegation-component title="CARRITO" sub_title="CARRITO" />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="9">
-        <table-items :products="productCartState.shopping_cart_items" />
-      </v-col>
-      <v-col cols="12" md="3">
-        <v-card class="elevation-0 mt-5" color="#FAFAFA">
-          <v-card-text>
-            <h2 class="font-weight-bold black--text text-center">
-              TOTAL DEL CARRITO
-            </h2>
-            <div class="d-flex justify-space-around mt-15 pt-15">
-              <!-- <span>SUBTOTAL</span>
-              <span>$6999</span> -->
-            </div>
-            <div class="d-flex justify-space-around mt-15 pt-15">
-              <span>TOTAL</span>
-              <span class="font-weight-bold black--text"
-                >${{ totalAmount | currency }}</span
-              >
-            </div>
-            <div class="d-flex justify-center">
-              <v-card
-                :loading="loadingAcceptItem"
-                style="cursor: pointer"
-                tile
-                class="mt-10 mx-5"
-                dark
-                color="black"
-              >
-                <v-card-text @click="showSelectDelivery = !showSelectDelivery">
-                  <p class="text-center mt-4">Continuar al checkout</p>
-                </v-card-text>
-              </v-card>
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="12">
-        <div
-          @click="$router.go(-1)"
-          class="d-flex justify-center justify-md-start"
-          style="cursor: pointer"
-        >
-          <v-icon>mdi-arrow-left</v-icon>
-          <p class="mt-4">Continuar comprando</p>
-        </div>
-      </v-col>
-    </v-row>
-    <dialog-notification v-if="showAlertCheckout" :active="showAlertCheckout">
-      <acept-no-items
-        :data="dataAlertCheckout"
-        @dialog:change="HandlerCloseAcceptProduct"
-      />
-    </dialog-notification>
-    <v-dialog
-      v-model="showSelectDelivery"
-      v-if="showSelectDelivery"
-      max-width="600"
-    >
-      <v-card :loading="loadingCheckout">
-        <v-card-title>Elige el medio de retiro</v-card-title>
-        <v-card-text>
-          <v-radio-group v-model="radioGroup">
-            <v-radio
-              v-for="n in ['Retiro en tienda', 'Entrega a domicilio']"
-              :key="n"
-              :label="`${n}`"
-              :value="n"
-              v-model="retirementValue"
-            ></v-radio>
-          </v-radio-group>
-          <div v-if="radioGroup == 0">
-            <div v-if="canBuyWarehouse == null" class="title">
-              Vaya, este metodo de entrega no esta disponible para estos
-              productos, porfavor intenta con otro.
-            </div>
-            <div v-else>
-              Puedes retirar los productos en el siguiente almacen:
-              <br />
-              <div class="d-flex">
-                <v-icon>mdi-warehouse</v-icon>
-                <span v-if="canBuyWarehouse != null" class="ml-1 font-weight-bold align-self-end">
-                  {{ canBuyWarehouse.name }}
-                </span>
+  <div>
+    <v-sheet>
+      <v-img src="@/assets/img/carrousel/Carrusel01.jpg">
+        <v-container fill-height>
+          <v-row justify="center">
+            <v-col cols="12">
+              <div class="text-center white--text" style="font-size: 2em">
+                Carrito de compra
               </div>
-            </div>
-            <!-- <ul>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-img>
+    </v-sheet>
+    <v-sheet color="#F1F1F1" class="pb-15">
+      <v-container fluid class="px-7 pb-15">
+        <v-row>
+          <v-col cols="12" md="9">
+            <table-items :products="productCartState.shopping_cart_items" />
+            <v-btn
+              rounded
+              dark
+              color="#00A0E9"
+              @click="$router.go(-1)"
+              class="d-flex justify-center justify-md-start mt-5"
+            >
+              <v-icon>mdi-arrow-left</v-icon>
+              <p class="mt-4">Continuar comprando</p>
+            </v-btn>
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-card class="elevation-3 mt-5" color="#FAFAFA">
+              <v-card-text>
+                <div class="font-weight-bold black--text text-center">
+                  TOTAL DEL CARRITO
+                </div>
+                <div class="d-flex justify-space-around mt-7"></div>
+                <div class="d-flex justify-space-around mt-7">
+                  <span>TOTAL</span>
+                  <span class="font-weight-bold black--text">
+                    ${{ totalAmount | currency }}
+                  </span>
+                </div>
+                <div class="d-flex justify-center">
+                  <v-btn
+                    :loading="loadingAcceptItem"
+                    style="cursor: pointer"
+                    class="mt-10 mx-5"
+                    dark
+                    color="#00a0e9"
+                    rounded
+                    @click="showSelectDelivery = !showSelectDelivery"
+                  >
+                    Continuar al checkout
+                  </v-btn>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <dialog-notification
+          v-if="showAlertCheckout"
+          :active="showAlertCheckout"
+        >
+          <acept-no-items
+            :data="dataAlertCheckout"
+            @dialog:change="HandlerCloseAcceptProduct"
+          />
+        </dialog-notification>
+        <v-dialog
+          v-model="showSelectDelivery"
+          v-if="showSelectDelivery"
+          max-width="600"
+        >
+          <v-card :loading="loadingCheckout">
+            <v-card-title>Elige el medio de retiro</v-card-title>
+            <v-card-text>
+              <v-radio-group v-model="radioGroup">
+                <v-radio
+                  v-for="n in ['Retiro en tienda', 'Entrega a domicilio']"
+                  :key="n"
+                  :label="`${n}`"
+                  :value="n"
+                  v-model="retirementValue"
+                ></v-radio>
+              </v-radio-group>
+              <div v-if="radioGroup == 0">
+                <div v-if="canBuyWarehouse == null" class="title">
+                  Vaya, este metodo de entrega no esta disponible para estos
+                  productos, porfavor intenta con otro.
+                </div>
+                <div v-else>
+                  Puedes retirar los productos en el siguiente almacen:
+                  <br />
+                  <div class="d-flex">
+                    <v-icon>mdi-warehouse</v-icon>
+                    <span
+                      v-if="canBuyWarehouse != null"
+                      class="ml-1 font-weight-bold align-self-end"
+                    >
+                      {{ canBuyWarehouse.name }}
+                    </span>
+                  </div>
+                </div>
+                <!-- <ul>
               <li
                 v-for="(item, index) in depositElements"
                 :key="index"
@@ -102,114 +114,125 @@
                 {{ item }}
               </li>
             </ul> -->
-          </div>
-          <div v-if="radioGroup == 1 && userAddress.length == 0">
-            <span class="red--text">
-              Parece que no tienes ninguna direccion registrada, porfavor
-              registra una para poder continuar con el pago
-            </span>
-            <br />
-            <v-btn
-              class="mt-2"
-              color="black"
-              dark
-              @click="$router.push({ name: 'profile' })"
-              >Perfil</v-btn
-            >
-          </div>
-          <div v-if="radioGroup == 1 && userAddress.length > 0">
-            <span class="font-weight-bold" style="cursor: pointer"
-              >Seleccione la dirección de entrega</span
-            >
-            <v-select
-              :items="userAddress"
-              :item-text="
-                (item) =>
-                  `${item.street} ${item.street_number} ${item.floor_number} ${item.department_number} ${item.location}`
-              "
-              item-value="id"
-              outlined
-              label="Dirección"
-              v-model="idAddress"
-            ></v-select>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="HandlerClose" text black>Cancelar</v-btn>
-          <v-btn
-            :loading="loadingCheckout"
-            :disabled="
-              radioGroup == null
-                ? true
-                : canBuyWarehouse == null && radioGroup == 0
-                ? true
-                : radioGroup == 0
-                ? false
-                : idAddress === null
-                ? true
-                : false
-            "
-            @click="HandlerConfirmItems(retirementValue)"
-            color="primary"
-          >
-            Continuar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="showAlertPerfil" v-if="showAlertPerfil" max-width="600">
-      <v-card>
-        <v-card-text>
-          <div class="font-weight-bold py-5 title">
-            Tu perfil se encuentra incompleto porfavor completa los siguiente
-            campos:
-          </div>
-          <ul>
-            <li
-              v-for="(item, index) in alertPerfil"
-              :key="index"
-              class="text-uppercase font-weight-bold"
-            >
-              {{ item.message }}
-            </li>
-          </ul>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            class="text-capitalize"
-            @click="showAlertPerfil = !showAlertPerfil"
-            >Cancelar</v-btn
-          >
-          <v-btn
-            @click="$router.push({ name: 'profile' })"
-            black
-            dark
-            class="text-capitalize"
-          >
-            Ir
-            <span class="text-lowercase mx-1">al</span>
-            Perfil
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-container>
+              </div>
+              <div v-if="radioGroup == 1 && userAddress.length == 0">
+                <span class="red--text">
+                  Parece que no tienes ninguna direccion registrada, porfavor
+                  registra una para poder continuar con el pago
+                </span>
+                <br />
+                <v-btn
+                  class="mt-2"
+                  color="#00a0e9"
+                  dark
+                  rounded
+                  @click="$router.push({ name: 'profile' })"
+                >
+                  Perfil
+                </v-btn>
+              </div>
+              <div v-if="radioGroup == 1 && userAddress.length > 0">
+                <span class="font-weight-bold" style="cursor: pointer"
+                  >Seleccione la dirección de entrega</span
+                >
+                <v-select
+                  :items="userAddress"
+                  :item-text="
+                    (item) =>
+                      `${item.street} ${item.street_number} ${item.floor_number} ${item.department_number} ${item.location}`
+                  "
+                  item-value="id"
+                  outlined
+                  label="Dirección"
+                  v-model="idAddress"
+                ></v-select>
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="HandlerClose" text black>Cancelar</v-btn>
+              <v-btn
+                rounded
+                :loading="loadingCheckout"
+                :disabled="
+                  radioGroup == null
+                    ? true
+                    : canBuyWarehouse == null && radioGroup == 0
+                    ? true
+                    : radioGroup == 0
+                    ? false
+                    : idAddress === null
+                    ? true
+                    : false
+                "
+                @click="HandlerConfirmItems(retirementValue)"
+                color="#00a0e9"
+                class="white--text"
+              >
+                Continuar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+        <v-dialog
+          v-model="showAlertPerfil"
+          v-if="showAlertPerfil"
+          max-width="600"
+        >
+          <v-card>
+            <v-card-text>
+              <div class="font-weight-bold py-5 title">
+                Tu perfil se encuentra incompleto porfavor completa los
+                siguiente campos:
+              </div>
+              <ul>
+                <li
+                  v-for="(item, index) in alertPerfil"
+                  :key="index"
+                  class="text-uppercase font-weight-bold"
+                >
+                  {{ item.message }}
+                </li>
+              </ul>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                class="text-capitalize"
+                @click="showAlertPerfil = !showAlertPerfil"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                @click="$router.push({ name: 'profile' })"
+                black
+                dark
+                class="text-capitalize"
+              >
+                Ir
+                <span class="text-lowercase mx-1">al</span>
+                Perfil
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-container>
+    </v-sheet>
+    <suscribe-component />
+  </div>
 </template>
 
 <script>
-import NavegationComponent from "@/components/Utils/navegation_component";
 import DialogNotification from "./DialogNotification";
 import AceptNoItems from "./AceptNoItems";
 import TableItems from "./utils/TableItems.vue";
+import Suscribe from '../Utils/suscribe_component.vue'
 export default {
   components: {
-    "navegation-component": NavegationComponent,
     DialogNotification,
     AceptNoItems,
     TableItems,
+    'suscribe-component': Suscribe
   },
   data() {
     return {
@@ -488,3 +511,4 @@ export default {
 
 <style>
 </style>
+

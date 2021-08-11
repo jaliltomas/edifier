@@ -48,17 +48,18 @@
                 {{ item.publication.keywords }}
               </span>
             </td>
-            <td v-if="item.publication != null">${{ item.publication.price.pvp | currency }}</td>
+            <td v-if="item.publication != null">
+              ${{ item.publication.price.pvp | currency }}
+            </td>
             <td v-if="item.publication != null">
               <p class="mt-3">
-                Cantidad
                 <v-btn
                   @click="HandlerQuantity(item, 'minus')"
                   color="#d6d1d1"
                   fab
                   outlined
                   x-small
-                  class="mx-2"
+                  class="mr-2"
                 >
                   <v-icon color="black">mdi-minus</v-icon>
                 </v-btn>
@@ -77,7 +78,7 @@
             </td>
             <td>
               <v-icon @click="ShowRemove(item)" color="black">
-                mdi-delete
+                mdi-trash-can
               </v-icon>
             </td>
           </tr>
