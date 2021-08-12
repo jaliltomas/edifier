@@ -42,13 +42,13 @@
                   class="mb-0"
                   :style="`font-size: 3vmax; color: ${item.color}`"
                 >
-                <!-- {{item}} -->
-                    <div v-if="item.price == ' ' || item.price == null">
-                      <br>
-                    </div>
-                    <div v-else>
-                      {{item.price}}
-                    </div>
+                  <!-- {{item}} -->
+                  <div v-if="item.price == ' ' || item.price == null">
+                    <br />
+                  </div>
+                  <div v-else>
+                    {{ item.price }}
+                  </div>
                   <!-- <span v-if="item.price !== null"> -->
 
                   <!-- {{ item.price }}
@@ -197,15 +197,16 @@
               <v-col
                 cols="12"
                 :sm="breakpoint < 795 ? '12' : '10'"
-                :md="breakpoint < 980 ? '10' : '12'"
-                lg="10"
-                xl="10"
+                :md="breakpoint < 1200 ? '9' : '12'"
+                :lg="breakpoint <= 1400 ? '11' : '10'"
+                xl="8"
               >
                 <carousel
+                  :navigationEnabled="true"
                   :perPage="
                     breakpoint < 650
                       ? 1
-                      : breakpoint > 650 && breakpoint < 980
+                      : breakpoint > 650 && breakpoint <= 1000
                       ? 2
                       : 3
                   "
@@ -217,8 +218,9 @@
                     :key="index"
                     class="d-flex justify-center"
                   >
+                    <!-- :width="breakpoint < 1200 ? '31vw' : '25.3vw'" -->
                     <v-card
-                      :width="breakpoint < 1200 ? '31vw' : '25.3vw'"
+                      :width="breakpoint < 1210 ? '20em' : '25em'"
                       height="auto"
                     >
                       <v-img

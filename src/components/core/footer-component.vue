@@ -3,7 +3,7 @@
     <v-card flat tile width="100%" color="#EBF1F7" class="text-start">
       <v-container>
         <v-row class="mx-0 my-0">
-          <v-col cols="12" md="3">
+          <v-col cols="6" md="3">
             <v-img
               width="150"
               contain
@@ -50,23 +50,8 @@
                 </v-icon>
               </div>
             </div>
-            <!-- <div class="mt-5">
-            <a
-              @click.prevent="() => {}"
-              style="color: black; text-decoration: none"
-              href=""
-            >
-              Política de privacidad
-            </a>
-          </div>
-          <div class="mt-0" @click.prevent="showTerms = true">
-            <a style="color: black; text-decoration: none" href="">
-              Términos de uso
-            </a>
-          </div>
-          <div>© EDIFIER 2021 Todos los derechos reservados</div> -->
           </v-col>
-          <v-col cols="12" md="3" class="d-flex justify-center">
+          <v-col cols="6" md="3" class="d-flex justify-center">
             <div style="border-left: 1px solid #b7b6b6">
               <div
                 style="color: #3f4144; font-size: 1.15em"
@@ -95,7 +80,7 @@
               </div>
             </div>
           </v-col>
-          <v-col cols="12" md="3" class="d-flex justify-center">
+          <v-col cols="6" md="3" class="d-flex justify-center">
             <div style="border-left: 1px solid #b7b6b6">
               <div
                 style="color: #3f4144; font-size: 1.15em"
@@ -123,7 +108,7 @@
               </div>
             </div>
           </v-col>
-          <v-col cols="12" md="3" class="d-flex justify-center">
+          <v-col cols="6" md="3" class="d-flex justify-md-center">
             <div style="border-left: 1px solid #b7b6b6">
               <div
                 style="color: #3f4144; font-size: 1.15em"
