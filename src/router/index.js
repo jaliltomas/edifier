@@ -13,6 +13,7 @@ import Checkout from '../components/views/Checkout.vue'
 import CheckoutNotification from '../components/views/CheckoutNotification.vue'
 import OrderDetails from '../components/auth/utils/UserDetailsOrder.vue'
 import ContactAccount from '../components/views/ContactAccount'
+import AppDowload from '../components/views/AppDowload'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -40,6 +41,11 @@ const routes = [
         path: '/contact',
         component: ContactAccount,
         name: 'contact'
+    },
+    {
+        path: '/app_dowload',
+        component: AppDowload,
+        name: 'app_dowload'
     },
 ]
 

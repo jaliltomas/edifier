@@ -195,7 +195,7 @@
           <v-container :fluid="breakpoint > 900">
             <v-row justify="center">
               <v-col
-                cols="12"
+                cols="11"
                 :sm="breakpoint < 795 ? '12' : '10'"
                 :md="breakpoint < 1200 ? '9' : '12'"
                 :lg="breakpoint <= 1400 ? '11' : '10'"
@@ -210,7 +210,10 @@
                       ? 2
                       : 3
                   "
-                  paginationColor="#3FB7EE"
+                  :paginationEnabled="
+                    $vuetify.breakpoint.name == 'xs' ? false : true
+                  "
+                  paginationColor="#14A7EB"
                   class="mt-10"
                 >
                   <slide
@@ -220,7 +223,7 @@
                   >
                     <!-- :width="breakpoint < 1200 ? '31vw' : '25.3vw'" -->
                     <v-card
-                      :width="breakpoint < 1210 ? '20em' : '25em'"
+                      :width="breakpoint < 1210 ? '18em' : '25em'"
                       height="auto"
                     >
                       <v-img
@@ -561,5 +564,19 @@ export default {
   display: block;
   width: 100%;
   min-width: 1px;
+}
+
+.VueCarousel-navigation-next[data-v-453ad8cd] {
+  right: 0;
+  transform: translateY(-50%) translateX(100%);
+  font-family: "system";
+  color: #00a0e9;
+}
+
+.VueCarousel-navigation-prev[data-v-453ad8cd] {
+  left: 0;
+  transform: translateY(-50%) translateX(-100%);
+  font-family: "system";
+  color: #00a0e9;
 }
 </style>

@@ -93,6 +93,7 @@
                 :key="index"
                 :style="item.name == '.' ? 'color: #EBF1F7' : 'color: #67696b'"
                 class="ml-2 mt-1"
+                @click="goSection(item)"
               >
                 <v-hover v-slot="{ hover }">
                   <span
@@ -121,6 +122,7 @@
                 :key="index"
                 :style="item.name == '.' ? 'color: #EBF1F7' : 'color: #67696b'"
                 class="ml-2 mt-1"
+                @click="goToContact(item.name)"
               >
                 <v-hover v-slot="{ hover }">
                   <span
@@ -245,6 +247,23 @@ export default {
       this.$router
         .push({ name: "products", query: { data: category_id } })
         .catch((err) => err);
+    },
+    goSection(item) {
+      switch (item.name) {
+        case "Descarga de la aplicación":
+          this.$router.push({ name: "app_dowload" });
+          break;
+        default:
+          break;
+      }
+    },
+    goToContact(name) {
+      if (name == "Contáctenos") {
+        const url = process.env.VUE_APP_CHECKOUT;
+        location.href = `${url}/contact`;
+      } else {
+        return;
+      }
     },
   },
 };
