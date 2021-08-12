@@ -1,7 +1,7 @@
 <template>
   <v-responsive>
     <ValidationObserver ref="obs" v-slot="{ passes }">
-      <v-row justify="center" style="background-color: #ffffff" class="my-5">
+      <v-row justify="center" style="background-color: #ffffff" class="mt-11">
         <v-col cols="12" md="5">
           <div
             class="text-center"
@@ -9,14 +9,14 @@
           >
             SÉ PARTE DE LA COMUNIDAD EDIFIER
           </div>
-          <p class="text-center">
+          <p class="text-center mt-5 mb-0">
             Suscribite a nuestro Newsletter y mantenete informado sobre nuevos
             lanzamientos, ofertas, promociones y más.
           </p>
         </v-col>
       </v-row>
-      <v-row justify="center" class="mt-0">
-        <v-col cols="12" sm="8" md="5" lg="4" class="pt-0">
+      <v-row justify="center" class="mb-8">
+        <v-col cols="12" sm="8" md="5" lg="4" class="mb-0 pb-0">
           <div class="px-5 d-flex">
             <v-text-field
               dense

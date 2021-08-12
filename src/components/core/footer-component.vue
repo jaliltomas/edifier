@@ -1,6 +1,6 @@
 <template>
   <v-footer :padless="true">
-    <v-card flat tile width="100%" color="#EBF1F7" class="text-start">
+    <v-card flat tile width="100%" color="#EBF1F7" class="text-start pt-10">
       <v-container>
         <v-row class="mx-0 my-0">
           <v-col cols="6" md="3">
@@ -140,7 +140,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <div style="height: auto; background-color: black">
+      <div style="height: auto; background-color: black" class="mt-10">
         <v-container>
           <span style="color: #67696b">
             © EDIFIER 2021 Todos los derechos reservados.
