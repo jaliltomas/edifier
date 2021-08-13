@@ -25,7 +25,10 @@
         </v-tab>
         <v-tab
           @click="HandlerDowloadManual"
-          v-if="dataProduct.product.product_manual !== null"
+          v-if="
+            dataProduct.product != null &&
+            dataProduct.product.product_manual !== null
+          "
         >
           <span v-if="!loadingManual">MANUAL DE USUARIO</span>
           <span v-else>...</span>
@@ -69,7 +72,6 @@
               class="py-15"
               v-if="!$vuetify.breakpoint.smAndDown && !messageProductAdd"
             ></div>
-            <!-- <div class="py-15" v-if="!$vuetify.breakpoint.smAndDown"></div> -->
           </v-col>
           <v-col cols="12" sm="6" md="5" class="ml-md-15 d-flex flex-column">
             <div>
@@ -168,11 +170,7 @@
               <div
                 class="d-md-flex justify-space-between mt-5"
                 style="width: 80%"
-                v-if="
-                  dataProduct.product != null &&
-                  dataProduct.product.product_warehouse != null &&
-                  dataProduct.product.product_warehouse[0].current_stock > 0
-                "
+                v-if="validateStock()"
               >
                 <!-- <v-btn
                   dark
@@ -192,7 +190,7 @@
                   @click="HandlerAddCart()"
                   class="mt-1 mt-md-0"
                 >
-                  Comprar
+                  Comprar ***
                 </v-btn>
 
                 <div class="d-flex mt-2 mt-md-0">
@@ -710,6 +708,26 @@ export default {
         this.sticky = true;
       } else {
         this.sticky = false;
+      }
+    },
+
+    validateStock() {
+      if (
+        this.dataProduct.product != null &&
+        this.dataProduct.product.product_warehouse != null
+      ) {
+        const stock = this.dataProduct.product.product_warehouse.filter(
+          (st) => {
+            if (st.current_stock > 0) {
+              return st;
+            }
+          }
+        );
+
+        if (stock.length > 0) return true;
+        else return false;
+      } else {
+        return false;
       }
     },
 

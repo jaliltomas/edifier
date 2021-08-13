@@ -1,0 +1,54 @@
+/* Seccion Home */
+/* Carrusel */
+.title-carrusel {
+    font-size: 3vmax;
+}
+
+.price-carrusel {
+    font-size: 3vmax;
+}
+
+.space-price-null {
+    margin-top   : 15px;
+    margin-bottom: 15px;
+}
+
+.button-carrusel {
+    /* El color de fondo lo agarra por una propiedad del framework */
+    background-color: #00A0E9;
+}
+
+.share_carrusel {
+    margin-top : 4px;
+    margin-left: 4px;
+}
+
+.features-carrusel {
+    margin-bottom: 0;
+}
+
+/* Categorias Home */
+.title-categories-home {
+    /* Etiqueta H2 */
+    margin-top : 5px;
+    margin-left: 15px;
+    color      : white;
+    font-size  : 1.5em;
+}
+
+/* Destacados Home */
+.featured-title-home {
+    font-size  : 2em;
+    font-weight: 300;
+}
+
+.featured-subtitle-home {
+    font-size  : 1.1em;
+    font-weight: 400;
+}
+
+.featured-title-product-home {
+    font-weight: 600;
+    font-size  : 1.3em;
+    cursor     : pointer;
+}

@@ -89,6 +89,7 @@ export default {
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&display=swap");
 @import "./assets/styles/index.scss";
+@import "./assets/styles/all.css";
 // @import "~vue-wysiwyg/dist/vueWysiwyg.css";
 
 #app {

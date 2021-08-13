@@ -31,29 +31,23 @@
               </div>
               <v-col cols="12" md="12">
                 <div
-                  class="font-weight-bold"
-                  :style="`font-size: 3vmax; color: ${item.color}`"
+                  class="font-weight-bold title-carrusel"
+                  :style="`color: ${item.color}`"
                 >
                   {{ item.text_title }}
                 </div>
               </v-col>
               <v-col cols="12" md="12">
                 <div
-                  class="mb-0"
-                  :style="`font-size: 3vmax; color: ${item.color}`"
+                  class="mb-0 price-carrusel"
+                  :style="`color: ${item.color}`"
                 >
-                  <!-- {{item}} -->
                   <div v-if="item.price == ' ' || item.price == null">
-                    <br />
+                    <div class="space-price-null"></div>
                   </div>
-                  <div v-else>
+                  <div>
                     {{ item.price }}
                   </div>
-                  <!-- <span v-if="item.price !== null"> -->
-
-                  <!-- {{ item.price }}
-                  </span>
-                  <span v-else>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores distinctio autem nesciunt blanditiis esse exercitationem rerum, molestiae non deleniti iste quos nemo sed perferendis omnis natus eos accusantium obcaecati quibusdam.</span> -->
                 </div>
               </v-col>
               <v-col cols="12" md="12">
@@ -62,7 +56,7 @@
                   color="#00A0E9"
                   rounded
                   @click="HandlerLocationCarrusel(item)"
-                  class="elevation-0"
+                  class="elevation-0 button-carrusel"
                 >
                   conocelo en detalle
                 </v-btn>
@@ -72,7 +66,7 @@
                   <v-btn color="#495358" fab x-small>
                     <v-icon> mdi-share-variant </v-icon>
                   </v-btn>
-                  <span :style="`color: ${item.color}`" class="ml-1 mt-1">
+                  <span :style="`color: ${item.color}`" class="share_carrusel">
                     compartir
                   </span>
                 </div>
@@ -90,7 +84,15 @@
                 class="mr-1"
                 :md="item.features.length == 4 ? '' : 3"
               >
-                <p class="black--text mr-1 text-uppercase text-center mb-0">
+                <p
+                  class="
+                    black--text
+                    mr-1
+                    text-uppercase text-center
+                    mb-0
+                    features-carrusel
+                  "
+                >
                   {{ val }}
                 </p>
               </v-col>
@@ -99,15 +101,6 @@
         </v-img>
       </v-carousel-item>
     </v-carousel>
-
-    <!-- <v-sheet color="green">
-      <h1>Prueba</h1>
-      <div data-reamaze-embed="contact" data-reamaze-embed-form-id="27495"></div>
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure hic, sed
-      corporis quam omnis perspiciatis officia, aut obcaecati nihil
-      reprehenderit dolor doloribus nemo, ut numquam consectetur a quis modi
-      nam.
-    </v-sheet> -->
 
     <v-container fluid>
       <section id="categorias" class="mt-15">
@@ -135,22 +128,16 @@
                       ? 'to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)'
                       : ''
                   "
+                  :class="hover ? 'animate__animated animate__pulse' : ''"
                   cover
                   style="width: 100%; height: 350px"
                   :src="item.image_url"
                 >
                   <v-row style="height: 22.5em">
                     <v-col cols="12">
-                      <div
-                        class="px-5 py-5 white--text"
-                        :style="
-                          $vuetify.breakpoint.name == 'sm'
-                            ? 'font-size: 1.5em'
-                            : 'font-size: 2em'
-                        "
-                      >
+                      <h2 class="title-categories-home">
                         {{ item.text_title }}
-                      </div>
+                      </h2>
                     </v-col>
                     <v-col cols="12" class="align-self-end">
                       <v-btn
@@ -177,17 +164,13 @@
       <v-responsive>
         <v-sheet color="#EBF1F7" class="mt-15">
           <div class="d-flex justify-center pt-15">
-            <span
-              class="text-uppercase text-center mb-0"
-              style="font-size: 2em; font-weight: 300"
-            >
+            <span class="text-uppercase text-center mb-0 featured-title-home">
               Productos Destacados
             </span>
           </div>
           <div class="d-flex justify-center mt-0">
             <span
-              class="text-uppercase text-center mt-n1"
-              style="font-size: 1.1em; font-weight: 400"
+              class="text-uppercase text-center mt-n1 featured-subtitle-home"
             >
               Nuestros recomendados para vos
             </span>
@@ -221,31 +204,34 @@
                     :key="index"
                     class="d-flex justify-center"
                   >
-                    <!-- :width="breakpoint < 1200 ? '31vw' : '25.3vw'" -->
                     <v-card
                       :width="breakpoint < 1210 ? '18em' : '25em'"
                       height="auto"
                     >
-                      <v-img
-                        @click="HandlerProductDetails(item)"
-                        style="cursor: pointer"
-                        contain
-                        class="mx-7 my-7"
-                        width="auto"
-                        height="300px"
-                        :src="item.images[0]"
-                      >
-                      </v-img>
+                      <v-hover v-slot="{ hover }">
+                        <v-img
+                          @click="HandlerProductDetails(item)"
+                          style="cursor: pointer"
+                          contain
+                          :class="
+                            hover ? 'animate__animated animate__pulse' : ''
+                          "
+                          class="mx-7 my-7"
+                          width="auto"
+                          height="300px"
+                          :src="item.images[0]"
+                        >
+                        </v-img>
+                      </v-hover>
                       <v-card-text class="mx-3">
                         <v-row style="height: auto">
                           <v-col cols="12" class="mt-n5">
                             <span
                               @click="HandlerProductDetails(item)"
-                              class="black--text text-uppercase"
-                              style="
-                                font-weight: 600;
-                                font-size: 1.3em;
-                                cursor: pointer;
+                              class="
+                                black--text
+                                text-uppercase
+                                featured-title-product-home
                               "
                             >
                               {{ item.keywords }}
