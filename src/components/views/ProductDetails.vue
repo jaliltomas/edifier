@@ -190,7 +190,7 @@
                   @click="HandlerAddCart()"
                   class="mt-1 mt-md-0"
                 >
-                  Comprar ***
+                  Comprar
                 </v-btn>
 
                 <div class="d-flex mt-2 mt-md-0">
