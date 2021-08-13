@@ -243,8 +243,7 @@
                           <v-col cols="12" class="align-self-end">
                             <div
                               v-if="item.price != null"
-                              class="my-auto black--text"
-                              style="font-weight: 600; font-size: 1.3em"
+                              class="my-auto black--text featured-product-price"
                             >
                               $ {{ item.price.pvp | currency }}
                             </div>
@@ -289,7 +288,6 @@ import CategoryComponent from "@/components/Utils/categories_component";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import { Carousel, Slide } from "vue-carousel";
 import informationCP from "../Utils/informationCP.vue";
-// import informationCP from "@/components/Utils/informationCP";
 export default {
   components: {
     "category-component": CategoryComponent,
@@ -297,13 +295,11 @@ export default {
     Carousel,
     Slide,
     "information-cp": informationCP,
-    // "cp-information": informationCP,
   },
 
   data() {
     return {
       featuredProductsFirst: [],
-      // featuredProductsSecond: [],
 
       model: null,
 
@@ -328,7 +324,6 @@ export default {
   },
 
   created() {
-    // this.HandlerGetProduct();
     this.HandlerGetProductFeatured();
     this.HandlerGetListPromotions();
   },
@@ -357,7 +352,6 @@ export default {
     },
 
     breakpoint() {
-      console.log(this.$vuetify.breakpoint.name);
       return this.$vuetify.breakpoint.width;
     },
   },
@@ -407,21 +401,7 @@ export default {
           request
         );
         const arrayElemnt = response.data.data;
-        console.log("asdasdsd", arrayElemnt);
-        // const elements = arrayElemnt.reduce(
-        //   (acc, out) => {
-        //     if (acc.arr1.length < 3) {
-        //       acc.arr1.push({ ...out });
-        //     } else {
-        //       acc.arr2.push({ ...out });
-        //     }
-        //     return acc;
-        //   },
-        //   { arr1: [], arr2: [] }
-        // );
         this.featuredProductsFirst = arrayElemnt;
-        console.log("Destacados", this.featuredProductsFirst);
-        // this.featuredProductsSecond = elements.arr2;
       } catch (error) {
         console.log(error);
       }
@@ -480,10 +460,6 @@ export default {
           request
         );
 
-        // let carrusel = [];
-        // let destacados = [];
-        // let categoria = [];
-
         for (const iterator of response.data.data.data) {
           if (iterator.active) {
             switch (iterator.type) {
@@ -499,8 +475,6 @@ export default {
             }
           }
         }
-
-        console.log("Carrusel", this.carrusel);
       } catch (error) {
         console.log(error);
       }
@@ -514,7 +488,6 @@ export default {
     },
 
     HandlerLocation(url) {
-      // console.log("Categoria", url);
       const category_id = JSON.parse(url.category_id);
       this.$router.push({ name: "products", query: { data: category_id } });
     },

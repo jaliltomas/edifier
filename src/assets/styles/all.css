@@ -52,3 +52,27 @@
     font-size  : 1.3em;
     cursor     : pointer;
 }
+
+.featured-product-price {
+    font-weight: 600;
+    font-size  : 1.3em;
+}
+
+/* COMPONENTE SUSCRIBIRSE */
+.suscribe-title {
+    color      : #262626;
+    font-size  : 1.6em;
+    font-weight: 400;
+}
+
+.suscribe-description {
+    margin-bottom: 0;
+}
+
+.suscribe-text-field {
+    width                    : 230px;
+    border-color             : #c9cdd9;
+    border-radius            : 0px;
+    border-top-left-radius   : 20px;
+    border-bottom-left-radius: 20px;
+}
