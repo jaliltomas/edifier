@@ -38,9 +38,13 @@
                 <div class="d-flex justify-space-around mt-7"></div>
                 <div class="d-flex justify-space-around mt-7">
                   <span>TOTAL</span>
-                  <span class="font-weight-bold black--text">
+                  <span
+                    v-if="totalAmount > 0"
+                    class="font-weight-bold black--text"
+                  >
                     ${{ totalAmount | currency }}
                   </span>
+                  <span v-else class="font-weight-bold black--text"> $0 </span>
                 </div>
                 <div class="d-flex justify-center">
                   <v-btn
@@ -226,13 +230,13 @@
 import DialogNotification from "./DialogNotification";
 import AceptNoItems from "./AceptNoItems";
 import TableItems from "./utils/TableItems.vue";
-import Suscribe from '../Utils/suscribe_component.vue'
+import Suscribe from "../Utils/suscribe_component.vue";
 export default {
   components: {
     DialogNotification,
     AceptNoItems,
     TableItems,
-    'suscribe-component': Suscribe
+    "suscribe-component": Suscribe,
   },
   data() {
     return {

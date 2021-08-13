@@ -229,7 +229,7 @@
                 @click="$router.push({ name: 'cart' })"
               >
                 Agregaste {{ dataProduct.keywords }} x {{ quantity }}. Ir al
-                carrito
+                carrito.
               </p>
             </div>
             <!-- <div

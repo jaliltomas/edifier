@@ -77,7 +77,9 @@
             >
               Reservá el tuyo
             </v-btn>
-            <v-btn text rounded v-else class="blue--text"> Reservado </v-btn>
+            <v-btn text rounded v-else class="blue--text">
+              Ya recibimos tu pedido :)
+            </v-btn>
           </span>
         </p>
       </div>
@@ -238,11 +240,11 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 || cp < 1441) {
-            return "Envío sin cargo en 24hrs";
+            return "Envío sin cargo en 24Hs";
           } else if (this.responseChazki) {
-            return "Envío sin cargo en 72hrs";
+            return "Envío sin cargo en 72Hs";
           } else {
-            return "Envío sin cargo en 4-6hrs";
+            return "Envío sin cargo en 4-6Hs";
           }
         } else {
           return "Reservá el tuyo";
@@ -269,7 +271,7 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Envío sin cargo en 72Hrs";
+          return "Envío sin cargo en 72Hs";
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -286,7 +288,7 @@ export default {
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Envío sin cargo en 72Hrs";
+          return "Envío sin cargo en 72Hs";
         } else if (getWarehouseFwl01.current_stock == 0) {
           return "Reservá el tuyo";
         }

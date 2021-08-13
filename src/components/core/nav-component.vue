@@ -57,7 +57,6 @@
             <span
               @click="goTo()"
               @mouseover="megaMenu = false"
-              class="text-capitalize"
               :style="
                 hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
               "
@@ -99,9 +98,9 @@
               <v-btn
                 @click="$router.push({ name: 'profile' })"
                 v-if="isAuth"
-                class="mr-1 ml-2 elevation-1"
+                class="mr-1 ml-2 elevation-0"
                 color="#E9E9E9"
-                fab
+                icon
                 small
                 v-bind="attrs"
                 v-on="on"

@@ -143,14 +143,14 @@
       <div style="height: auto; background-color: black" class="mt-10">
         <v-container>
           <span style="color: #67696b">
-            © EDIFIER 2021 Todos los derechos reservados.
-            <span class="ml-md-15">Politica de privacidad.</span>
+            © EDIFIER 2021 Todos los derechos reservados
+            <span class="ml-md-15">Política de privacidad</span>
             <span
               style="cursor: pointer"
               class="ml-md-15"
               @click.prevent="showTerms = true"
             >
-              Terminos de uso
+              Términos de uso
             </span>
           </span>
         </v-container>
@@ -192,7 +192,7 @@ export default {
       categories: [],
       support: [
         { name: "Póliza de garantía" },
-        { name: "Soporte de producto" },
+        { name: "Soporte técnico" },
         { name: "Servicio al cliente" },
         { name: "Descarga de la aplicación" },
         { name: "." },
@@ -200,8 +200,9 @@ export default {
         { name: "." },
       ],
       company: [
-        { name: "Sobre nosotros" },
-        { name: "Contáctenos" },
+        { name: "Nosotros" },
+        { name: "Foro" },
+        { name: "Contacto" },
         { name: "." },
         { name: "." },
         { name: "." },
