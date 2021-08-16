@@ -128,7 +128,7 @@
                       ? 'to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)'
                       : ''
                   "
-                  :class="hover ? 'animate__animated animate__pulse' : ''"
+                  :class="hover ? 'hvr-grow' : ''"
                   cover
                   style="width: 100%; height: 350px"
                   :src="item.image_url"
