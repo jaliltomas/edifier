@@ -453,6 +453,7 @@ export default {
                 : this.idAddress.id
               : "",
           warehouse_id: "",
+          store_id: 3,
         };
 
         // console.log("Request checkout", request);
