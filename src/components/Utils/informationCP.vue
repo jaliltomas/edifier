@@ -202,12 +202,22 @@ export default {
       email: "",
       name: "",
       phone: "",
+      responseChazki: null,
 
       //Notification
       activeNotificacion: false,
       textNotification: "",
       colorNotification: "black",
     };
+  },
+
+  async created() {
+    if (this.isAuth) {
+      const responseChazki = await this.$store.dispatch(
+        "products/CHAZKI_VALIDATE"
+      );
+      this.responseChazki = responseChazki.data.data;
+    }
   },
 
   computed: {
@@ -239,12 +249,12 @@ export default {
 
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
-          if (cp >= 1000 || cp < 1441) {
+          if (cp >= 1000 && cp < 1441) {
             return "Envío sin cargo en 24Hs";
-          } else if (this.responseChazki) {
+          } else if (this.responseChazki == true) {
             return "Envío sin cargo en 72Hs";
           } else {
-            return "Envío sin cargo en 4-6Hs";
+            return "Envío sin cargo en 4-6 Dias";
           }
         } else {
           return "Reservá el tuyo";
