@@ -204,7 +204,7 @@
                     {{ item.keywords }}
                   </p>
                   <p class="text-center" v-if="item.price != null">
-                    <span>${{ item.price.pvp | currencyPVP }}</span>
+                    <span class="product-price">${{ item.price.pvp | currencyPVP }}</span>
                   </p>
                   <!-- {{ item }} -->
                   <cp-information

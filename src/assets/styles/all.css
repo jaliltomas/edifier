@@ -78,6 +78,12 @@
 }
 
 
+/* SECCION PRODUCTOS */
+.product-price {
+    font-size: 1.3em;
+}
+
+
 /* HOVER EFECTS */
 /* Grow */
 .hvr-grow {

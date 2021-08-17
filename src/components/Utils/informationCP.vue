@@ -21,7 +21,7 @@
               HandlerReturnWarehouse(
                 authUser.zipcode,
                 dataProduct.product.product_warehouse
-              ) != 'Reservá el tuyo'
+              ) != 'AVISAME'
             "
           >
             <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
@@ -33,7 +33,7 @@
             }}
           </span>
           <span v-else>
-            <v-btn outlined rounded color="#15A7EB">1 Reservá el tuyo</v-btn>
+            <v-btn outlined rounded color="#15A7EB">1 AVISAME</v-btn>
           </span>
         </p>
       </div>
@@ -57,7 +57,7 @@
               HandlerReturnWarehouse(
                 authUser.zipcode,
                 dataProduct.product.product_warehouse
-              ) != 'Reservá el tuyo'
+              ) != 'AVISAME'
             "
           >
             <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
@@ -67,6 +67,15 @@
                 dataProduct.product.product_warehouse
               )
             }}
+            <br />
+            <v-btn
+              @click="HandlerShowProduct(dataProduct)"
+              outlined
+              rounded
+              color="#15A7EB"
+            >
+              Comprar
+            </v-btn>
           </span>
           <span v-else>
             <v-btn
@@ -75,10 +84,10 @@
               color="#15A7EB"
               v-if="dataProduct.user_product_notification == null"
             >
-              Reservá el tuyo
+              AVISAME
             </v-btn>
             <v-btn text rounded v-else class="blue--text">
-              Ya recibimos tu pedido :)
+              Te vamos avisar
             </v-btn>
           </span>
         </p>
@@ -135,7 +144,7 @@
             </ValidationProvider>
             <ValidationProvider
               name="teléfono"
-              rules="numeric"
+              rules="numeric|min:8|required"
               v-slot="{ errors }"
             >
               <v-text-field
@@ -250,14 +259,14 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {
-            return "Envío sin cargo en 24Hs";
+            return "Recibilo dentro las 24Hs";
           } else if (this.responseChazki == true) {
-            return "Envío sin cargo en 72Hs";
+            return "Recibilo dentro las 72Hs";
           } else {
-            return "Envío sin cargo en 4-6 Dias";
+            return "Recibilo dentro de los 4-6 días hábiles";
           }
         } else {
-          return "Reservá el tuyo";
+          return "AVISAME";
         }
       }
     },
@@ -281,7 +290,7 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Envío sin cargo en 72Hs";
+          return "Recibilo dentro las 72Hs";
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -291,16 +300,16 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock == 0
         ) {
-          return "Reservá el tuyo";
+          return "AVISAME";
         }
       } else if (
         getWarehouseReg == undefined &&
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Envío sin cargo en 72Hs";
+          return "Recibilo dentro las 72Hs";
         } else if (getWarehouseFwl01.current_stock == 0) {
-          return "Reservá el tuyo";
+          return "AVISAME";
         }
       } else if (
         getWarehouseReg != undefined &&
@@ -309,14 +318,14 @@ export default {
         if (getWarehouseReg.current_stock > 0) {
           return "Entrega o Retira en el día";
         } else if (getWarehouseReg.current_stock == 0) {
-          return "Reservá el tuyo";
+          return "AVISAME";
         }
       }
     },
 
     ModalProductUser(zip_code, warehouse) {
       if (
-        this.HandlerReturnWarehouse(zip_code, warehouse) == "Reservá el tuyo" &&
+        this.HandlerReturnWarehouse(zip_code, warehouse) == "AVISAME" &&
         this.dataProduct.user_product_notification == null
       ) {
         this.showModalReserve = true;
@@ -351,6 +360,17 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+
+    HandlerShowProduct(publication) {
+      const encryptedID = this.CryptoJS.AES.encrypt(
+        publication.product.id.toString(),
+        "MyS3c3rtIdPr0Duct"
+      ).toString();
+      this.$router.push({
+        name: "product_details",
+        query: { data: encryptedID },
+      });
     },
 
     responseNotification() {

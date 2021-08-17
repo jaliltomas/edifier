@@ -23,8 +23,9 @@
           <v-col
             cols="12"
             sm="6"
-            md="4"
+            md="6"
             lg="4"
+            xl="4"
             v-for="(item, index) in dataAddress"
             :key="index"
           >
@@ -58,12 +59,6 @@
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-icon>
-                    <v-btn @click="HandlerDelete(item)" icon>
-                      <v-icon>mdi-delete-forever</v-icon>
-                    </v-btn>
-                    <v-btn @click="HandlerEdit(item)" icon>
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn icon v-bind="attrs" v-on="on">
@@ -82,6 +77,13 @@
                       </template>
                       <span>Dirección principal</span>
                     </v-tooltip>
+
+                    <v-btn @click="HandlerEdit(item)" icon>
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <v-btn @click="HandlerDelete(item)" icon>
+                      <v-icon>mdi-delete-forever</v-icon>
+                    </v-btn>
                   </v-list-item-icon>
                 </v-list-item>
               </v-card-text>
@@ -315,7 +317,12 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" lg="6" class="mt-md-n10">
                 <div class="d-flex">
-                  <v-checkbox color="#00A0E9" v-model="isFirst" type="checkbox" required>
+                  <v-checkbox
+                    color="#00A0E9"
+                    v-model="isFirst"
+                    type="checkbox"
+                    required
+                  >
                     <template v-slot:label>
                       <label
                         style="font-size: 14px"

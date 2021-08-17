@@ -46,18 +46,11 @@
       >
         <v-row justify="center" class="mt-10">
           <v-col cols="12" sm="6" md="5">
-            <img
-              v-if="dataProduct.images == null"
-              height="200"
-              width="100%"
-              contain
-              src="../../assets/img/no_image.jpg"
-            />
             <v-img
               :src="dataProduct.images[0]"
               :lazy-src="dataProduct.images[0]"
               contain
-              v-else
+              v-if="dataProduct.images != null"
             >
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
@@ -96,6 +89,7 @@
               </div>
 
               <v-chip
+                v-if="dataProduct.price != null"
                 color="#5A5855"
                 class="align-self-center my-3"
                 style="font-size: 16px; color: #424242; font-weight: 400"
