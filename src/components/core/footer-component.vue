@@ -191,10 +191,10 @@ export default {
       showTerms: false,
       categories: [],
       support: [
-        { name: "Póliza de garantía" },
+        { name: "Garantía" },
         { name: "Soporte técnico" },
-        { name: "Servicio al cliente" },
-        { name: "Descarga de la aplicación" },
+        { name: "EDIFIER Connect APP" },
+        { name: "." },
         { name: "." },
         { name: "." },
         { name: "." },
@@ -251,19 +251,27 @@ export default {
     },
     goSection(item) {
       switch (item.name) {
-        case "Descarga de la aplicación":
+        case "EDIFIER Connect APP":
           this.$router.push({ name: "app_dowload" });
+          break;
+        case "Soporte técnico":
+          window.open("http://www.edifierla.com/hola/");
           break;
         default:
           break;
       }
     },
     goToContact(name) {
-      if (name == "Contáctenos") {
-        const url = process.env.VUE_APP_CHECKOUT;
-        location.href = `${url}/contact`;
-      } else {
-        return;
+      switch (name) {
+        case "Contacto":
+          const url = process.env.VUE_APP_CHECKOUT;
+          window.open(`${url}/contact`);
+          break;
+        case "Foro":
+          window.open("http://www.edifierla.com/foro-latam/");
+          break;
+        default:
+          break;
       }
     },
   },

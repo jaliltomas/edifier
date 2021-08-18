@@ -63,175 +63,180 @@
 
     <v-sheet color="#F1F1F1">
       <v-container fluid>
-        <v-col cols="12" sm="12" offset-md="1" md="10">
-          <v-row justify="center">
-            <v-col cols="12" md="3" class="d-flex align-stretch my-5">
-              <v-sheet width="100%" height="100%">
-                <div
-                  class="px-5 py-5"
-                  v-for="(category, index) in productsCategories"
-                  :key="index"
-                >
-                  <v-hover v-slot="{ hover }">
-                    <div
-                      @click="HandlerFilterCategory(category, 1)"
-                      class="text-capitalize"
-                      :style="
-                        hover
-                          ? 'font-size: 17px; cursor: pointer; color: #00A0E9'
-                          : 'font-size: 17px; cursor: pointer;'
-                      "
-                    >
-                      {{ category.name }}
-                    </div>
-                  </v-hover>
+        <v-row justify="center">
+          <v-col cols="12" sm="12" md="11">
+            <v-row justify="center">
+              <v-col cols="12" md="3" class="d-flex align-stretch my-5">
+                <v-sheet width="100%" height="100%">
                   <div
-                    v-for="(sub_cat, index2) in category.sub_category"
-                    :key="index2"
-                    :class="!sub_cat.can_see ? 'mb-5' : 'mb-n6'"
+                    class="px-5 py-5"
+                    v-for="(category, index) in productsCategories"
+                    :key="index"
                   >
-                    <v-checkbox
-                      v-if="sub_cat.can_see"
-                      :label="subCatName(sub_cat.name)"
-                      color="#00A0E9"
-                      @change="HandlerFilterCategory(sub_cat, 2)"
-                      v-model="sub_cat.value"
-                    ></v-checkbox>
+                    <v-hover v-slot="{ hover }">
+                      <div
+                        @click="HandlerFilterCategory(category, 1)"
+                        class="text-capitalize"
+                        :style="
+                          hover
+                            ? 'font-size: 17px; cursor: pointer; color: #00A0E9'
+                            : 'font-size: 17px; cursor: pointer;'
+                        "
+                      >
+                        {{ category.name }}
+                      </div>
+                    </v-hover>
+                    <div
+                      v-for="(sub_cat, index2) in category.sub_category"
+                      :key="index2"
+                      :class="!sub_cat.can_see ? 'mb-5' : 'mb-n6'"
+                    >
+                      <v-checkbox
+                        v-if="sub_cat.can_see"
+                        :label="subCatName(sub_cat.name)"
+                        color="#00A0E9"
+                        @change="HandlerFilterCategory(sub_cat, 2)"
+                        v-model="sub_cat.value"
+                      ></v-checkbox>
+                    </div>
+                    <v-divider class="mt-5"></v-divider>
                   </div>
-                  <v-divider class="mt-5"></v-divider>
-                </div>
-                <div class="text-capitalize px-5 pt-5" style="font-size: 17px">
-                  Caracteristicas
-                </div>
-                <div
-                  v-for="(feature, u) in productsFeature"
-                  :key="u + 'w'"
-                  class="px-5"
-                >
-                  <!-- {{feature}} -->
-                  <!-- <div
+                  <div
+                    class="text-capitalize px-5 pt-5"
+                    style="font-size: 17px"
+                  >
+                    Caracteristicas
+                  </div>
+                  <div
+                    v-for="(feature, u) in productsFeature"
+                    :key="u + 'w'"
+                    class="px-5"
+                  >
+                    <!-- {{feature}} -->
+                    <!-- <div
                   v-for="(features, e) in category.features"
                   :key="e + 'n'"
                   class="mb-n5"
                 > -->
-                  <div class="mb-n6">
-                    <v-checkbox
-                      :label="subCatName(feature.name)"
-                      color="#00A0E9"
-                      v-model="feature.value"
-                      @change="HandlerFilterFeatures(feature)"
-                    ></v-checkbox>
-                  </div>
-                  <!-- </div> -->
-                </div>
-                <v-divider class="mx-5 mt-5"></v-divider>
-                <div
-                  @click="HandlerFilterCategory({}, 3)"
-                  class="text-capitalize px-5 py-10"
-                >
-                  <v-hover v-slot="{ hover }">
-                    <div
-                      class="text-capitalize"
-                      :style="
-                        hover
-                          ? 'font-size: 17px; cursor: pointer; color: #00A0E9'
-                          : 'font-size: 17px; cursor: pointer;'
-                      "
-                    >
-                      Todo
+                    <div class="mb-n6">
+                      <v-checkbox
+                        :label="subCatName(feature.name)"
+                        color="#00A0E9"
+                        v-model="feature.value"
+                        @change="HandlerFilterFeatures(feature)"
+                      ></v-checkbox>
                     </div>
-                  </v-hover>
-                </div>
-              </v-sheet>
-            </v-col>
-            <v-col cols="12" md="9" class="align-stretch my-5">
-              <v-sheet color="white" class="mt-3">
-                <v-row>
-                  <v-col
-                    v-for="(item, index) in productsData"
-                    :key="index"
-                    cols="12"
-                    sm="4"
-                    md="4"
+                    <!-- </div> -->
+                  </div>
+                  <v-divider class="mx-5 mt-5"></v-divider>
+                  <div
+                    @click="HandlerFilterCategory({}, 3)"
+                    class="text-capitalize px-5 py-10"
                   >
-                    <v-card
-                      v-if="item.product != null"
-                      height="200"
-                      class="elevation-0"
-                      flat
-                      @click="HandlerShowProduct(item)"
+                    <v-hover v-slot="{ hover }">
+                      <div
+                        class="text-capitalize"
+                        :style="
+                          hover
+                            ? 'font-size: 17px; cursor: pointer; color: #00A0E9'
+                            : 'font-size: 17px; cursor: pointer;'
+                        "
+                      >
+                        Todo
+                      </div>
+                    </v-hover>
+                  </div>
+                </v-sheet>
+              </v-col>
+              <v-col cols="12" md="9" class="align-stretch my-5">
+                <v-sheet color="white" class="mt-3">
+                  <v-row>
+                    <v-col
+                      v-for="(item, index) in productsData"
+                      :key="index"
+                      cols="12"
+                      sm="4"
+                      md="4"
                     >
-                      <img
-                        v-if="item.images == null"
-                        :aspect-ratio="4 / 3"
+                      <v-card
+                        v-if="item.product != null"
                         height="200"
-                        width="100%"
-                        contain
-                        src="../../assets/img/no_image.jpg"
-                      />
-                      <div v-else>
-                        <v-img
+                        class="elevation-0"
+                        flat
+                        @click="HandlerShowProduct(item)"
+                      >
+                        <img
+                          v-if="item.images == null"
+                          :aspect-ratio="4 / 3"
                           height="200"
                           width="100%"
                           contain
-                          :src="item.images[0]"
-                          :lazy-src="item.images[0]"
-                        >
-                          <template v-slot:placeholder>
-                            <v-row
-                              class="fill-height ma-0"
-                              align="center"
-                              justify="center"
-                            >
-                              <v-progress-circular
-                                indeterminate
-                                color="black lighten-5"
-                              ></v-progress-circular>
-                            </v-row>
-                          </template>
-                        </v-img>
-                      </div>
-                      <v-card-text></v-card-text>
-                    </v-card>
-                    <p
-                      class="
-                        text-center
-                        mb-1
-                        title
-                        font-weight-bold
-                        text-uppercase
-                      "
-                    >
-                      {{ item.keywords }}
-                    </p>
-                    <p class="text-center" v-if="item.price != null">
-                      <span class="product-price"
-                        >${{ item.price.pvp | currencyPVP }}</span
+                          src="../../assets/img/no_image.jpg"
+                        />
+                        <div v-else>
+                          <v-img
+                            height="200"
+                            width="100%"
+                            contain
+                            :src="item.images[0]"
+                            :lazy-src="item.images[0]"
+                          >
+                            <template v-slot:placeholder>
+                              <v-row
+                                class="fill-height ma-0"
+                                align="center"
+                                justify="center"
+                              >
+                                <v-progress-circular
+                                  indeterminate
+                                  color="black lighten-5"
+                                ></v-progress-circular>
+                              </v-row>
+                            </template>
+                          </v-img>
+                        </div>
+                        <v-card-text></v-card-text>
+                      </v-card>
+                      <p
+                        class="
+                          text-center
+                          mb-1
+                          title
+                          font-weight-bold
+                          text-uppercase
+                        "
                       >
-                    </p>
-                    <!-- {{ item }} -->
-                    <cp-information
-                      class="text-center"
-                      :dataProduct="item"
-                      :authUser="authUser"
-                    />
-                  </v-col>
-                </v-row>
-                <v-row justify="center" class="mb-0">
-                  <v-col v-if="paginationData.total > 0" cols="12" md="4">
-                    <div class="text-center">
-                      <v-pagination
-                        color="#00A0E9"
-                        v-model="page"
-                        :length="paginationData.lastPage"
-                      ></v-pagination>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-sheet>
-            </v-col>
-          </v-row>
-        </v-col>
+                        {{ item.keywords }}
+                      </p>
+                      <p class="text-center" v-if="item.price != null">
+                        <span class="product-price"
+                          >${{ item.price.pvp | currencyPVP }}</span
+                        >
+                      </p>
+                      <!-- {{ item }} -->
+                      <cp-information
+                        class="text-center"
+                        :dataProduct="item"
+                        :authUser="authUser"
+                      />
+                    </v-col>
+                  </v-row>
+                  <v-row justify="center" class="mb-0">
+                    <v-col v-if="paginationData.total > 0" cols="12" md="4">
+                      <div class="text-center">
+                        <v-pagination
+                          color="#00A0E9"
+                          v-model="page"
+                          :length="paginationData.lastPage"
+                        ></v-pagination>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-sheet>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-container>
     </v-sheet>
   </div>
@@ -414,7 +419,7 @@ export default {
         const request = {
           store: 3,
           page: myPage,
-          per_page: 12,
+          per_page: 24,
           paginate: true,
           warehouse_id: warehouse_id,
           keywords:
@@ -514,7 +519,7 @@ export default {
         const request = {
           store: 3,
           page: myPage,
-          per_page: 12,
+          per_page: 24,
           paginate: true,
           warehouse_id: warehouse_id,
           keywords:

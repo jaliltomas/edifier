@@ -1,8 +1,12 @@
 <template>
   <ValidationObserver ref="obs" v-slot="{ passes }">
-    <v-card color="white" tile class="elevation-0 py-5 d-flex justify-center">
+    <v-card
+      color="white"
+      tile
+      class="elevation-0 py-2 px-0 d-flex justify-center"
+    >
       <v-card-text>
-        <v-row class="mx-1">
+        <v-row class="mx-0">
           <!-- MOSTRAR MENSAJE NO HAY DIRECCION -->
           <v-col
             cols="12"
@@ -24,8 +28,8 @@
             cols="12"
             sm="6"
             md="6"
-            lg="4"
-            xl="4"
+            lg="6"
+            xl="6"
             v-for="(item, index) in dataAddress"
             :key="index"
           >
