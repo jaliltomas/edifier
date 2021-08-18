@@ -24,7 +24,7 @@
               ) != 'AVISAME'
             "
           >
-            <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
@@ -60,7 +60,7 @@
               ) != 'AVISAME'
             "
           >
-            <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
@@ -79,7 +79,14 @@
             </v-btn>
           </span>
           <span v-else>
+            <div
+              v-if="dataProduct.user_product_notification != null"
+              class="pt-7"
+            ></div>
             <v-btn
+              :class="
+                dataProduct.user_product_notification == null ? 'mt-5' : 'mt-0'
+              "
               outlined
               rounded
               color="#15A7EB"
@@ -87,9 +94,13 @@
             >
               AVISAME
             </v-btn>
-            <v-btn text rounded v-else class="blue--text">
-              Te vamos avisar
-            </v-btn>
+            <span
+              v-if="dataProduct.user_product_notification != null"
+              class="blue--text"
+              style="cursor: default"
+            >
+              TE AVISAMOS CUANDO ESTÉ
+            </span>
           </span>
         </p>
       </div>
@@ -260,11 +271,11 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {
-            return "Recibilo dentro las 24Hs HÁBILES ";
+            return "Recibilo dentro de las 24Hs HÁBILES";
           } else if (this.responseChazki == true) {
-            return "Recibilo dentro las 72Hs HÁBILES ";
+            return "Recibilo dentro de las 72Hs HÁBILES";
           } else {
-            return "Recibilo dentro de los 4-6 días hábiles";
+            return "Recibilo en de los 4-6 días hábiles";
           }
         } else {
           return "AVISAME";
@@ -291,7 +302,7 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Recibilo dentro las 72Hs HÁBILES ";
+          return "Recibilo dentro de las 72Hs HÁBILES ";
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -308,7 +319,7 @@ export default {
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Recibilo dentro las 72Hs HÁBILES ";
+          return "Recibilo dentro de las 72Hs HÁBILES ";
         } else if (getWarehouseFwl01.current_stock == 0) {
           return "AVISAME";
         }
