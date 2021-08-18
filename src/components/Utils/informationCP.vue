@@ -69,6 +69,7 @@
             }}
             <br />
             <v-btn
+              v-if="$route.name != 'product_details'"
               @click="HandlerShowProduct(dataProduct)"
               outlined
               rounded
@@ -259,9 +260,9 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {
-            return "Recibilo dentro las 24Hs";
+            return "Recibilo dentro las 24Hs HÁBILES ";
           } else if (this.responseChazki == true) {
-            return "Recibilo dentro las 72Hs";
+            return "Recibilo dentro las 72Hs HÁBILES ";
           } else {
             return "Recibilo dentro de los 4-6 días hábiles";
           }
@@ -290,7 +291,7 @@ export default {
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Recibilo dentro las 72Hs";
+          return "Recibilo dentro las 72Hs HÁBILES ";
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -307,7 +308,7 @@ export default {
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Recibilo dentro las 72Hs";
+          return "Recibilo dentro las 72Hs HÁBILES ";
         } else if (getWarehouseFwl01.current_stock == 0) {
           return "AVISAME";
         }
