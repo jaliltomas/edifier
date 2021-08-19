@@ -439,6 +439,7 @@ export default {
               : JSON.stringify([this.category_id]),
           everything: this.everything,
           feature_ids: JSON.stringify(this.feature_ids),
+          sort_position: 'asc'
         };
 
         const response = await this.$store.dispatch(
@@ -539,6 +540,7 @@ export default {
               : JSON.stringify([this.category_id]),
           everything: this.everything,
           feature_ids: JSON.stringify(this.feature_ids),
+          sort_position: 'asc'
         };
 
         const response = await this.$store.dispatch(
