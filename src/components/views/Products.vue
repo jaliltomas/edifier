@@ -4,8 +4,7 @@
       <v-img
         v-if="
           productsCategories.length > 0 &&
-          productsCategories[0].image_path != null &&
-          !loadingProducts
+          productsCategories[0].image_path != null
         "
         :src="productsCategories[0].image_path"
         :lazy-src="productsCategories[0].image_path"
@@ -28,11 +27,7 @@
         </v-container>
       </v-img>
       <v-img
-        v-else-if="
-          productsCategories.length > 0 &&
-          productsCategories[0].image_path == null &&
-          !loadingProducts
-        "
+        v-else
         src="@/assets/img/categoria/category_all.png"
         lazy-src="@/assets/img/categoria/category_all.png"
       >
@@ -53,12 +48,12 @@
           </v-row>
         </v-container>
       </v-img>
-      <v-skeleton-loader
+      <!-- <v-skeleton-loader
         v-else
         class="mx-auto"
         max-width="100%"
         type="image"
-      ></v-skeleton-loader>
+      ></v-skeleton-loader> -->
     </v-sheet>
 
     <v-sheet color="#F1F1F1">
@@ -439,7 +434,7 @@ export default {
               : JSON.stringify([this.category_id]),
           everything: this.everything,
           feature_ids: JSON.stringify(this.feature_ids),
-          sort_position: 'asc'
+          sort_position: "asc",
         };
 
         const response = await this.$store.dispatch(
@@ -540,7 +535,7 @@ export default {
               : JSON.stringify([this.category_id]),
           everything: this.everything,
           feature_ids: JSON.stringify(this.feature_ids),
-          sort_position: 'asc'
+          sort_position: "asc",
         };
 
         const response = await this.$store.dispatch(
