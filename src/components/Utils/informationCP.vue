@@ -275,7 +275,7 @@ export default {
           } else if (this.responseChazki == true) {
             return "Recibilo dentro de las 72Hs HÁBILES";
           } else {
-            return "Recibilo en de los 4-6 días hábiles";
+            return "Recibilo en 4-6 días hábiles";
           }
         } else {
           return "AVISAME";
