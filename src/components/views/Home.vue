@@ -162,6 +162,7 @@
 
     <section id="destacados">
       <v-responsive>
+        <!-- <img src='../../../public/favicon-32x32.png' /> -->
         <v-sheet color="#EBF1F7" class="mt-15">
           <div class="d-flex justify-center pt-15">
             <span class="text-uppercase text-center mb-0 featured-title-home">
@@ -186,6 +187,8 @@
               >
                 <carousel
                   :navigationEnabled="true"
+                  :navigation-next-label="nextLabel"
+                  :navigation-prev-label="prevLabel"
                   :perPage="
                     breakpoint < 650
                       ? 1
@@ -353,6 +356,14 @@ export default {
 
     breakpoint() {
       return this.$vuetify.breakpoint.width;
+    },
+
+    nextLabel() {
+      return "<img src='../../../flacha-derecha.png' >";
+    },
+
+    prevLabel() {
+      return "<img src='../../../flacha-izquierda.png' >";
     },
   },
 
@@ -538,4 +549,11 @@ export default {
   font-family: "system";
   color: #00a0e9;
 }
+
+/* .VueCarousel-navigation-next::before {
+  content: url('../../assets/img/next.svg');
+}
+.VueCarousel-navigation-prev::before {
+  content: url('../../assets/img/next.svg');
+} */
 </style>

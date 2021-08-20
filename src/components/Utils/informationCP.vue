@@ -267,7 +267,7 @@ export default {
       const getWarehouseFwl01 = warehouse.find(
         (value) => value.warehouse_id == cenId
       );
-
+      
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {

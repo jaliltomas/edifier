@@ -108,26 +108,10 @@
                   :authUser="authUser"
                   class="mt-auto"
                 />
-
-                <!-- <div class="d-flex mt-2 mt-md-0">
-                  <v-btn
-                    style="border-width: medium"
-                    fab
-                    color="#5A5953"
-                    x-small
-                  >
-                    <v-icon color="white">mdi-share-variant-outline</v-icon>
-                  </v-btn>
-                  <span class="mt-1 ml-1">COMPARTIR</span>
-                </div> -->
               </div>
 
               <div
-                v-if="
-                  dataProduct.product != null &&
-                  dataProduct.product.product_warehouse != null &&
-                  dataProduct.product.product_warehouse[0].current_stock > 0
-                "
+                v-if="validateStock()"
                 class="d-flex align-center justify-start py-1 mt-10"
               >
                 <span class="mx-0 text-uppercase" style="font-weight: 500">
@@ -166,16 +150,6 @@
                 style="width: 80%"
                 v-if="validateStock()"
               >
-                <!-- <v-btn
-                  dark
-                  style="border-width: medium"
-                  rounded
-                  color="#00A0E9"
-                  @click="HandlerAddCart()"
-                >
-                  Agregar al carrito
-                </v-btn> -->
-
                 <v-btn
                   style="border-width: medium"
                   rounded
@@ -224,23 +198,6 @@
                 carrito.
               </p>
             </div>
-            <!-- <div
-              class="mb-15 d-flex ml-7"
-              style="background-color: #00a0e9; border-radius: 5px; width: 80%"
-            >
-              <p
-                @click="$router.push({ name: 'cart' })"
-                class="white--text px-3 py-3 mb-0"
-                style="font-size: 16px !important; cursor: pointer"
-              >
-                Tu producto fue agregado con éxito. Si deseas ir a tu carrito
-                haz click aquí, de lo contrario puedes seguir agregando
-                productos.
-              </p>
-              <v-btn icon small @click="messageProductAdd = false">
-                <v-icon size="20" color="white">mdi-close</v-icon>
-              </v-btn>
-            </div> -->
           </v-col>
         </v-row>
       </v-container>
@@ -528,9 +485,89 @@ export default {
 
     HandlerQuantity(quantity) {
       this.messageProductAdd = false;
+      const productWarehouse = this.dataProduct.product.product_warehouse;
+      const userZipCode = this.authUser.zipcode;
+      let threshold = 0;
+
+      switch (parseInt(userZipCode)) {
+        case 2000:
+          const warehouse2000 = productWarehouse.filter(
+            (whr) =>
+              (whr.warehouse_id == 10 && whr.current_stock > 0) ||
+              (whr.warehouse_id == 5 && whr.current_stock > 0)
+          );
+
+          if (warehouse2000.length == 1) {
+            const warehouseThreshold = warehouse2000.some(
+              (whr) => whr.current_stock > this.dataProduct.threshold
+            );
+
+            if (warehouseThreshold) {
+              threshold =
+                warehouse2000[0].current_stock - this.dataProduct.threshold;
+            }
+          } else {
+            const userFindWarehouse2000 = warehouse2000.find(
+              (whr) => whr.warehouse_id == 10
+            );
+
+            if (
+              userFindWarehouse2000.current_stock > this.dataProduct.threshold
+            ) {
+              threshold =
+                userFindWarehouse2000.current_stock -
+                this.dataProduct.threshold;
+            }
+          }
+          break;
+        case 5000:
+          const warehouse5000 = productWarehouse.filter(
+            (whr) =>
+              (whr.warehouse_id == 3 && whr.current_stock > 0) ||
+              (whr.warehouse_id == 5 && whr.current_stock > 0)
+          );
+
+          if (warehouse5000.length == 1) {
+            const warehouseThreshold = warehouse5000.some(
+              (whr) => whr.current_stock > this.dataProduct.threshold
+            );
+
+            if (warehouseThreshold) {
+              threshold =
+                warehouse5000[0].current_stock - this.dataProduct.threshold;
+            }
+          } else {
+            const userFindWarehouse = warehouse5000.find(
+              (whr) => whr.warehouse_id == 3
+            );
+
+            if (userFindWarehouse.current_stock > this.dataProduct.threshold) {
+              threshold =
+                userFindWarehouse.current_stock - this.dataProduct.threshold;
+            }
+          }
+          break;
+        default:
+          const warehouse = productWarehouse.filter(
+            (whr) => whr.warehouse_id == 5 && whr.current_stock > 0
+          );
+
+          if (warehouse.length > 0) {
+            const warehouseThreshold = warehouse.some(
+              (whr) => whr.current_stock > this.dataProduct.threshold
+            );
+
+            if (warehouseThreshold) {
+              threshold =
+                warehouse[0].current_stock - this.dataProduct.threshold;
+            }
+          }
+          break;
+      }
+
       if (this.quantity == 1 && quantity == "minus") {
         return;
-      } else if (quantity == "plus" && this.quantity < 4) {
+      } else if (quantity == "plus" && this.quantity < threshold) {
         this.quantity++;
       } else if (quantity == "minus") {
         this.quantity--;
