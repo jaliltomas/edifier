@@ -6,6 +6,7 @@
           productsCategories.length > 0 &&
           productsCategories[0].image_path != null
         "
+        contain
         :src="productsCategories[0].image_path"
         :lazy-src="productsCategories[0].image_path"
       >
@@ -28,15 +29,19 @@
       </v-img>
       <v-img
         v-else
-        src="@/assets/img/categoria/category_all.png"
-        lazy-src="@/assets/img/categoria/category_all.png"
+        contain
+        src="@/assets/img/sections/todoCategories.webp"
+        lazy-src="@/assets/img/sections/todoCategories.webp"
       >
         <v-container fill-height>
           <v-row justify="center" no-gutters>
             <v-col cols="12" class="d-flex justify-center">
               <div class="font-weight-bold d-flex">
-                <span style="color: #00a0e9; font-size: 2.5em">
+                <span v-if="!isTodo" style="color: #00a0e9; font-size: 2.5em">
                   {{ productsCategories[0].name }}
+                </span>
+                <span v-else style="color: #00a0e9; font-size: 2.5em">
+                  TODO
                 </span>
               </div>
             </v-col>
@@ -303,6 +308,7 @@ export default {
       everything: 1,
       feature_ids: [],
       loadingProducts: false,
+      isTodo: false,
     };
   },
 
@@ -659,6 +665,7 @@ export default {
         this.$router.push(this.$route.path).catch((err) => err);
         this.everything = 0;
         this.feature_ids = [];
+        this.isTodo = true;
         this.HandlerGetProducts(this.page);
       }
     },

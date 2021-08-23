@@ -132,6 +132,7 @@
                   cover
                   style="width: 100%; height: 350px"
                   :src="item.image_url"
+                  @click="HandlerLocation(item, hover)"
                 >
                   <v-row style="height: 22.5em">
                     <v-col cols="12">
@@ -141,7 +142,7 @@
                     </v-col>
                     <v-col cols="12" class="align-self-end">
                       <v-btn
-                        @click="HandlerLocation(item)"
+                        @click="HandlerLocation(item, true)"
                         outlined
                         color="white"
                         class="ml-7 ml-sm-3 ml-md-7 mb-5"
@@ -498,9 +499,11 @@ export default {
       this.item += 1;
     },
 
-    HandlerLocation(url) {
-      const category_id = JSON.parse(url.category_id);
-      this.$router.push({ name: "products", query: { data: category_id } });
+    HandlerLocation(url, hover) {
+      if (hover) {
+        const category_id = JSON.parse(url.category_id);
+        this.$router.push({ name: "products", query: { data: category_id } });
+      }
     },
 
     HandlerLocationCarrusel(url) {

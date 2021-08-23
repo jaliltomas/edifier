@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isAuth" class="mb-5">
+    <div v-if="isAuth" class="mb-0">
       <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
         <p
           class="mb-0 text-uppercase"
@@ -81,7 +81,7 @@
           <span v-else>
             <div
               v-if="dataProduct.user_product_notification != null"
-              class="pt-7"
+              class="pt-0"
             ></div>
             <v-btn
               :class="
@@ -94,6 +94,13 @@
             >
               AVISAME
             </v-btn>
+            <span
+              v-if="dataProduct.user_product_notification != null"
+              class="black--text d-flex justify-center mb-3"
+              style="cursor: default"
+            >
+              Próximamente
+            </span>
             <span
               v-if="dataProduct.user_product_notification != null"
               class="blue--text"
@@ -267,7 +274,7 @@ export default {
       const getWarehouseFwl01 = warehouse.find(
         (value) => value.warehouse_id == cenId
       );
-      
+
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {
