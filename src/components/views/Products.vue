@@ -4,11 +4,11 @@
       <v-img
         v-if="
           productsCategories.length > 0 &&
-          productsCategories[0].image_path != null
+          productsCategories[0].image_url != null
         "
         contain
-        :src="productsCategories[0].image_path"
-        :lazy-src="productsCategories[0].image_path"
+        :src="productsCategories[0].image_url"
+        :lazy-src="productsCategories[0].image_url"
       >
         <v-container fill-height>
           <v-row justify="center" no-gutters>
