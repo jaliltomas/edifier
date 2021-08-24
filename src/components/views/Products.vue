@@ -37,13 +37,7 @@
           <v-row justify="center" no-gutters>
             <v-col cols="12" class="d-flex justify-center">
               <div class="font-weight-bold d-flex">
-                <span
-                  v-if="!isTodo"
-                  style="color: #00a0e9; font-size: 2.5em"
-                >
-                  {{ productsCategories.length > 0 ? productsCategories[0].name : '' }}
-                </span>
-                <span v-else style="color: #00a0e9; font-size: 2.5em">
+                <span style="color: #00a0e9; font-size: 2.5em">
                   TODO
                 </span>
               </div>
@@ -666,7 +660,7 @@ export default {
         this.HandlerGetProducts(this.page);
       }
     },
-    
+
     HandlerFilterFeatures(feature) {
       if (this.feature_ids.includes(feature.id.toString())) {
         const indexDelete = this.feature_ids.findIndex(
