@@ -21,10 +21,10 @@ const mutations = {
 
   SET_USER: (state, payload) => (state.user = payload),
 
-  CLEAR_DATA: state => {
-    console.log(state);
-    // state.token = null;
-    // localStorage.clear();
+  CLEAR_DATA: (state) => {
+    state.token = null;
+    state.user = {};
+    localStorage.clear();
   },
 
   CLEAR_DATA_LOGOUT: state => {

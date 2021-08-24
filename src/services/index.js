@@ -1,4 +1,6 @@
 import axios from 'axios';
+import router from '../router'
+import storeVuex from '../store';
 
 export const api = axios.create({
   baseURL: process.env.VUE_APP_MAIN_AP,
@@ -38,4 +40,15 @@ export const store = axios.create({
   headers: {
     'Access-Control-Allow-Origin': process.env.VUE_APP_STORE,
   },
+});
+
+users.interceptors.response.use(function (response) {
+  return response
+}, function (error) {
+  console.log(error)
+  if (error.response.status === 401) {
+    storeVuex.commit('auth/CLEAR_DATA');
+    router.push({ name: 'home' })
+  }
+  return Promise.reject(error)
 });

@@ -53,12 +53,6 @@
           </v-row>
         </v-container>
       </v-img>
-      <!-- <v-skeleton-loader
-        v-else
-        class="mx-auto"
-        max-width="100%"
-        type="image"
-      ></v-skeleton-loader> -->
     </v-sheet>
 
     <v-sheet color="#F1F1F1">
@@ -150,7 +144,7 @@
               </v-col>
               <v-col cols="12" md="9" class="align-stretch my-5">
                 <v-sheet color="white" class="mt-3">
-                  <v-row>
+                  <v-row v-if="productsData.length > 0">
                     <v-col
                       v-for="(item, index) in productsData"
                       :key="index"
@@ -209,16 +203,22 @@
                         {{ item.keywords }}
                       </p>
                       <p class="text-center" v-if="item.price != null">
-                        <span class="product-price"
-                          >${{ item.price.pvp | currencyPVP }}</span
-                        >
+                        <span class="product-price">
+                          ${{ item.price.pvp | currencyPVP }}
+                        </span>
                       </p>
-                      <!-- {{ item }} -->
                       <cp-information
                         class="text-center"
                         :dataProduct="item"
                         :authUser="authUser"
                       />
+                    </v-col>
+                  </v-row>
+                  <v-row v-else justify="center">
+                    <v-col cols="12" md="9" class="d-flex justify-center">
+                      <p class="text-center py-10 font-weight-medium">
+                        No hay resultados para su busqueda
+                      </p>
                     </v-col>
                   </v-row>
                   <v-row justify="center" class="mb-0">
