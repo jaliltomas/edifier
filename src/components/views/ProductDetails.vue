@@ -103,7 +103,7 @@
               <div class="d-flex justify-space-between mt-5">
                 <cp-information
                   style="font-size: 18px"
-                  v-if="dataProduct"
+                  v-if="dataProduct && validateUmbral()"
                   :dataProduct="dataProduct"
                   :authUser="authUser"
                   class="mt-auto"
@@ -111,7 +111,7 @@
               </div>
 
               <div
-                v-if="validateStock()"
+                v-if="validateStock() && validateUmbral()"
                 class="d-flex align-center justify-start py-1 mt-10"
               >
                 <span class="mx-0 text-uppercase" style="font-weight: 500">
@@ -148,7 +148,7 @@
               <div
                 class="d-md-flex justify-space-between mt-5"
                 style="width: 80%"
-                v-if="validateStock()"
+                v-if="validateStock() && validateUmbral()"
               >
                 <v-btn
                   style="border-width: medium"
@@ -178,6 +178,29 @@
                   </span>
                 </div>
               </div>
+
+              <v-btn
+                v-if="
+                  validateUmbral() == false &&
+                  dataProduct.user_product_notification == null
+                "
+                rounded
+                outlined
+                color="#3FB7EE"
+                @click="HandlerAvisame()"
+              >
+                AVISAME
+              </v-btn>
+
+              <span
+                style="color: #3fb7ee"
+                v-if="
+                  validateUmbral() == false &&
+                  dataProduct.user_product_notification != null
+                "
+              >
+                TE AVISAMOS CUANDO ESTÉ
+              </span>
             </div>
             <div
               class="py-15"
@@ -272,6 +295,77 @@
         </v-img>
       </v-card>
     </v-dialog>
+
+    <ValidationObserver ref="obs" v-slot="{ passes }">
+      <v-dialog
+        v-if="showModalReserve"
+        v-model="showModalReserve"
+        max-width="600"
+      >
+        <v-card>
+          <v-card-title>
+            Completá con tus datos y nos comunicaremos
+          </v-card-title>
+          <v-card-text>
+            <ValidationProvider
+              name="nombre"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                @keyup="passes(HandlerNotification)"
+                filled
+                rounded
+                v-model="authUser.buyer.first_name"
+                label="Nombre"
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+            <ValidationProvider
+              name="email"
+              rules="email|required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                @keyup="passes(HandlerNotification)"
+                filled
+                rounded
+                label="Email"
+                v-model="authUser.buyer.email"
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+            <ValidationProvider
+              name="teléfono"
+              rules="numeric|min:8|required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                @keyup="passes(HandlerNotification)"
+                filled
+                rounded
+                label="Teléfono"
+                v-model="authUser.buyer.phone"
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="showModalReserve = false">Cancelar</v-btn>
+            <v-btn
+              :loading="loading"
+              dark
+              color="#00A0E9"
+              @click="passes(HandlerNotification)"
+            >
+              Continuar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </ValidationObserver>
+
     <div v-html="dataProduct.text_html"></div>
     <suscribe-component />
   </div>
@@ -308,6 +402,12 @@ export default {
       sticky: false,
       fab: false,
       loadingManual: false,
+
+      //Avisame
+      showModalReserve: false,
+      email: "",
+      name: "",
+      phone: "",
     };
   },
 
@@ -392,20 +492,6 @@ export default {
     quotes(pvp) {
       const value = (pvp * this.quantity) / 18;
       return value;
-    },
-
-    disabledUmbral() {
-      const currentStock =
-        this.dataProduct.product.product_warehouse[0].current_stock;
-      const umbral = this.dataProduct.threshold;
-      const canBuy = currentStock - umbral;
-      if (this.quantity == canBuy) {
-        this.showNotifications = true;
-        this.textNotification = "No puede agregar mas productos";
-        return true;
-      } else {
-        return false;
-      }
     },
 
     HandlerGetProducts(id) {
@@ -762,30 +848,132 @@ export default {
       }
     },
 
+    validateUmbral() {
+      this.messageProductAdd = false;
+      const userZipCode = this.authUser.zipcode;
+      let threshold = 0;
+      
+      if (
+        this.dataProduct.product != null &&
+        this.dataProduct.product.product_warehouse != null
+      ) {
+        const productWarehouse = this.dataProduct.product.product_warehouse;
+        switch (parseInt(userZipCode)) {
+          case 2000:
+            const warehouse2000 = productWarehouse.filter(
+              (whr) =>
+                (whr.warehouse_id == 10 && whr.current_stock > 0) ||
+                (whr.warehouse_id == 5 && whr.current_stock > 0)
+            );
+
+            if (warehouse2000.length == 1) {
+              const warehouseThreshold = warehouse2000.some(
+                (whr) => whr.current_stock > this.dataProduct.threshold
+              );
+
+              if (warehouseThreshold) {
+                threshold =
+                  warehouse2000[0].current_stock - this.dataProduct.threshold;
+              }
+            } else {
+              const userFindWarehouse2000 = warehouse2000.find(
+                (whr) => whr.warehouse_id == 10
+              );
+
+              if (
+                userFindWarehouse2000.current_stock > this.dataProduct.threshold
+              ) {
+                threshold =
+                  userFindWarehouse2000.current_stock -
+                  this.dataProduct.threshold;
+              }
+            }
+            break;
+          case 5000:
+            const warehouse5000 = productWarehouse.filter(
+              (whr) =>
+                (whr.warehouse_id == 3 && whr.current_stock > 0) ||
+                (whr.warehouse_id == 5 && whr.current_stock > 0)
+            );
+
+            if (warehouse5000.length == 1) {
+              const warehouseThreshold = warehouse5000.some(
+                (whr) => whr.current_stock > this.dataProduct.threshold
+              );
+
+              if (warehouseThreshold) {
+                threshold =
+                  warehouse5000[0].current_stock - this.dataProduct.threshold;
+              }
+            } else {
+              const userFindWarehouse = warehouse5000.find(
+                (whr) => whr.warehouse_id == 3
+              );
+
+              if (
+                userFindWarehouse.current_stock > this.dataProduct.threshold
+              ) {
+                threshold =
+                  userFindWarehouse.current_stock - this.dataProduct.threshold;
+              }
+            }
+            break;
+          default:
+            const warehouse = productWarehouse.filter(
+              (whr) => whr.warehouse_id == 5 && whr.current_stock > 0
+            );
+
+            if (warehouse.length > 0) {
+              const warehouseThreshold = warehouse.some(
+                (whr) => whr.current_stock > this.dataProduct.threshold
+              );
+
+              if (warehouseThreshold) {
+                threshold =
+                  warehouse[0].current_stock - this.dataProduct.threshold;
+              }
+            }
+            break;
+        }
+
+        return threshold > 0 ? true : false;
+      } else {
+        return false;
+      }
+    },
+
+    HandlerAvisame() {
+      this.showModalReserve = true;
+    },
+
+    async HandlerNotification() {
+      try {
+        this.loading = true;
+        const request = {
+          store_id: 3,
+          product_id: this.dataProduct.product_id,
+          publication_id: this.dataProduct.id,
+          email: this.authUser.buyer.email,
+          name: this.authUser.buyer.first_name,
+          phone: this.authUser.buyer.phone,
+        };
+
+        await this.$store.dispatch(
+          "products/PRODUCT_NOTIFICATION_USER",
+          request
+        );
+
+        this.showModalReserve = false;
+        this.dataProduct.user_product_notification = true;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async HandlerDowloadManual() {
       window.open(this.dataProduct.product.product_manual, "manual_de_usuario");
-      // try {
-      //   this.loadingManual = true;
-      //   const request = { url: this.dataProduct.product.product_manual };
-
-      //   const response = await this.$store.dispatch(
-      //     "products/PRODUCT_MANUAL",
-      //     request
-      //   );
-
-      //   const name = this.dataProduct.keywords.replaceAll(" ", "_");
-
-      //   const url = window.URL.createObjectURL(new Blob([response.data]));
-      //   const link = document.createElement("a");
-      //   link.href = url;
-      //   link.setAttribute("download", `${name}.pdf`);
-      //   document.body.appendChild(link);
-      //   link.click();
-      // } catch (error) {
-      //   console.log(error);
-      // } finally {
-      //   this.loadingManual = false;
-      // }
     },
   },
 };
