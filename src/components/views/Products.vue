@@ -37,9 +37,7 @@
           <v-row justify="center" no-gutters>
             <v-col cols="12" class="d-flex justify-center">
               <div class="font-weight-bold d-flex">
-                <span style="color: #00a0e9; font-size: 2.5em">
-                  TODO
-                </span>
+                <span style="color: #00a0e9; font-size: 2.5em"> TODO </span>
               </div>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
@@ -103,12 +101,6 @@
                     :key="u + 'w'"
                     class="px-5"
                   >
-                    <!-- {{feature}} -->
-                    <!-- <div
-                  v-for="(features, e) in category.features"
-                  :key="e + 'n'"
-                  class="mb-n5"
-                > -->
                     <div class="mb-n6">
                       <v-checkbox
                         :label="subCatName(feature.name)"
@@ -117,7 +109,6 @@
                         @change="HandlerFilterFeatures(feature)"
                       ></v-checkbox>
                     </div>
-                    <!-- </div> -->
                   </div>
                   <v-divider class="mx-5 mt-5"></v-divider>
                   <div

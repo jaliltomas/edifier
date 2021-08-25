@@ -103,7 +103,7 @@
               <div class="d-flex justify-space-between mt-5">
                 <cp-information
                   style="font-size: 18px"
-                  v-if="dataProduct && validateUmbral()"
+                  v-if="dataProduct"
                   :dataProduct="dataProduct"
                   :authUser="authUser"
                   class="mt-auto"
@@ -111,7 +111,11 @@
               </div>
 
               <div
-                v-if="validateStock() && validateUmbral()"
+                v-if="
+                  validateStock() &&
+                  validateUmbral() &&
+                  dataProduct.out_stock == false
+                "
                 class="d-flex align-center justify-start py-1 mt-10"
               >
                 <span class="mx-0 text-uppercase" style="font-weight: 500">
@@ -148,7 +152,11 @@
               <div
                 class="d-md-flex justify-space-between mt-5"
                 style="width: 80%"
-                v-if="validateStock() && validateUmbral()"
+                v-if="
+                  validateStock() &&
+                  validateUmbral() &&
+                  dataProduct.out_stock == false
+                "
               >
                 <v-btn
                   style="border-width: medium"
@@ -179,10 +187,11 @@
                 </div>
               </div>
 
-              <v-btn
+              <!-- <v-btn
                 v-if="
-                  validateUmbral() == false &&
-                  dataProduct.user_product_notification == null
+                  dataProduct.out_stock == true ||
+                  (validateUmbral() == false &&
+                    dataProduct.user_product_notification == null)
                 "
                 rounded
                 outlined
@@ -190,7 +199,7 @@
                 @click="HandlerAvisame()"
               >
                 AVISAME
-              </v-btn>
+              </v-btn> -->
 
               <span
                 style="color: #3fb7ee"
@@ -296,7 +305,9 @@
       </v-card>
     </v-dialog>
 
-    <ValidationObserver ref="obs" v-slot="{ passes }">
+
+    <!-- MODAL AVISAME SE SUSTITUYO EN CP-INFORMATION COMPONENT -->
+    <!-- <ValidationObserver ref="obs" v-slot="{ passes }">
       <v-dialog
         v-if="showModalReserve"
         v-model="showModalReserve"
@@ -364,7 +375,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </ValidationObserver>
+    </ValidationObserver> -->
 
     <div v-html="dataProduct.text_html"></div>
     <suscribe-component />
@@ -653,7 +664,11 @@ export default {
 
       if (this.quantity == 1 && quantity == "minus") {
         return;
-      } else if (quantity == "plus" && this.quantity < threshold) {
+      } else if (
+        quantity == "plus" &&
+        this.quantity < threshold &&
+        this.quantity < 4
+      ) {
         this.quantity++;
       } else if (quantity == "minus") {
         this.quantity--;

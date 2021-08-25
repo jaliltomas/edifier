@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div v-if="isAuth" class="mb-0">
+    <div
+      v-if="
+        isAuth && dataProduct.out_stock == false && validateUmbral() == true
+      "
+      class="mb-0"
+    >
       <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
         <p
           class="mb-0 text-uppercase"
@@ -112,7 +117,7 @@
         </p>
       </div>
     </div>
-    <div v-else class="mb-5">
+    <div v-else-if="isAuth == false" class="mb-5">
       <p
         class="mb-0 text-uppercase"
         style="cursor: pointer; font-color: #3f3c35"
@@ -122,6 +127,25 @@
         Conocé el tiempo de entrega
       </p>
     </div>
+    <div
+      v-else-if="
+        (isAuth && dataProduct.out_stock == true) || validateUmbral() == false
+      "
+    >
+      <v-btn
+        @click="
+          () => {
+            showModalReserve = true;
+          }
+        "
+        class="mt-6"
+        rounded
+        outlined
+        color="#3FB7EE"
+        >AVISAME</v-btn
+      >
+    </div>
+
     <ValidationObserver ref="obs" v-slot="{ passes }">
       <v-dialog
         v-if="showModalReserve"
@@ -378,6 +402,99 @@ export default {
         console.log(error);
       } finally {
         this.loading = false;
+      }
+    },
+
+    validateUmbral() {
+      // this.messageProductAdd = false;
+      const userZipCode = this.authUserData.zipcode;
+      let threshold = 0;
+
+      if (
+        this.dataProduct.product != null &&
+        this.dataProduct.product.product_warehouse != null
+      ) {
+        const productWarehouse = this.dataProduct.product.product_warehouse;
+        switch (parseInt(userZipCode)) {
+          case 2000:
+            const warehouse2000 = productWarehouse.filter(
+              (whr) =>
+                (whr.warehouse_id == 10 && whr.current_stock > 0) ||
+                (whr.warehouse_id == 5 && whr.current_stock > 0)
+            );
+
+            if (warehouse2000.length == 1) {
+              const warehouseThreshold = warehouse2000.some(
+                (whr) => whr.current_stock > this.dataProduct.threshold
+              );
+
+              if (warehouseThreshold) {
+                threshold =
+                  warehouse2000[0].current_stock - this.dataProduct.threshold;
+              }
+            } else {
+              const userFindWarehouse2000 = warehouse2000.find(
+                (whr) => whr.warehouse_id == 10
+              );
+
+              if (
+                userFindWarehouse2000.current_stock > this.dataProduct.threshold
+              ) {
+                threshold =
+                  userFindWarehouse2000.current_stock -
+                  this.dataProduct.threshold;
+              }
+            }
+            break;
+          case 5000:
+            const warehouse5000 = productWarehouse.filter(
+              (whr) =>
+                (whr.warehouse_id == 3 && whr.current_stock > 0) ||
+                (whr.warehouse_id == 5 && whr.current_stock > 0)
+            );
+
+            if (warehouse5000.length == 1) {
+              const warehouseThreshold = warehouse5000.some(
+                (whr) => whr.current_stock > this.dataProduct.threshold
+              );
+
+              if (warehouseThreshold) {
+                threshold =
+                  warehouse5000[0].current_stock - this.dataProduct.threshold;
+              }
+            } else {
+              const userFindWarehouse = warehouse5000.find(
+                (whr) => whr.warehouse_id == 3
+              );
+
+              if (
+                userFindWarehouse.current_stock > this.dataProduct.threshold
+              ) {
+                threshold =
+                  userFindWarehouse.current_stock - this.dataProduct.threshold;
+              }
+            }
+            break;
+          default:
+            const warehouse = productWarehouse.filter(
+              (whr) => whr.warehouse_id == 5 && whr.current_stock > 0
+            );
+
+            if (warehouse.length > 0) {
+              const warehouseThreshold = warehouse.some(
+                (whr) => whr.current_stock > this.dataProduct.threshold
+              );
+
+              if (warehouseThreshold) {
+                threshold =
+                  warehouse[0].current_stock - this.dataProduct.threshold;
+              }
+            }
+            break;
+        }
+        return threshold > 0 ? true : false;
+      } else {
+        return false;
       }
     },
 
