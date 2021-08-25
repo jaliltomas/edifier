@@ -849,10 +849,10 @@ export default {
     },
 
     validateUmbral() {
-      this.messageProductAdd = false;
+      // this.messageProductAdd = false;
       const userZipCode = this.authUser.zipcode;
       let threshold = 0;
-      
+
       if (
         this.dataProduct.product != null &&
         this.dataProduct.product.product_warehouse != null
