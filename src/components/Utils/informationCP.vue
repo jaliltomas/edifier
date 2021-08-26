@@ -137,11 +137,7 @@
       </p>
       <v-btn
         v-if="dataProduct.user_product_notification == null"
-        @click="
-          () => {
-            showModalReserve = true;
-          }
-        "
+        @click="HandlerModalAvisame()"
         class="mt-0"
         rounded
         outlined
@@ -152,9 +148,7 @@
       <p
         class="mb-0 text-uppercase"
         style="font-size: 1.2em"
-        v-else-if="
-          dataProduct.user_product_notification != null
-        "
+        v-else-if="dataProduct.user_product_notification != null"
       >
         <span
           class="black--text d-flex justify-center mt-n1 mb-6"
@@ -163,7 +157,7 @@
         >
           LO ELEGISTE
         </span>
-        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ  </span>
+        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
       </p>
     </div>
 
@@ -539,6 +533,14 @@ export default {
         name: "product_details",
         query: { data: encryptedID },
       });
+    },
+
+    HandlerModalAvisame() {
+      if (this.isAuth) {
+        this.showModalReserve = true;
+      } else {
+        this.$router.push({name: 'login'});
+      }
     },
 
     responseNotification() {
