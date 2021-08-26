@@ -201,7 +201,7 @@
                 AVISAME
               </v-btn> -->
 
-              <span
+              <!-- <span
                 style="color: #3fb7ee"
                 v-if="
                   validateUmbral() == false &&
@@ -209,7 +209,7 @@
                 "
               >
                 TE AVISAMOS CUANDO ESTÉ
-              </span>
+              </span> -->
             </div>
             <div
               class="py-15"

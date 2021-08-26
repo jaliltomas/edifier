@@ -74,6 +74,7 @@
             }}
             <br />
             <v-btn
+              class="mt-3"
               v-if="$route.name != 'product_details'"
               @click="HandlerShowProduct(dataProduct)"
               outlined
@@ -106,17 +107,66 @@
             >
               Próximamente
             </span>
-            <span
+            <!-- <span
               v-if="dataProduct.user_product_notification != null"
-              class="blue--text"
               style="cursor: default"
             >
               TE AVISAMOS CUANDO ESTÉ
-            </span>
+            </span> -->
           </span>
         </p>
       </div>
     </div>
+
+    <div
+      v-else-if="
+        (isAuth && dataProduct.out_stock == true) || validateUmbral() == false
+      "
+    >
+      <p style="font-size: 1.2em" class="mb-0 pt-1">
+        <span
+          v-if="
+            dataProduct.user_product_notification == null &&
+            $route.name == 'products'
+          "
+          class="black--text d-flex justify-center mt-n1 mb-4 text-uppercase"
+          style="cursor: default"
+        >
+          Próximamente
+        </span>
+      </p>
+      <v-btn
+        v-if="dataProduct.user_product_notification == null"
+        @click="
+          () => {
+            showModalReserve = true;
+          }
+        "
+        class="mt-0"
+        rounded
+        outlined
+        color="#3FB7EE"
+      >
+        AVISAME
+      </v-btn>
+      <p
+        class="mb-0 text-uppercase"
+        style="font-size: 1.2em"
+        v-else-if="
+          dataProduct.user_product_notification != null
+        "
+      >
+        <span
+          class="black--text d-flex justify-center mt-n1 mb-6"
+          style="cursor: default"
+          v-if="$route.name == 'products'"
+        >
+          LO ELEGISTE
+        </span>
+        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ  </span>
+      </p>
+    </div>
+
     <div v-else-if="isAuth == false" class="mb-5">
       <p
         class="mb-0 text-uppercase"
@@ -126,24 +176,6 @@
         <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
         Conocé el tiempo de entrega
       </p>
-    </div>
-    <div
-      v-else-if="
-        (isAuth && dataProduct.out_stock == true) || validateUmbral() == false
-      "
-    >
-      <v-btn
-        @click="
-          () => {
-            showModalReserve = true;
-          }
-        "
-        class="mt-6"
-        rounded
-        outlined
-        color="#3FB7EE"
-        >AVISAME</v-btn
-      >
     </div>
 
     <ValidationObserver ref="obs" v-slot="{ passes }">

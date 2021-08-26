@@ -63,7 +63,7 @@
                 >
                   <v-icon color="black">mdi-minus</v-icon>
                 </v-btn>
-                {{ item.original_quantity }}
+                {{ validateQuantity(item) }}
                 <v-btn
                   @click="HandlerQuantity(item, 'plus')"
                   color="#d6d1d1"
@@ -116,10 +116,6 @@ export default {
       showAlertRemove: false,
       selectProduct: null,
     };
-  },
-
-  async mounted() {
-    console.log(await this.products)
   },
 
   computed: {
@@ -271,6 +267,27 @@ export default {
 
     HandlerCloseDeleteProduct() {
       this.showAlertRemove = !this.showAlertRemove;
+    },
+
+    validateQuantity(item) {
+      // console.log("cantidad", item.original_quantity);
+      // const cart = this.productCartState;
+      // if (item.original_quantity > 4) {
+      //   this.$store.commit("cart/UPDATE_ITEM", {
+      //     product: item,
+      //     action: "minus",
+      //   });
+
+      //   const request = cart.shopping_cart_items.map((prod) => {
+      //     return {
+      //       publication_id: prod.publication_id,
+      //       quantity: prod.original_quantity,
+      //     };
+      //   });
+
+      //   console.log("request", request);
+      // }
+      return item.original_quantity;
     },
   },
 };
