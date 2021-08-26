@@ -12,7 +12,7 @@
       Bienvenido
     </div>
     <div
-      class="text-center mt-5"
+      class="text-center mt-3 mb-5"
       style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
     >
       Registra tu cuenta
@@ -21,7 +21,12 @@
     <ValidationObserver ref="obsReg" v-slot="{ passes }">
       <v-row>
         <v-col cols="12" md="6" class="mt-2">
-          <label for="nombre" class="ml-3">Nombre</label>
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3"
+            for="nombre"
+            >Nombre</label
+          >
           <ValidationProvider
             name="nombre"
             rules="required"
@@ -32,7 +37,8 @@
               class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
               color="black"
               dense
-              outlined
+              filled
+              flat
               placeholder="Ingresa tu nombre"
               :error-messages="errors"
             ></v-text-field>
@@ -40,7 +46,11 @@
         </v-col>
 
         <v-col cols="12" md="6" class="mt-2">
-          <label for="Codigo Postal" class="ml-3 ml-sm-3 ml-md-0">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3 ml-md-0"
+            for="Codigo Postal"
+          >
             Codigo Postal
           </label>
           <ValidationProvider
@@ -53,7 +63,8 @@
               class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
               color="black"
               dense
-              outlined
+              filled
+              flat
               placeholder="Ingresa tu codigo postal"
               :error-messages="errors"
             ></v-text-field>
@@ -66,14 +77,17 @@
             rules="email|required|confirmed:email_confirmation"
             v-slot="{ errors }"
           >
-            <label for="email" class="ml-3"> Correo Electrónico </label>
+            <label style="color: #666666" class="font-weight-bold ml-3" for="email">
+              Correo Electrónico
+            </label>
             <v-text-field
               autocomplete="off"
               v-model="email"
               class="mt-2 pl-3 pr-3 pr-sm-3 pr-md-0"
               color="black"
               dense
-              outlined
+              filled
+              flat
               placeholder="Ingresa tu correo electronico"
               :error-messages="errors"
             ></v-text-field>
@@ -87,7 +101,11 @@
             v-slot="{ errors }"
             vid="email_confirmation"
           >
-            <label for="email confirmar" class="ml-3 ml-sm-3 ml-md-0">
+            <label
+              style="color: #666666"
+              class="font-weight-bold ml-3 ml-md-0"
+              for="email confirmar"
+            >
               Confirmar Correo
             </label>
             <v-text-field
@@ -96,7 +114,8 @@
               class="mt-2 pr-3 ml-3 ml-sm-3 ml-md-0"
               color="black"
               dense
-              outlined
+              filled
+              flat
               placeholder="Confrima tu correo electronico"
               :error-messages="errors"
             ></v-text-field>
@@ -109,7 +128,13 @@
             rules="required|confirmed:confirmation"
             v-slot="{ errors }"
           >
-            <label for="password" class="ml-3"> Contraseña </label>
+            <label
+              style="color: #666666"
+              class="font-weight-bold ml-3"
+              for="password"
+            >
+              Contraseña
+            </label>
             <v-text-field
               autocomplete="off"
               v-model="password"
@@ -117,7 +142,8 @@
               class="mt-2 pl-3 pr-3 pr-sm-3 pr-md-0"
               color="black"
               dense
-              outlined
+              filled
+              flat
               placeholder="Ingresa tu contraseña"
               :error-messages="errors"
             ></v-text-field>
@@ -131,7 +157,11 @@
             vid="confirmation"
             v-slot="{ errors }"
           >
-            <label for="password confirmar" class="ml-3">
+            <label
+              style="color: #666666"
+              class="font-weight-bold"
+              for="password confirmar"
+            >
               Confirmar Contraseña
             </label>
             <v-text-field
@@ -141,7 +171,8 @@
               class="mt-2 pr-3 ml-3 ml-sm-3 ml-md-0"
               color="black"
               dense
-              outlined
+              filled
+              flat
               placeholder="Confirma tu nombre contraseña"
               :error-messages="errors"
             ></v-text-field>
@@ -235,9 +266,9 @@ export default {
 
     emitVerification() {
       const user = {
-          email: this.email,
-          password: this.password
-      }
+        email: this.email,
+        password: this.password,
+      };
       this.$emit("verification:change", user);
     },
   },

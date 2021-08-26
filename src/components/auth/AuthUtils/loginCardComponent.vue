@@ -12,7 +12,7 @@
       Bienvenido
     </div>
     <div
-      class="text-center mt-5"
+      class="text-center mt-3 mb-5"
       style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
     >
       Ingresa con tu cuenta
@@ -20,7 +20,9 @@
 
     <ValidationObserver ref="obs" v-slot="{ passes }">
       <v-col cols="12" md="12">
-        <label for="email">Correo Electrónico</label>
+        <label style="color: #666666" for="nombre" class="font-weight-bold">
+          Correo Electrónico
+        </label>
         <ValidationProvider
           name="Nombre"
           rules="email|required"
@@ -28,17 +30,20 @@
         >
           <v-text-field
             v-model="email"
-            class="mt-2"
-            color="#00A0E9"
+            class="mt-2 elevation-0"
             dense
-            outlined
+            color="#00A0E9"
+            filled
+            flat
             placeholder="ejemplo@mail.com"
             :error-messages="errors"
           ></v-text-field>
         </ValidationProvider>
       </v-col>
       <v-col cols="12" md="12" class="mt-n5">
-        <label for="email">Contraseña</label>
+        <label style="color: #666666" for="nombre" class="font-weight-bold">
+          Contraseña
+        </label>
         <ValidationProvider
           name="Contraseña"
           rules="required"
@@ -51,7 +56,8 @@
             class="mt-2"
             color="#00A0E9"
             dense
-            outlined
+            filled
+            flat
             placeholder="Ingresa tu contraseña"
             :error-messages="errors"
           ></v-text-field>
@@ -167,4 +173,7 @@ export default {
 </script>
 
 <style>
+.theme--light.v-text-field > .v-input__control > .v-input__slot:before {
+  border-color: #00a0e9 !important;
+}
 </style>
