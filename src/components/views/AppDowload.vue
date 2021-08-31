@@ -1,18 +1,18 @@
 <template>
   <div>
     <v-sheet>
-      <v-img src="@/assets/img/carrousel/Carrusel01.jpg">
+      <v-img src="@/assets/img/banners/app.webp">
         <v-container fill-height>
           <v-row justify="center">
             <v-col cols="12" class="pt-15 mt-15">
               <div style="height: 200px">
-                <div class="white--text text-center" style="font-size: 2em">
+                <div class="white--text text-center" style="font-size: 1.8em">
                   EDIFIER CONNECT
                 </div>
                 <v-img
                   class="mx-auto mt-15"
-                  width="100"
-                  height="100"
+                  width="75"
+                  height="75"
                   contain
                   src="@/assets/img/profileImage.svg"
                 ></v-img>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-sheet>
-      <v-img src="@/assets/img/carrousel/Carrusel01.jpg">
+      <v-img src="@/assets/img/banners/cart.webp">
         <v-container fill-height>
           <v-row justify="center">
             <v-col cols="12">

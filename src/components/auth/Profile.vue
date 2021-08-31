@@ -1,19 +1,19 @@
 <template>
   <div>
-    <v-img src="@/assets/img/carrousel/Carrusel01.jpg">
+    <v-img  contain src="@/assets/img/banners/profile.webp">
       <v-container fill-height>
         <v-row justify="center">
           <v-col cols="12">
             <div
-              class="text-center white--text my-15 py-15"
-              style="font-size: 2em"
+              class="text-center white--text my-7 py-7"
+              style="font-size: 1.5em"
             >
               PERFIL DE USUARIO
             </div>
             <div class="d-flex justify-center">
               <v-img
-                width="100"
-                height="100"
+                width="75"
+                height="75"
                 contain
                 src="@/assets/img/profileImage.svg"
               ></v-img>
