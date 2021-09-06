@@ -26,72 +26,87 @@
           <!-- MOSTRAR DIRECCIONES REGISTRADAS -->
           <v-col
             cols="12"
-            sm="6"
-            md="6"
-            lg="6"
-            xl="6"
+            sm="12"
+            md="12"
+            lg="12"
+            xl="12"
             v-for="(item, index) in dataAddress"
             :key="index"
           >
-            <v-card flat v-if="dataAddress.length > 0 && !canRegister">
-              <v-card-text>
-                <v-list-item v-show="dataAddress.length > 0" two-line>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      style="cursor: pointer"
-                      @click="HandlerEdit(item)"
-                      class="text-capitalize"
-                    >
-                      <v-icon>mdi-home</v-icon>
-                      {{ item.street }}
-                      {{ item.street_number }}
-                      {{ item.floor_number }}
-                      {{ item.department_number }}
-                      {{ item.location }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      <span class="font-weight-bold text-capitalize">
-                        <v-icon>mdi-account</v-icon>
+            <v-hover v-slot="{ hover }">
+              <v-card
+                :class="hover ? 'custom-card-border-address' : ''"
+                flat
+                v-if="dataAddress.length > 0 && !canRegister"
+              >
+                <v-card-text class="my-0 py-0">
+                  <v-list-item v-show="dataAddress.length > 0" two-line>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        style="cursor: pointer"
+                        @click="HandlerEdit(item)"
+                        class="text-capitalize"
+                      >
+                        <v-icon color="black">mdi-home</v-icon>
+                        <span class="ml-1 font-weight-bold title-address-card">
+                          Dirección:
+                        </span>
+                        {{ item.street }}
+                        {{ item.street_number }}
+                        {{ item.floor_number }}
+                        {{ item.department_number }}
+                        {{ item.location }}
+                      </v-list-item-title>
+                      <v-list-item-title>
+                        <v-icon color="black">mdi-account</v-icon>
+                        <span class="ml-1 font-weight-bold title-address-card">
+                          Quien recibe:
+                        </span>
                         {{ item.contact_name }}
-                      </span>
-                    </v-list-item-subtitle>
-                    <v-list-item-subtitle>
-                      <span>
-                        <v-icon>mdi-phone</v-icon>
+                      </v-list-item-title>
+                      <v-list-item-title>
+                        <v-icon color="black">mdi-phone</v-icon>
+                        <span class="ml-1 font-weight-bold title-address-card">
+                          Teléfono:
+                        </span>
                         {{ item.contact_phone }}
-                      </span>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-icon>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn icon v-bind="attrs" v-on="on">
-                          <v-icon
-                            @click="HandlerUpdate(item, 1)"
-                            :class="
-                              item.status
-                                ? 'animate__animated animate__pulse animate__infinite'
-                                : ''
-                            "
-                            :color="item.status ? '#6C63FF' : ''"
-                          >
-                            mdi-map-marker
-                          </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Dirección principal</span>
-                    </v-tooltip>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-icon>
+                      <div class="d-flex flex-column">
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon v-bind="attrs" v-on="on">
+                              <v-icon
+                                @click="HandlerUpdate(item, 1)"
+                                :class="
+                                  item.status
+                                    ? 'animate__animated animate__pulse animate__infinite'
+                                    : ''
+                                "
+                                :color="item.status ? '#6C63FF' : ''"
+                              >
+                                mdi-map-marker
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Dirección principal</span>
+                        </v-tooltip>
 
-                    <v-btn @click="HandlerEdit(item)" icon>
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn @click="HandlerDelete(item)" icon>
-                      <v-icon>mdi-delete-forever</v-icon>
-                    </v-btn>
-                  </v-list-item-icon>
-                </v-list-item>
-              </v-card-text>
-            </v-card>
+                        <v-btn @click="HandlerEdit(item)" icon>
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn @click="HandlerDelete(item)" icon>
+                          <v-icon>mdi-delete-forever</v-icon>
+                        </v-btn>
+                      </div>
+                    </v-list-item-icon>
+                  </v-list-item>
+                </v-card-text>
+              </v-card>
+            </v-hover>
+
+            <v-divider class="mx-15 px-15"></v-divider>
           </v-col>
           <!-- MOSTRAR FORMULARIO PARA REGISTRAR DIRECCION -->
           <v-col cols="12" sm="12" md="12" lg="12" v-if="canRegister">
@@ -650,4 +665,11 @@ export default {
 </script>
 
 <style>
+.title-address-card {
+  font-size: 0.9em;
+}
+
+.custom-card-border-address {
+  border-left: 3px #00a0e9 solid !important;
+}
 </style>
