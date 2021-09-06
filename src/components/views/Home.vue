@@ -140,7 +140,7 @@
                         {{ item.text_title }}
                       </h2>
                     </v-col>
-                    <v-col cols="12" class="align-self-end">
+                    <!-- <v-col cols="12" class="align-self-end">
                       <v-btn
                         @click="HandlerLocation(item, true)"
                         outlined
@@ -151,7 +151,7 @@
                       >
                         ver productos
                       </v-btn>
-                    </v-col>
+                    </v-col> -->
                   </v-row>
                 </v-img>
               </v-hover>
@@ -167,7 +167,7 @@
         <v-sheet color="#EBF1F7" class="mt-15">
           <div class="d-flex justify-center pt-15">
             <span class="text-uppercase text-center mb-0 featured-title-home">
-              Productos Destacados
+              Modelos Destacados
             </span>
           </div>
           <div class="d-flex justify-center mt-0">

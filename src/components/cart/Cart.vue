@@ -6,7 +6,7 @@
           <v-row justify="center">
             <v-col cols="12">
               <div class="text-center white--text" style="font-size: 2em">
-                Carrito de compra
+                Lista de compra
               </div>
             </v-col>
           </v-row>

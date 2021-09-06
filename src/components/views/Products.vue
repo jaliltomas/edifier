@@ -2,10 +2,7 @@
   <div>
     <v-sheet>
       <v-img
-        v-if="
-          productsCategories.length > 0 &&
-          productsCategories[0].image_url != null
-        "
+        v-if="imageBanner() && productsCategories.length > 0"
         contain
         :src="productsCategories[0].image_url"
         :lazy-src="productsCategories[0].image_url"
@@ -33,7 +30,7 @@
         src="@/assets/img/sections/todoCategories.webp"
         lazy-src="@/assets/img/sections/todoCategories.webp"
       >
-        <v-container fill-height>
+        <!-- <v-container fill-height>
           <v-row justify="center" no-gutters>
             <v-col cols="12" class="d-flex justify-center">
               <div class="font-weight-bold d-flex">
@@ -46,7 +43,7 @@
               </div>
             </v-col>
           </v-row>
-        </v-container>
+        </v-container> -->
       </v-img>
     </v-sheet>
 
@@ -663,6 +660,18 @@ export default {
       }
       this.everything = 1;
       this.HandlerGetProducts(this.page);
+    },
+
+    imageBanner() {
+      if (
+        this.$route.query.data == undefined &&
+        this.$route.query.sub_cat == undefined &&
+        this.$route.query.brand == undefined
+      ) {
+        return false;
+      } else {
+        return true;
+      }
     },
   },
 };

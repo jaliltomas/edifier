@@ -146,7 +146,8 @@ export default {
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
-        this.$router.push("/");
+        // this.$router.push("/");
+        this.$router.back();
       } catch (error) {
         console.log(error.response.data);
         if (error.response.status == 401) {

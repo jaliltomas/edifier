@@ -8,7 +8,7 @@
               style="font-size: 16px; font-weight: 800"
               class="text-left font-weight-bold black--text"
             >
-              Producto
+              Modelo
             </th>
             <th
               style="font-size: 16px; font-weight: 800"

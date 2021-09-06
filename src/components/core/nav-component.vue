@@ -38,7 +38,7 @@
                 hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
               "
             >
-              Productos
+              Nuestros modelos
             </span>
           </v-hover>
           <v-hover v-slot="{ hover }">

@@ -57,7 +57,7 @@
                 style="color: #3f4144; font-size: 1.15em"
                 class="d-flex justify-start algin-start font-weight-bold ml-2"
               >
-                Productos
+                Modelos
               </div>
               <div
                 v-for="(item, index) in categories"

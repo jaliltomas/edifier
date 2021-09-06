@@ -2,7 +2,7 @@
   <v-container fluid class="mx-0 px-0 py-0 my-0">
     <v-row justify="center" align="center" no-gutters>
       <information-component
-        :message="'Inicia sesión para mantenerte informado de los productos y servicios que tenemos para ti'"
+        :message="'Iniciá sesión para mantenerte informado de nuestros modelos, y servicios que tenemos para vos.'"
         :logo="true"
       />
       <v-col cols="12" md="7">
