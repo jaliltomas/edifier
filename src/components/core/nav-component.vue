@@ -112,28 +112,6 @@
           </v-tooltip>
         </div>
 
-        <!-- INGRESAR NO AUTENTICADO -->
-        <v-btn
-          v-if="isMobile == false && isAuth == false"
-          class="text-capitalize"
-          text
-          @click="HandlerRouter('login')"
-        >
-          <v-icon class="mr-1">mdi-account-outline</v-icon>
-          Ingresar
-        </v-btn>
-
-        <!-- SALIR APP -->
-        <v-btn
-          v-if="isMobile == false && isAuth == true"
-          class="text-capitalize"
-          text
-          @click="HandlerLogout"
-        >
-          <v-icon class="mr-1">mdi-exit-to-app</v-icon>
-          Salir
-        </v-btn>
-
         <v-btn
           v-if="isMobile == true && isAuth == false"
           class="text-capitalize"
@@ -183,6 +161,7 @@
               dark
               v-bind="attrs"
               v-on="on"
+              class="ml-2"
             >
               <v-icon>mdi-cart-outline</v-icon>
             </v-btn>
@@ -239,11 +218,31 @@
                 rounded
                 @click="HandlerRouter('cart')"
               >
-                Mi Carrito
+                Lista de compra
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
+
+        <!-- SALIR APP -->
+        <v-btn
+          v-if="isMobile == false && isAuth == true"
+          class="text-capitalize"
+          text
+          @click="HandlerLogout"
+        >
+          <v-icon class="mr-1">mdi-exit-to-app</v-icon>
+        </v-btn>
+
+        <v-btn
+          v-if="isMobile == false && isAuth == false"
+          class="text-capitalize"
+          text
+          @click="HandlerRouter('login')"
+        >
+          <v-icon class="mr-1">mdi-account-outline</v-icon>
+          Ingresar
+        </v-btn>
       </div>
 
       <!-- MEGA MENU -->
@@ -443,7 +442,15 @@ export default {
 
   methods: {
     HandlerRouter(router) {
-      this.$router.push({ name: router }).catch((err) => {});
+      if (router == "cart") {
+        if (this.isAuth) {
+          this.$router.push({ name: router }).catch((err) => {});
+        } else {
+          this.$router.push({ name: "login" }).catch((err) => {});
+        }
+      } else {
+        this.$router.push({ name: router }).catch((err) => {});
+      }
     },
 
     HandlerRoute(route, value) {
@@ -453,6 +460,7 @@ export default {
     async HandlerLogout() {
       try {
         this.$store.commit("auth/CLEAR_DATA_LOGOUT");
+        this.$store.commit("cart/CLEAN_CART");
         this.$router.push({ name: "home" }).catch((err) => err);
       } catch (error) {
         console.log(error);
