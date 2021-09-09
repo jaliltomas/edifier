@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-img  contain src="@/assets/img/banners/profile.webp">
+    <v-img contain src="@/assets/img/banners/profile.webp">
       <v-container fill-height>
         <v-row justify="center">
           <v-col cols="12">
             <div
-              class="text-center white--text my-7 py-7"
+              class="text-center white--text mt-10 mb-5 py-5"
               style="font-size: 1.5em"
             >
               PERFIL DE USUARIO
@@ -52,7 +52,13 @@
               </v-tab>
             </v-tabs>
           </v-col>
-          <v-col cols="12" sm="12" offset-md="4" md="8" class="mb-15 mx-auto">
+          <v-col
+            cols="12"
+            sm="12"
+            offset-md="4"
+            :md="action === 3 ? 11 : 8"
+            class="mb-15 mx-auto"
+          >
             <personal-data
               class="animate__animated animate__fadeIn animate__faster"
               v-if="action === 0"
@@ -78,7 +84,6 @@
 </template>
 
 <script>
-import NavegationComponent from "@/components/Utils/navegation_component";
 import PesonalData from "./utils/PesonalData";
 import Address from "./utils/Address";
 import ChangePassword from "./utils/ChangePassword";
@@ -86,13 +91,13 @@ import UserOrders from "./utils/UserOrders";
 import SuscribeComponent from "../Utils/suscribe_component.vue";
 export default {
   components: {
-    "navegation-component": NavegationComponent,
     "personal-data": PesonalData,
     Address,
     ChangePassword,
     UserOrders,
     "suscribe-component": SuscribeComponent,
   },
+
   data() {
     return {
       tab: null,
@@ -100,8 +105,17 @@ export default {
     };
   },
 
+  created() {
+    if (this.$route.query.action != undefined) {
+      this.action = parseInt(this.$route.query.action);
+      this.tab = parseInt(this.$route.query.action);
+      console.log("this.action", this.action);
+    }
+  },
+
   watch: {
     tab(val) {
+      console.log("tab", this.tab);
       this.action = val;
     },
   },

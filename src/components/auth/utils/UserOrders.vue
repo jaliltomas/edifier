@@ -1,5 +1,5 @@
 <template>
-  <v-card color="white" tile class="elevation-0 py-5 d-flex justify-center">
+  <v-card color="transparent" tile class="elevation-0 py-5 d-flex justify-center">
     <v-row justify="center">
       <v-col cols="12" sm="12" md="12">
         <v-data-table
@@ -40,9 +40,17 @@
         </v-data-table>
         <div v-if="showDetailsOrder">
           <details-component :dataOrder="dataOrder" />
-          <v-btn class="mt-2" @click="showDetailsOrder = !showDetailsOrder"
-            >Cerrar</v-btn
+          <v-btn
+            dark
+            small
+            rounded
+            color="#00A0E9"
+            class="mt-2"
+            @click="showDetailsOrder = !showDetailsOrder"
           >
+            <v-icon size="15" class="mr-2">mdi-arrow-left</v-icon>
+            <span class="mr-3">CONTINUAR COMPRANDO</span>
+          </v-btn>
         </div>
       </v-col>
     </v-row>

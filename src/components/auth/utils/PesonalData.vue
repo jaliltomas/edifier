@@ -144,21 +144,11 @@
         </div>
       </v-card-text>
     </v-card>
-
-    <notification-component
-      :text="errorText"
-      :active="activeNotificacion"
-      @dialog:change="HandlerCloseAlert"
-    />
   </ValidationObserver>
 </template>
 
 <script>
-import Notification from "../../Utils/notification_componenet.vue";
 export default {
-  components: {
-    "notification-component": Notification,
-  },
   data() {
     return {
       loading: false,
