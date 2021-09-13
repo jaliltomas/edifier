@@ -20,17 +20,31 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+import store from '../store/index';
+
 const routes = [
     { path: '/', component: Home, name: 'home' },
     { path: '/products', component: Products, name: 'products' },
     { path: '/product-details', component: ProductDetails, name: 'product_details' },
     { path: '/product-favorite', component: ProductFavorite, name: 'product_favorite' },
-    { path: '/cart', component: Cart, name: 'cart' },
+    {
+        path: '/cart', component: Cart, name: 'cart', meta: {
+            requiresAuth: true
+        },
+    },
     { path: '/login', component: Login, name: 'login' },
     { path: '/recovery', component: Recovery, name: 'recovery' },
     { path: '/signup', component: Signup, name: 'signup' },
-    { path: '/profile', component: Profile, name: 'profile' },
-    { path: '/order_details', component: OrderDetails, name: 'order_details' },
+    {
+        path: '/profile', component: Profile, name: 'profile', meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/order_details', component: OrderDetails, name: 'order_details', meta: {
+            requiresAuth: true
+        },
+    },
     { path: '/checkout', component: Checkout, name: 'checkout' },
     {
         path: '/checkout_notification',
@@ -64,6 +78,21 @@ const router = new VueRouter({
     },
     base: process.env.BASE_URL,
     routes
-})
+});
+
+router.beforeEach(async (to, from, next) => {
+    const authUser = store.getters["auth/AUTHENTICATED"];
+
+    // Verifico Autenticacion
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!authUser) {
+            next({ path: "/login" })
+        } else {
+            next();
+        }
+    } else {
+        next(); // make sure to always call next()!
+    }
+});
 
 export default router
