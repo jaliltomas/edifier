@@ -61,11 +61,11 @@
               v-slot="{ errors }"
             >
               <v-text-field
-                @keyup.enter="passes(HandlerRecovery)"
+                @keyup.enter="passes(HandlerRecoveryAccount)"
                 v-model="email_verifiction"
                 label="Correo Electrónico"
                 dense
-                outlined
+                filled
                 color="#00A0E9"
                 :error-messages="errors"
               ></v-text-field>
@@ -114,7 +114,7 @@
               showRecovery = false;
               showNotificationEmail = false;
               email_verifiction = '';
-            }">Cancelar</v-btn>
+            }">Ok</v-btn>
           </v-card-actions>
         </v-card>
       </ValidationObserver>
