@@ -16,10 +16,26 @@
               >
                 DETALLE DE TU COMPRA
               </div>
-              <div class="mb-1 ml-md-5">
-                <span class="font-weight-bold">Orden #:</span>
-                {{ orderData.meli_id }}
-              </div>
+              <v-tooltip left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-hover v-slot="{ hover }">
+                    <div
+                      class="mb-1 ml-md-5"
+                      :style="
+                        hover
+                          ? 'text-decoration: underline #00A0E9; cursor: pointer'
+                          : ''
+                      "
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <span class="font-weight-bold">Factura:</span>
+                      {{ orderData.meli_id }}
+                    </div>
+                  </v-hover>
+                </template>
+                <span>Descargar</span>
+              </v-tooltip>
               <div class="ml-5">
                 <span class="font-weight-bold">Comprado el:</span>
                 {{ orderData.created_at | today }}
@@ -82,7 +98,7 @@
                 style="color: #393939; font-size: 1em"
                 class="font-weight-bold mb-10 ml-md-4"
               >
-                DATOS DE ENVIO
+                DATOS DE ENVÍO
               </div>
               <div class="d-flex ml-md-3">
                 <div style="width: 50%" class="font-weight-bold mr-4">
@@ -102,7 +118,7 @@
             <v-col cols="12" md="3">
               <div class="mb-14"></div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-weight-bold mr-4">
                   Código Postal:
                 </div>
                 <span v-if="authUser.address != null">
@@ -110,13 +126,13 @@
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-weight-bold mr-4">
                   Provincia:
                 </div>
                 <span>provincia</span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-weight-bold mr-4">
                   Localidad:
                 </div>
                 <span v-if="authUser.address != null">
@@ -124,7 +140,7 @@
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-weight-bold mr-4">
                   Calle:
                 </div>
                 <span v-if="authUser.address != null">
@@ -132,13 +148,13 @@
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">Nº:</div>
+                <div style="width: 50%" class="font-weight-bold mr-4">Nº:</div>
                 <span v-if="authUser.address != null">
                   {{ authUser.address.street_number }}
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-weight-bold mr-4">
                   Piso:
                 </div>
                 <span v-if="authUser.address != null">
@@ -146,7 +162,7 @@
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 55%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-weight-bold mr-4">
                   Dpto:
                 </div>
                 <span v-if="authUser.address != null">
@@ -232,9 +248,7 @@
                     </td>
                     <td v-if="item.publication != null">
                       <span class="d-flex justify-center">
-                        {{
-                          item.publication.price.pvp | currencyTotal
-                        }}
+                        {{ item.publication.price.pvp | currencyTotal }}
                       </span>
                     </td>
                     <td>
@@ -243,10 +257,40 @@
                         class="d-flex justify-center"
                       >
                         <span v-if="orderData.shipping.shipping_type == 'CABA'">
-                          {{ orderData.shipping.meli_shippings_id }}
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                              <span
+                                style="cursor: pointer"
+                                v-bind="attrs"
+                                v-on="on"
+                                @click="
+                                  handlerCoy(
+                                    orderData.shipping.meli_shippings_id
+                                  )
+                                "
+                              >
+                                {{ orderData.shipping.meli_shippings_id }}
+                              </span>
+                              <span>Copiar</span>
+                            </template>
+                          </v-tooltip>
                         </span>
                         <span v-else>
-                          {{ orderData.shipping.tracking_number }}
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                              <span
+                                style="cursor: pointer"
+                                v-bind="attrs"
+                                v-on="on"
+                                @click="
+                                  handlerCoy(orderData.shipping.tracking_number)
+                                "
+                              >
+                                {{ orderData.shipping.tracking_number }}
+                              </span>
+                            </template>
+                            <span>Copiar</span>
+                          </v-tooltip>
                         </span>
                       </span>
                       <span v-else class="d-flex justify-center"> ...... </span>
@@ -380,14 +424,7 @@ export default {
       let that = this;
       navigator.clipboard.writeText(item).then(
         function () {
-          console.log("Async: Copying to clipboard was successful!");
-          if (item == "ikono") {
-            that.isCopyAlias = "ikono1";
-            that.isCopyCBU = "CBU0";
-          } else if (item == "0170470320000000397319") {
-            that.isCopyCBU = "CBU1";
-            that.isCopyAlias = "ikono0";
-          }
+          console.log("copye element");
         },
         function (err) {
           console.error("Async: Could not copy text: ", err);

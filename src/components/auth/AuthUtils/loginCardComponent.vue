@@ -15,7 +15,7 @@
       class="text-center mt-3 mb-5"
       style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
     >
-      Ingresa con tu cuenta
+      Ingresá a tu cuenta
     </div>
 
     <ValidationObserver ref="obs" v-slot="{ passes }">

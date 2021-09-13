@@ -91,8 +91,7 @@
               </v-radio-group>
               <div v-if="radioGroup == 0">
                 <div v-if="canBuyWarehouse == null" class="title">
-                  Vaya, este metodo de entrega no esta disponible para estos
-                  productos, porfavor intenta con otro.
+                  No disponible para este modelo.
                 </div>
                 <div v-else>
                   Puedes retirar los productos en el siguiente almacen:

@@ -56,7 +56,7 @@
             cols="12"
             sm="12"
             offset-md="4"
-            :md="action === 3 ? 11 : 8"
+            :md="action === 3 ? 12 : 8"
             class="mb-15 mx-auto"
           >
             <personal-data

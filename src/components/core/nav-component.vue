@@ -69,9 +69,9 @@
         <v-spacer></v-spacer>
 
         <!-- BUSCADOR -->
-        <v-btn @click="activeSearch" icon>
-          <v-icon color="black">mdi-magnify</v-icon>
-        </v-btn>
+        <v-icon color="black" @click="activeSearch" class="mr-2">
+          mdi-magnify
+        </v-icon>
 
         <!-- FAVORITOS AUTENTICADO -->
         <div v-if="!isMobile && favoriteProduct.length > 0">
@@ -131,20 +131,6 @@
         >
           <v-icon>mdi-exit-to-app </v-icon>
         </v-btn>
-
-        <!-- CARRITO -->
-        <!-- <v-badge
-        v-if="products"
-        :content="products.length"
-        :value="products.length"
-        bordered
-        color="#00A0E9"
-        overlap
-      >
-        <v-btn color="black" icon @click="HandlerRouter('cart')">
-          <v-icon>mdi-cart-outline</v-icon>
-        </v-btn>
-      </v-badge> -->
 
         <v-menu
           open-on-hover
@@ -224,15 +210,21 @@
           </v-card>
         </v-menu>
 
-        <!-- SALIR APP -->
-        <v-btn
-          v-if="isMobile == false && isAuth == true"
-          class="text-capitalize"
-          text
-          @click="HandlerLogout"
-        >
-          <v-icon class="mr-1">mdi-exit-to-app</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              v-if="isMobile == false && isAuth == true"
+              class="ml-3"
+              v-bind="attrs"
+              v-on="on"
+              @click="HandlerLogout"
+              color="black"
+            >
+              mdi-exit-to-app
+            </v-icon>
+          </template>
+          <span>Salir</span>
+        </v-tooltip>
 
         <v-btn
           v-if="isMobile == false && isAuth == false"

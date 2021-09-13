@@ -136,22 +136,10 @@
                 >
                   <v-row style="height: 22.5em">
                     <v-col cols="12">
-                      <h2 class="title-categories-home">
+                      <div class="title-categories-home">
                         {{ item.text_title }}
-                      </h2>
+                      </div>
                     </v-col>
-                    <!-- <v-col cols="12" class="align-self-end">
-                      <v-btn
-                        @click="HandlerLocation(item, true)"
-                        outlined
-                        color="white"
-                        class="ml-7 ml-sm-3 ml-md-7 mb-5"
-                        rounded
-                        :small="$vuetify.breakpoint.name == 'sm' ? true : false"
-                      >
-                        ver productos
-                      </v-btn>
-                    </v-col> -->
                   </v-row>
                 </v-img>
               </v-hover>
