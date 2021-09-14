@@ -6,7 +6,7 @@
           <v-row justify="center">
             <v-col cols="12" class="pt-15 mt-15">
               <div style="height: 200px">
-                <div class="white--text text-center" style="font-size: 1.8em">
+                <div class="white--text text-center title-conect">
                   EDIFIER CONNECT
                 </div>
                 <v-img
@@ -73,4 +73,7 @@ export default {
 </script>
 
 <style>
+.title-conect {
+  font-size: 1.8em;
+}
 </style>

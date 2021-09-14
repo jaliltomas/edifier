@@ -14,37 +14,34 @@
               <div class="d-flex justify-start justify-md-start mt-1">
                 <v-icon
                   color="#67696B"
-                  class="mx-0 px-0"
+                  class="mx-0 px-0 cursor-pointer"
                   @click="
                     HandlerSocialLink(
                       'https://www.facebook.com/edifier.argentina/'
                     )
                   "
-                  style="cursor: pointer"
                 >
                   mdi-facebook
                 </v-icon>
                 <v-icon
                   color="#67696B"
-                  class="mx-2"
+                  class="mx-2 cursor-pointer"
                   @click="
                     HandlerSocialLink(
                       'https://www.instagram.com/edifier.argentina/'
                     )
                   "
-                  style="cursor: pointer"
                 >
                   mdi-instagram
                 </v-icon>
                 <v-icon
                   color="#67696B"
-                  class="mx-0"
+                  class="mx-0 cursor-pointer"
                   @click="
                     HandlerSocialLink(
                       'https://www.youtube.com/channel/UCL3TSzB0rmeBxL0PMkPA18w'
                     )
                   "
-                  style="cursor: pointer"
                 >
                   mdi-youtube
                 </v-icon>
@@ -52,10 +49,16 @@
             </div>
           </v-col>
           <v-col cols="6" md="3" class="d-flex justify-center">
-            <div style="border-left: 1px solid #b7b6b6">
+            <div class="models-footer">
               <div
-                style="color: #3f4144; font-size: 1.15em"
-                class="d-flex justify-start algin-start font-weight-bold ml-2"
+                class="
+                  d-flex
+                  justify-start
+                  algin-start
+                  font-weight-bold
+                  ml-2
+                  models-footer-text
+                "
               >
                 Modelos
               </div>
@@ -81,10 +84,16 @@
             </div>
           </v-col>
           <v-col cols="6" md="3" class="d-flex justify-center">
-            <div style="border-left: 1px solid #b7b6b6">
+            <div class="models-footer">
               <div
-                style="color: #3f4144; font-size: 1.15em"
-                class="d-flex justify-start algin-start font-weight-bold ml-2"
+                class="
+                  d-flex
+                  justify-start
+                  algin-start
+                  font-weight-bold
+                  ml-2
+                  models-footer-text
+                "
               >
                 Soporte
               </div>
@@ -110,10 +119,16 @@
             </div>
           </v-col>
           <v-col cols="6" md="3" class="d-flex justify-md-center">
-            <div style="border-left: 1px solid #b7b6b6">
+            <div class="models-footer">
               <div
-                style="color: #3f4144; font-size: 1.15em"
-                class="d-flex justify-start algin-start font-weight-bold ml-2"
+                class="
+                  d-flex
+                  justify-start
+                  algin-start
+                  font-weight-bold
+                  ml-2
+                  models-footer-text
+                "
               >
                 Empresa
               </div>
@@ -140,7 +155,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <div style="height: auto; background-color: black" class="mt-10">
+      <div class="mt-10 background-footer">
         <v-container>
           <span style="color: #67696b">
             © EDIFIER 2021 Todos los derechos reservados
@@ -279,9 +294,4 @@ export default {
 </script>
 
 <style>
-.stadio_title {
-  color: #8b8383;
-  font-weight: 600;
-  font-size: 4em;
-}
 </style>

@@ -1,10 +1,7 @@
 <template>
   <v-container fluid>
-    <div class="custom-nav" style="height: 75px">
-      <div
-        class="d-flex px-0 px-sm-15 px-md-15"
-        style="height: 75px; align-items: center"
-      >
+    <div class="custom-nav">
+      <div class="d-flex px-0 px-sm-15 px-md-15 nav-position">
         <v-app-bar-nav-icon
           @click="drawer = !drawer"
           v-if="isMobile"
@@ -16,7 +13,7 @@
           @click="$router.push({ name: 'home' }).catch((err) => err)"
         >
           <v-img
-            style="cursor: pointer"
+            class="cursor-pointer"
             contain
             @mouseover="megaMenu = false"
             src="@/assets/img/edifier-logo-color.svg"
@@ -513,37 +510,4 @@ export default {
 </script>
 
 <style>
-.center-me {
-  position: absolute;
-  margin-left: 50%;
-  transform: translate(-50%, 0);
-}
-.my-custom-dialog {
-  align-self: flex-end;
-}
-.fade-transition-leave-active {
-  position: absolute;
-  width: 100%;
-}
-
-.mega_menu {
-  position: absolute;
-  z-index: 1;
-  width: 100%;
-  margin-left: 0px;
-  -webkit-box-shadow: 0px 0px 4px 0px rgb(0 0 0 / 30%);
-  box-shadow: 0px 0px 4px 0px rgb(0 0 0 / 30%);
-}
-
-.custom-nav {
-  height: 76px;
-  position: fixed;
-  z-index: 2;
-  background-color: #fff;
-  width: 100%;
-  top: 0;
-  left: 0;
-  -webkit-box-shadow: 0 3px 5px 0 rgb(0 0 0 / 30%);
-  box-shadow: 0 3px 5px 0 rgb(0 0 0 / 30%);
-}
 </style>

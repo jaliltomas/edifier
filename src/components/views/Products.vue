@@ -4,6 +4,8 @@
       <v-img
         v-if="imageBanner() && productsCategories.length > 0"
         contain
+        width="100%"
+        height="auto"
         :src="productsCategories[0].image_url"
         :lazy-src="productsCategories[0].image_url"
       >
