@@ -374,7 +374,7 @@ export default {
                 response: response.data.data,
               };
             } else {
-              console.log("Pagar de una 1");
+              // console.log("Pagar de una 1");
               if (this.confirmOrder.length > 0) {
                 this.showAlertCheckout = !this.showAlertCheckout;
                 this.dataAlertCheckout = {
@@ -388,7 +388,7 @@ export default {
               }
             }
           } else {
-            console.log("Mostrar Alerta para que llene su direccion");
+            this.$router.push({ name: "profile" });
           }
         } else {
           // this.HandlerCheckout();
@@ -401,7 +401,6 @@ export default {
               response: response.data.data,
             };
           } else {
-            console.log("Pagar de una 2 **");
             this.HandlerCheckout();
           }
         }
@@ -451,7 +450,7 @@ export default {
                 ? this.idAddress
                 : this.idAddress.id
               : "",
-          warehouse_id: "",
+          warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
           store_id: 3,
         };
 
