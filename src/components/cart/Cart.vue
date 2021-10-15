@@ -276,7 +276,6 @@ export default {
 
   watch: {
     radioGroup(val) {
-      console.log("***********", val);
       if (val == 0) {
         this.getUserAddressPriority();
         this.ValidateProductWarehouse();
@@ -347,16 +346,12 @@ export default {
         const summary = response.data.data.summary;
         const shopping_cart = response.data.data.shopping_cart;
 
-        console.log("Productos", response.data.data.shopping_cart);
-        console.log("Resumen", response.data.data.summary);
-
         this.$store.commit("cart/SET_CART_SUMMART", summary);
 
         this.confirmOrder = [
           ...this.getShoppingCartItems(summary, shopping_cart),
         ];
 
-        console.log("Confirm Order", this.confirmOrder);
         // VERIFICAR SI TIENE DIRECCION REGISTRADA
         if (this.radioGroup == 1) {
           const responseAddress = await this.$store.dispatch(
@@ -374,7 +369,6 @@ export default {
                 response: response.data.data,
               };
             } else {
-              // console.log("Pagar de una 1");
               if (this.confirmOrder.length > 0) {
                 this.showAlertCheckout = !this.showAlertCheckout;
                 this.dataAlertCheckout = {
@@ -454,8 +448,6 @@ export default {
           store_id: 3,
         };
 
-        // console.log("Request checkout", request);
-
         const response = await this.$store.dispatch(
           "products/CHECKOUT_DO",
           request
@@ -502,8 +494,6 @@ export default {
           this.alertNotificationBuy = true;
         if (response.data.data.store_pickup == true)
           this.canBuyWarehouse = response.data.data.warehouse;
-
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
