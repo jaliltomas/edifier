@@ -32,6 +32,129 @@
           <v-col cols="12" md="3">
             <v-card class="elevation-3 mt-5" color="#FAFAFA">
               <v-card-text>
+                <div
+                  class="font-weight-bold black--text text-center"
+                  style="font-size: 1.1em; color: #3c3c3c"
+                >
+                  FORMA DE PAGO
+                </div>
+                <v-row class="mt-2">
+                  <v-col cols="12" md="4" class="d-flex align-stretch">
+                    <v-sheet
+                      color="#E9E9E9"
+                      width="100%"
+                      class="d-flex flex-column"
+                    >
+                      <div>
+                        <v-img
+                          width="100%"
+                          class="d-flex justify-center pt-5"
+                          contain
+                          src="@/assets/img/checkout/18cuotas.svg"
+                        ></v-img>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
+                          18
+                        </span>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
+                          Cuotas
+                        </span>
+                      </div>
+                      <div class="mt-auto">
+                        <div class="d-flex justify-center">
+                          <v-radio-group v-model="radioGroupDues">
+                            <v-radio @change="checkoutType(1)"></v-radio>
+                          </v-radio-group>
+                        </div>
+                      </div>
+                    </v-sheet>
+                  </v-col>
+                  <v-col cols="12" md="4" class="d-flex align-stretch">
+                    <v-sheet
+                      color="#E9E9E9"
+                      width="100%"
+                      class="d-flex flex-column"
+                    >
+                      <div>
+                        <v-img
+                          width="250"
+                          class="d-flex justify-center pt-5"
+                          contain
+                          src="@/assets/img/checkout/deb-cred.svg"
+                        ></v-img>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
+                          1 Pago
+                        </span>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
+                          Débito
+                        </span>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
+                          Crédito
+                        </span>
+                      </div>
+                      <div class="mt-auto">
+                        <div class="d-flex justify-center">
+                          <v-radio-group v-model="radioGroupCredit">
+                            <v-radio @change="checkoutType(2)"></v-radio>
+                          </v-radio-group>
+                        </div>
+                      </div>
+                    </v-sheet>
+                  </v-col>
+                  <v-col cols="12" md="4" class="d-flex align-stretch">
+                    <v-sheet
+                      color="#E9E9E9"
+                      width="100%"
+                      class="d-flex flex-column"
+                    >
+                      <div>
+                        <v-img
+                          width="250"
+                          class="d-flex justify-center pt-4"
+                          contain
+                          src="@/assets/img/checkout/transferencia.svg"
+                        ></v-img>
+                        <span
+                          class="d-flex justify-center mt-n1"
+                          style="font-size: 0.83em"
+                        >
+                          Transferencia
+                        </span>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
+                          Bancaria
+                        </span>
+                      </div>
+                      <div class="mt-auto">
+                        <div class="d-flex justify-center">
+                          <v-radio-group v-model="radioGroupTransfer">
+                            <v-radio
+                              @change="checkoutType(3)"
+                              class="mt-1 ml-2"
+                            ></v-radio>
+                          </v-radio-group>
+                        </div>
+                      </div>
+                    </v-sheet>
+                  </v-col>
+                </v-row>
+                <v-divider class="my-3"></v-divider>
                 <div class="font-weight-bold black--text text-center">
                   TOTAL DEL CARRITO
                 </div>
@@ -48,13 +171,19 @@
                 </div>
                 <div class="d-flex justify-center">
                   <v-btn
+                    :disabled="
+                      radioGroupDues == null ||
+                      radioGroupCredit == null ||
+                      radioGroupTransfer == null
+                        ? true
+                        : false
+                    "
                     :loading="loadingAcceptItem"
                     style="cursor: pointer"
-                    class="mt-10 mx-5"
-                    dark
+                    class="mt-10 mx-5 white--text"
                     color="#00a0e9"
                     rounded
-                    @click="showSelectDelivery = !showSelectDelivery"
+                    @click="canCheckout()"
                   >
                     Continuar al checkout
                   </v-btn>
@@ -221,6 +350,12 @@
         </v-dialog>
       </v-container>
     </v-sheet>
+    <transfer-checkout
+      v-if="showModalTransfer"
+      :showModalTransfer="showModalTransfer"
+      :productCartState="productCartState"
+      :responseTransferCheckout="responseTransferCheckout"
+    />
     <suscribe-component />
   </div>
 </template>
@@ -230,12 +365,14 @@ import DialogNotification from "./DialogNotification";
 import AceptNoItems from "./AceptNoItems";
 import TableItems from "./utils/TableItems.vue";
 import Suscribe from "../Utils/suscribe_component.vue";
+import TransferCheckout from "./utils/TransferCheckout.vue";
 export default {
   components: {
     DialogNotification,
     AceptNoItems,
     TableItems,
     "suscribe-component": Suscribe,
+    "transfer-checkout": TransferCheckout,
   },
   data() {
     return {
@@ -266,6 +403,12 @@ export default {
       // Error Checkout
       showAlertPerfil: false,
       alertPerfil: [],
+
+      radioGroupDues: null,
+      radioGroupCredit: null,
+      radioGroupTransfer: null,
+      responseTransferCheckout: {},
+      showModalTransfer: false,
     };
   },
 
@@ -378,7 +521,11 @@ export default {
                   response: response.data.data,
                 };
               } else {
-                this.HandlerCheckout();
+                if (this.radioGroupTransfer === 0) {
+                  this.HandlerTransferCheckout(shopping_cart);
+                } else {
+                  this.HandlerCheckout();
+                }
               }
             }
           } else {
@@ -497,6 +644,102 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    checkoutType(val) {
+      switch (val) {
+        case 1:
+          this.dues = true;
+          this.radioGroupDues = true;
+          this.credit = false;
+          this.radioGroupCredit = false;
+          this.transfer = false;
+          this.radioGroupTransfer = false;
+          break;
+        case 2:
+          this.dues = false;
+          this.radioGroupDues = false;
+          this.credit = true;
+          this.radioGroupCredit = true;
+          this.transfer = false;
+          this.radioGroupTransfer = false;
+          break;
+        case 3:
+          this.dues = false;
+          this.radioGroupDues = false;
+          this.credit = false;
+          this.radioGroupCredit = false;
+          this.transfer = true;
+          this.radioGroupTransfer = true;
+          break;
+      }
+    },
+
+    canCheckout() {
+      if (this.radioGroupDues === 0) {
+        this.showSelectDelivery = true;
+        this.payments_type = "installments";
+        this.default_installments = 18;
+        this.totalPrice();
+      }
+
+      if (this.radioGroupCredit === 0) {
+        this.showSelectDelivery = true;
+        this.payments_type = "card";
+        this.default_installments = "";
+        this.totalPrice();
+      }
+
+      if (this.radioGroupTransfer === 0) {
+        this.showSelectDelivery = true;
+        this.totalPrice();
+      }
+    },
+
+    async HandlerTransferCheckout(cart) {
+      try {
+        this.loadingCheckout = true;
+        const id =
+          typeof this.idAddress == "number"
+            ? this.idAddress
+            : this.idAddress.id;
+        const request = {
+          store_id: 1,
+          store_pickup: this.radioGroup == 0 ? true : false,
+          shopping_cart_id: cart.id,
+          addresse_id: id,
+        };
+
+        const response = await this.$store.dispatch(
+          "checkout/CHECKOUT_TRANSFER",
+          request
+        );
+
+        this.responseTransferCheckout = response.data.data;
+        this.showModalTransfer = true;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loadingCheckout = false;
+      }
+    },
+
+    totalPrice(cart_items) {
+      let priceTotal = 0;
+      if (cart_items != undefined) {
+        priceTotal = cart_items.reduce((acc, arr) => {
+          if (this.radioGroupDues === 0) {
+            acc +=
+              arr.publication.price.pvp_18_installments * arr.original_quantity;
+          } else if (this.radioGroupCredit === 0) {
+            acc += arr.publication.price.pvp * arr.original_quantity;
+          } else if (this.radioGroupTransfer === 0) {
+            acc += arr.publication.price.pvp_transfer * arr.original_quantity;
+          }
+          return acc;
+        }, 0);
+      }
+      return priceTotal;
     },
   },
 };

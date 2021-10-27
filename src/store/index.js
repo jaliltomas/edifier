@@ -6,6 +6,7 @@ import { products } from './modules/products'
 import { cart } from './modules/cart'
 import { favorites } from './modules/favorites'
 import { country } from './modules/country'
+import { checkout } from './modules/checkout'
 
 Vue.use(Vuex)
 
@@ -22,7 +23,8 @@ export default new Vuex.Store({
     products,
     cart,
     favorites,
-    country
+    country,
+    checkout
   },
   getters: {
     activeSearchValue: (state => state.search)

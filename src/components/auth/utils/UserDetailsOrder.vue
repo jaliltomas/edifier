@@ -248,7 +248,8 @@
                     </td>
                     <td v-if="item.publication != null">
                       <span class="d-flex justify-center">
-                        {{ item.publication.price.pvp | currencyTotal }}
+                        <!-- {{ item.publication.price.pvp | currencyTotal }} -->
+                        {{ getTotal(item.publication.price) | currencyTotal }}
                       </span>
                     </td>
                     <td>
@@ -432,14 +433,28 @@ export default {
       );
     },
 
-    getTotal(order) {
-      let total = 0;
-      if (order != undefined) {
-        total = order.reduce((acc, arr) => {
-          return (acc += arr.publication.price.pvp_transfer);
-        }, 0);
+    getTotal(price) {
+      const payment = this.orderData?.payment;
+      console.log("precio",price)
+      console.log(payment)
+      const typePayment = payment.map((pay) => {
+        let pricePay = 0;
+
+        if (pay.payment_type_id == "credit_card") {
+          pricePay = price.pvp;
+        } else if (pay.payment_type_id == "bank_transfer") {
+          pricePay = price.pvp_transfer;
+        } else {
+          pricePay = price.pvp_18_installments;
+        }
+
+        return pricePay;
+      });
+      if (typePayment.length > 0) {
+        return typePayment[0];
+      } else {
+        return 0;
       }
-      return total;
     },
 
     HandlerGoProfile() {

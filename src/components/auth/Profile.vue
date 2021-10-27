@@ -109,13 +109,12 @@ export default {
     if (this.$route.query.action != undefined) {
       this.action = parseInt(this.$route.query.action);
       this.tab = parseInt(this.$route.query.action);
-      console.log("this.action", this.action);
     }
   },
 
   watch: {
     tab(val) {
-      console.log("tab", this.tab);
+      console.log(val)
       this.action = val;
     },
   },

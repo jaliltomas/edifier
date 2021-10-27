@@ -78,29 +78,45 @@
             <div class="mt-auto">
               <div class="d-md-flex">
                 <p class="mb-0 mt-2">
-                  <span
-                    v-if="dataProduct.price != null"
-                    class="font-weight-light"
-                    style="font-size: 35px"
-                  >
-                    $ {{ dataProduct.price.pvp | currencyPVP }}
+                  <span v-if="dataProduct.price != null">
+                    <div
+                      style="border-left: 3px solid #00A0E9; padding-left: 8px"
+                    >
+                      <div class="text-17" v-if="isAuth">
+                        <span class="font-weight-bold text-20">
+                          $
+                          {{
+                            dataProduct.price.pvp_18_installments | currencyPVP
+                          }}
+                        </span>
+                        en 18 cuotas de $
+                        {{
+                          (dataProduct.price.pvp_18_installments / 18)
+                            | currencyPVP
+                        }}
+                      </div>
+                      <div class="my-2 text-17">
+                        <span class="font-weight-bold text-20">
+                          $ {{ dataProduct.price.pvp | currencyPVP }}
+                        </span>
+                        <span v-if="isAuth">con Débito / Crédito</span>
+                      </div>
+                      <div class="text-17" v-if="isAuth">
+                        <span class="font-weight-bold text-20">
+                          $ {{ dataProduct.price.pvp_transfer | currencyPVP }}
+                        </span>
+                        por Transferencia Bancaria
+                      </div>
+                    </div>
+                    <!-- $ {{ dataProduct.price.pvp | currencyPVP }} -->
+                    <div class="mt-4">
+                      <i>Podras seleccionar la forma de pago en el Checkout</i>
+                    </div>
                   </span>
                 </p>
               </div>
 
-              <v-chip
-                v-if="dataProduct.price != null"
-                color="#5A5855"
-                class="align-self-center my-3"
-                style="font-size: 16px; color: #424242; font-weight: 400"
-              >
-                <span class="white--text" v-if="dataProduct.price != null">
-                  18 cuotas sin interés de $
-                  {{ `${dataProduct.price.pvp / 18}` | currency }}
-                </span>
-              </v-chip>
-
-              <div class="d-flex justify-space-between mt-5">
+              <div class="d-flex justify-space-between mt-10">
                 <cp-information
                   style="font-size: 18px"
                   v-if="dataProduct"
@@ -109,14 +125,13 @@
                   class="mt-auto"
                 />
               </div>
-
               <div
                 v-if="
                   validateStock() &&
                   validateUmbral() &&
                   dataProduct.out_stock == false
                 "
-                class="d-flex align-center justify-start py-1 mt-10"
+                class="d-flex align-center justify-start py-1"
               >
                 <span class="mx-0 text-uppercase" style="font-weight: 500">
                   Cantidad
@@ -164,9 +179,10 @@
                   dark
                   color="#00A0E9"
                   @click="HandlerAddCart()"
-                  class="mt-1 mt-md-0"
+                  class="mt-1 mt-md-0 font-weight-bold"
+                  outlined
                 >
-                  Comprar
+                  Agregar a mi compra
                 </v-btn>
 
                 <div class="d-flex mt-2 mt-md-0">
@@ -186,30 +202,6 @@
                   </span>
                 </div>
               </div>
-
-              <!-- <v-btn
-                v-if="
-                  dataProduct.out_stock == true ||
-                  (validateUmbral() == false &&
-                    dataProduct.user_product_notification == null)
-                "
-                rounded
-                outlined
-                color="#3FB7EE"
-                @click="HandlerAvisame()"
-              >
-                AVISAME
-              </v-btn> -->
-
-              <!-- <span
-                style="color: #3fb7ee"
-                v-if="
-                  validateUmbral() == false &&
-                  dataProduct.user_product_notification != null
-                "
-              >
-                TE AVISAMOS CUANDO ESTÉ
-              </span> -->
             </div>
             <div
               class="py-15"
@@ -1018,5 +1010,13 @@ export default {
   z-index: inherit;
   box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%),
     0 24px 38px 3px rgb(0 0 0 / 14%), 0 9px 46px 8px rgb(0 0 0 / 12%);
+}
+
+.text-20 {
+  font-size: 20px;
+}
+
+.text-17 {
+  font-size: 17px;
 }
 </style>
