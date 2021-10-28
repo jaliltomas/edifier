@@ -14,7 +14,7 @@
               style="font-size: 16px; font-weight: 800"
               class="text-left font-weight-bold black--text"
             >
-              Precio
+              Precio Nominal
             </th>
             <th
               style="font-size: 16px; font-weight: 800"

@@ -18,7 +18,7 @@
             {{ item.order_item.length }}
           </template>
           <template v-slot:[`item.total_amount`]="{ item }">
-            {{ item.total_amount | currency }}
+            <span v-if="item.total_amount > 0">{{ item.total_amount | currencyTotal }}</span>
           </template>
           <template v-slot:[`item.action`]="{ item }">
             <v-tooltip bottom>
@@ -101,6 +101,12 @@ export default {
   filters: {
     date(val) {
       return moment(val).locale("es").format("DD-MM-YYYY HH:mm");
+    },
+    currencyTotal(value) {
+      return new Intl.NumberFormat("es-AR", {
+        currency: "ARS",
+        style: "currency",
+      }).format(value);
     },
   },
   methods: {

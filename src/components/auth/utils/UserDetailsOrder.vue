@@ -41,6 +41,47 @@
                 {{ orderData.created_at | today }}
               </div>
             </v-col>
+            <v-col cols="12" md="6" v-if="bankTransfer()">
+              <div class="d-flex justify-end mr-md-5">
+                <v-btn
+                  @click="uploadTransfer = true"
+                  class="text-lowercase"
+                  color="#00A0E9"
+                  rounded
+                  dark
+                  small
+                >
+                  <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
+                  <span class="text-capitalize mr-1">Enviá</span>
+                  tu comprobante de pago
+                </v-btn>
+              </div>
+              <div class="d-flex justify-end mr-md-5">
+                <v-btn
+                  @click="goToChatData()"
+                  class="text-lowercase my-3"
+                  color="#FFFFFF"
+                  rounded
+                  small
+                >
+                  <v-icon size="20">mdi-bank</v-icon>
+                  Consulta los datos de transferencia en el chat
+                </v-btn>
+              </div>
+              <div class="d-flex justify-end mr-md-5">
+                <v-btn
+                  v-if="!canUploadFile"
+                  class="text-lowercase"
+                  color="#FFFFFF"
+                  small
+                  rounded
+                >
+                  <v-icon>mdi-arrow-down-bold-circle-outline</v-icon>
+                  <span class="text-capitalize mr-1">Descargá</span>
+                  tus Facturas
+                </v-btn>
+              </div>
+            </v-col>
           </v-row>
         </v-container>
         <div class="py-3"></div>
@@ -347,6 +388,64 @@
         </v-container>
       </v-sheet>
     </v-card>
+
+    <v-dialog
+      v-model="uploadTransfer"
+      v-if="uploadTransfer"
+      max-width="600"
+      persistent
+    >
+      <ValidationObserver ref="obs" v-slot="{ passes }">
+        <v-card class="px-5 py-5">
+          <label for="">Numero de transferencia</label>
+          <ValidationProvider
+            name="transferencia"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="transfer_id"
+              class="mt-2"
+              color="#A81331"
+              dense
+              filled
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+          <label for="">Comprobante de transferencia</label>
+          <ValidationProvider
+            name="comprobante"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <v-file-input
+              v-model="file"
+              prepend-icon=""
+              dense
+              filled
+              :error-messages="errors"
+            ></v-file-input>
+            <div class="d-flex">
+              {{ message }}
+            </div>
+          </ValidationProvider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="uploadTransfer = false">cancelar</v-btn>
+            <v-btn
+              :disabled="dowloadTransfer == true"
+              :loading="loadingUpload"
+              rounded
+              color="#00a0e9"
+              :dark="dowloadTransfer == true ? false : true"
+              @click="passes(handlerUploadFile)"
+            >
+              continuar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </ValidationObserver>
+    </v-dialog>
   </div>
 </template>
 
@@ -376,6 +475,7 @@ export default {
       //Data
       orderData: {},
       canUploadFile: true,
+      uploadTransfer: false,
     };
   },
 
@@ -435,8 +535,7 @@ export default {
 
     getTotal(price) {
       const payment = this.orderData?.payment;
-      console.log("precio",price)
-      console.log(payment)
+      console.log(payment);
       const typePayment = payment.map((pay) => {
         let pricePay = 0;
 
@@ -485,6 +584,7 @@ export default {
     },
 
     goToChat(go) {
+      console.log("entre");
       switch (go) {
         case "CABA":
           window.open("https://stadio.reamaze.com/chat-with-us/25264");
@@ -497,6 +597,11 @@ export default {
         case "chazki":
           window.open("https://chazki.com/argentina");
       }
+    },
+
+    goToChatData() {
+      window.open("https://edifier.reamaze.com/chat-with-us/25266");
+      setTimeout(() => {}, 1000);
     },
 
     bankTransfer() {
@@ -514,6 +619,29 @@ export default {
         } else {
           return false;
         }
+      }
+    },
+
+    async handlerUploadFile() {
+      try {
+        this.loadingUpload = true;
+        const request = new FormData();
+        request.append("voucher", this.file);
+        request.append("transfer_id", this.transfer_id);
+        request.append("order_id", this.dataOrder.id);
+
+        const response = await this.$store.dispatch(
+          "checkout/UPLOAD_TRANSFER",
+          request
+        );
+
+        this.message = response.data.message;
+        this.dowloadTransfer = true;
+        this.canUploadFile = false;
+      } catch (error) {
+        this.message = error.response.data.error.details;
+      } finally {
+        this.loadingUpload = false;
       }
     },
   },

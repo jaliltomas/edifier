@@ -619,7 +619,7 @@ export default {
 
     goToChat() {
       this.loadingLocation = true;
-      window.open("https://stadio.reamaze.com/chat-with-us/25264");
+      window.open("https://edifier.reamaze.com/chat-with-us/25266");
       setTimeout(() => {
         this.loadingLocation = false;
       }, 1000);

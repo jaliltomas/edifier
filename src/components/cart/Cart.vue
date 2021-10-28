@@ -155,19 +155,27 @@
                   </v-col>
                 </v-row>
                 <v-divider class="my-3"></v-divider>
-                <div class="font-weight-bold black--text text-center">
-                  TOTAL DEL CARRITO
-                </div>
-                <div class="d-flex justify-space-around mt-7"></div>
-                <div class="d-flex justify-space-around mt-7">
-                  <span>TOTAL</span>
-                  <span
-                    v-if="totalAmount > 0"
-                    class="font-weight-bold black--text"
+                <div>
+                  <div
+                    class="font-weight-bold black--text text-center"
+                    style="font-size: 1.1em; color: #3c3c3c"
                   >
-                    ${{ totalAmount | currency }}
-                  </span>
-                  <span v-else class="font-weight-bold black--text"> $0 </span>
+                    TOTAL DEL CARRITO
+                  </div>
+                  <div class="d-flex justify-space-between">
+                    <span class="ml-4 mt-2">TOTAL</span>
+                    <span
+                      v-if="totalPrice(originalItems.shopping_cart_items) > 0"
+                      class="font-weight-bold black--text mr-4 mt-2"
+                    >
+                      ${{
+                        totalPrice(originalItems.shopping_cart_items) | currency
+                      }}
+                    </span>
+                    <span v-else class="font-weight-bold black--text mr-4 mt-2">
+                      ${{ totalAmount | currency }}
+                    </span>
+                  </div>
                 </div>
                 <div class="d-flex justify-center">
                   <v-btn
@@ -409,6 +417,9 @@ export default {
       radioGroupTransfer: null,
       responseTransferCheckout: {},
       showModalTransfer: false,
+
+      payments_type: "",
+      default_installments: "",
     };
   },
 
@@ -478,9 +489,9 @@ export default {
       this.radioGroup = null;
     },
 
-    async HandlerConfirmItems(value) {
+    async HandlerConfirmItems() {
       try {
-        const request = { update_items: true };
+        const request = { update_items: true, address_id: this.idAddress };
         const response = await this.$store.dispatch(
           "cart/CONFIRM_PRODUCTS_CART",
           request
@@ -508,8 +519,10 @@ export default {
               this.dataAlertCheckout = {
                 order: this.confirmOrder,
                 pickup: this.radioGroup == 0 ? true : false,
-                address: this.radioGroup == 1 ? this.idAddress.id : "",
+                address: this.radioGroup == 1 ? this.idAddress : "",
                 response: response.data.data,
+                payment_type: this.payments_type,
+                default_installments: this.default_installments,
               };
             } else {
               if (this.confirmOrder.length > 0) {
@@ -517,8 +530,10 @@ export default {
                 this.dataAlertCheckout = {
                   order: this.confirmOrder,
                   pickup: this.radioGroup == 0 ? true : false,
-                  address: this.radioGroup == 1 ? this.idAddress.id : "",
+                  address: this.radioGroup == 1 ? this.idAddress : "",
                   response: response.data.data,
+                  payment_type: this.payments_type,
+                  default_installments: this.default_installments,
                 };
               } else {
                 if (this.radioGroupTransfer === 0) {
@@ -545,7 +560,6 @@ export default {
             this.HandlerCheckout();
           }
         }
-        // }
       } catch (error) {
         console.log(error);
       } finally {
@@ -593,7 +607,11 @@ export default {
               : "",
           warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
           store_id: 3,
+          payment_type: this.payments_type,
+          default_installments: this.default_installments,
         };
+
+        console.log(request)
 
         const response = await this.$store.dispatch(
           "products/CHECKOUT_DO",
@@ -704,7 +722,7 @@ export default {
             ? this.idAddress
             : this.idAddress.id;
         const request = {
-          store_id: 1,
+          store_id: 3,
           store_pickup: this.radioGroup == 0 ? true : false,
           shopping_cart_id: cart.id,
           addresse_id: id,
