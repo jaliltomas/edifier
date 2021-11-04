@@ -77,7 +77,7 @@ export default {
           this.loading = true;
           const request = {
             email: this.email,
-            store_id: 1,
+            store_id: 3,
           };
           await this.$store.dispatch("products/SUSCRIBE_EMAIL", request);
           this.email = "";

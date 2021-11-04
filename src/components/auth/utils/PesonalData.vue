@@ -174,7 +174,7 @@ export default {
           billing_email: this.getAuthUser.buyer.email,
           first_name: this.getAuthUser.buyer.first_name,
           last_name: this.getAuthUser.buyer.last_name,
-          store_id: 1,
+          store_id: 3,
           contact_phone: this.getAuthUser.buyer.phone,
         };
         await this.$store.dispatch("auth/UPDATE_USER", request);
