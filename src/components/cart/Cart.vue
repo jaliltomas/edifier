@@ -200,6 +200,7 @@
             </v-card>
           </v-col>
         </v-row>
+
         <dialog-notification
           v-if="showAlertCheckout"
           :active="showAlertCheckout"
@@ -209,6 +210,7 @@
             @dialog:change="HandlerCloseAcceptProduct"
           />
         </dialog-notification>
+
         <v-dialog
           v-model="showSelectDelivery"
           v-if="showSelectDelivery"
@@ -243,17 +245,6 @@
                     </span>
                   </div>
                 </div>
-                <!-- <ul>
-              <li
-                v-for="(item, index) in depositElements"
-                :key="index"
-                style="cursor: pointer"
-                @click="selectDeposit = item"
-                :class="selectDeposit == item ? 'blue--text' : ''"
-              >
-                {{ item }}
-              </li>
-            </ul> -->
               </div>
               <div v-if="radioGroup == 1 && userAddress.length == 0">
                 <span class="red--text">
@@ -263,7 +254,7 @@
                 <br />
                 <v-btn
                   class="mt-2"
-                  color="#00a0e9"
+                  color="#A81331"
                   dark
                   rounded
                   @click="$router.push({ name: 'profile' })"
@@ -272,9 +263,9 @@
                 </v-btn>
               </div>
               <div v-if="radioGroup == 1 && userAddress.length > 0">
-                <span class="font-weight-bold" style="cursor: pointer"
-                  >Seleccione la dirección de entrega</span
-                >
+                <span class="font-weight-bold" style="cursor: pointer">
+                  Seleccione la dirección de entrega
+                </span>
                 <v-select
                   :items="userAddress"
                   :item-text="
@@ -305,8 +296,8 @@
                     ? true
                     : false
                 "
-                @click="HandlerConfirmItems(retirementValue)"
-                color="#00a0e9"
+                @click="HandlerConfirmItems()"
+                color="#14A7EB"
                 class="white--text"
               >
                 Continuar
@@ -314,6 +305,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <v-dialog
           v-model="showAlertPerfil"
           v-if="showAlertPerfil"
@@ -358,6 +350,7 @@
         </v-dialog>
       </v-container>
     </v-sheet>
+    <!-- PAGO POR TRANSFERENCIA -->
     <transfer-checkout
       v-if="showModalTransfer"
       :showModalTransfer="showModalTransfer"
@@ -403,23 +396,27 @@ export default {
       showAddressChange: false,
       depositElements: ["CABA", "Rosario", "Córdoba Capital"],
       selectDeposit: "",
+      dues: false,
+      credit: false,
+      transfer: false,
+      radioGroupDues: null,
+      radioGroupCredit: null,
+      radioGroupTransfer: null,
+      payments_type: "",
+      default_installments: "",
+
+      showModalTransfer: false,
 
       // Notifiction Checkout
       alertNotificationBuy: false,
       canBuyWarehouse: null,
 
+      // Checkout
+      responseTransferCheckout: {},
+
       // Error Checkout
       showAlertPerfil: false,
       alertPerfil: [],
-
-      radioGroupDues: null,
-      radioGroupCredit: null,
-      radioGroupTransfer: null,
-      responseTransferCheckout: {},
-      showModalTransfer: false,
-
-      payments_type: "",
-      default_installments: "",
     };
   },
 
@@ -557,7 +554,11 @@ export default {
               response: response.data.data,
             };
           } else {
-            this.HandlerCheckout();
+            if (this.radioGroupTransfer === 0) {
+              this.HandlerTransferCheckout(shopping_cart);
+            } else {
+              this.HandlerCheckout();
+            }
           }
         }
       } catch (error) {
@@ -606,12 +607,10 @@ export default {
                 : this.idAddress.id
               : "",
           warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
-          store_id: 3,
+          store_id: 1,
           payment_type: this.payments_type,
           default_installments: this.default_installments,
         };
-
-        console.log(request)
 
         const response = await this.$store.dispatch(
           "products/CHECKOUT_DO",
@@ -619,15 +618,10 @@ export default {
         );
         window.location.replace(response.data.data.url);
       } catch (error) {
-        console.log(error);
-        if (
-          error.response.data.error.message ==
-          "perfil actual incompleto para realizar compra"
-        ) {
-          this.showAlertPerfil = true;
-          this.alertPerfil = error.response.data.error.details;
-          this.showSelectDelivery = !this.showSelectDelivery;
-        }
+        this.$snotify.error(
+          "Ha ocurrido un error porfavor intente mas tarde",
+          "Error!"
+        );
       } finally {
         this.loadingCheckout = false;
       }
@@ -722,10 +716,11 @@ export default {
             ? this.idAddress
             : this.idAddress.id;
         const request = {
-          store_id: 3,
+          store_id: 1,
           store_pickup: this.radioGroup == 0 ? true : false,
           shopping_cart_id: cart.id,
           addresse_id: id,
+          warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
         };
 
         const response = await this.$store.dispatch(
