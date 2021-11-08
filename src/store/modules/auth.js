@@ -19,7 +19,10 @@ const mutations = {
     product.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
   },
 
-  SET_USER: (state, payload) => (state.user = payload),
+  SET_USER: (state, payload) => {
+    state.user = payload;
+    localStorage.setItem('store_id', payload.store_id);
+  },
 
   CLEAR_DATA: (state) => {
     state.token = null;
@@ -66,7 +69,8 @@ const actions = {
 
   async AUTH_USER({ commit }) {
     try {
-      const response = await users.get("api/buyers/auth/getuser");
+      const store_id = localStorage.getItem('store_id');
+      const response = await users.get(`api/buyers/auth/getuser?store_id=${store_id}`);
       commit("SET_USER", response.data.data);
       return response;
     } catch (error) {

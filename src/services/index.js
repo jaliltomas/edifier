@@ -49,9 +49,9 @@ users.interceptors.response.use(function (response) {
   if (error.response.status === 401) {
     storeVuex.commit('auth/CLEAR_DATA');
     router.push({ name: 'home' }).catch(err => err);
-  } else if(error.response.status === 605 ) {
+  } /* else if(error.response.status === 605 ) {
     storeVuex.commit('auth/CLEAR_DATA');
     router.push({ name: 'home' }).catch(err => err);
-  }
+  }*/
   return Promise.reject(error)
 });
