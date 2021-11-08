@@ -607,7 +607,7 @@ export default {
                 : this.idAddress.id
               : "",
           warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
-          store_id: 1,
+          store_id: 3,
           payment_type: this.payments_type,
           default_installments: this.default_installments,
         };
@@ -716,7 +716,7 @@ export default {
             ? this.idAddress
             : this.idAddress.id;
         const request = {
-          store_id: 1,
+          store_id: 3,
           store_pickup: this.radioGroup == 0 ? true : false,
           shopping_cart_id: cart.id,
           addresse_id: id,
