@@ -9,6 +9,8 @@
           :items="dataResponse"
           :items-per-page="5"
           class="elevation-0"
+          hide-default-footer
+          disable-pagination
           width="100%"
         >
           <template v-slot:[`item.date_created`]="{ item }">
@@ -53,6 +55,14 @@
           </v-btn>
         </div>
       </v-col>
+      <v-col cols="6" md="4">
+        <v-pagination
+          v-model="page"
+          :length="paginate.lastPage"
+          circle
+          color="#00A0E9"
+        ></v-pagination>
+      </v-col>
     </v-row>
   </v-card>
 </template>
@@ -93,6 +103,7 @@ export default {
       //Details Orders
       showDetailsOrder: false,
       dataOrder: {},
+      paginate: {},
     };
   },
   created() {
@@ -109,6 +120,11 @@ export default {
       }).format(value);
     },
   },
+  watch: {
+    page(val) {
+      this.HandlerGetOrders(val);
+    },
+  },
   methods: {
     async HandlerGetOrders() {
       try {
@@ -123,6 +139,12 @@ export default {
           request
         );
         this.dataResponse = response.data.data.data;
+        this.paginate = {
+          lastPage: response.data.data.lastPage,
+          page: response.data.data.page,
+          perPage: response.data.data.perPage,
+          total: response.data.data.total,
+        };
       } catch (error) {
         console.log(error);
       }

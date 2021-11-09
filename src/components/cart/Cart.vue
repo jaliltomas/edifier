@@ -254,7 +254,7 @@
                 <br />
                 <v-btn
                   class="mt-2"
-                  color="#A81331"
+                  color="#00a0e9"
                   dark
                   rounded
                   @click="$router.push({ name: 'profile' })"
@@ -300,7 +300,7 @@
                 color="#14A7EB"
                 class="white--text"
               >
-                Continuar
+                Continuar *
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -427,6 +427,7 @@ export default {
 
   watch: {
     radioGroup(val) {
+      console.log(val);
       if (val == 0) {
         this.getUserAddressPriority();
         this.ValidateProductWarehouse();
@@ -544,16 +545,19 @@ export default {
             this.$router.push({ name: "profile" });
           }
         } else {
+          console.log("entre aca");
           // this.HandlerCheckout();
           if (this.confirmOrder.length > 0) {
-            this.showAlertCheckout = !this.showAlertCheckout;
-            this.dataAlertCheckout = {
-              order: this.confirmOrder,
-              pickup: this.radioGroup == 0 ? true : false,
-              address: this.radioGroup == 1 ? this.idAddress.id : "",
-              response: response.data.data,
-            };
+            console.log("if");
+            // this.showAlertCheckout = !this.showAlertCheckout;
+            // this.dataAlertCheckout = {
+            //   order: this.confirmOrder,
+            //   pickup: this.radioGroup == 0 ? true : false,
+            //   address: this.radioGroup == 1 ? this.idAddress.id : "",
+            //   response: response.data.data,
+            // };
           } else {
+            console.log("else", this.radioGroupTransfer);
             if (this.radioGroupTransfer === 0) {
               this.HandlerTransferCheckout(shopping_cart);
             } else {
@@ -711,10 +715,14 @@ export default {
     async HandlerTransferCheckout(cart) {
       try {
         this.loadingCheckout = true;
-        const id =
-          typeof this.idAddress == "number"
+
+        const address =
+          this.idAddress == undefined
+            ? ""
+            : typeof this.idAddress == "number"
             ? this.idAddress
             : this.idAddress.id;
+        const id = address;
         const request = {
           store_id: 3,
           store_pickup: this.radioGroup == 0 ? true : false,
