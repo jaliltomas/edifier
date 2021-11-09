@@ -300,7 +300,7 @@
                 color="#14A7EB"
                 class="white--text"
               >
-                Continuar *
+                Continuar
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -337,7 +337,7 @@
               >
               <v-btn
                 @click="$router.push({ name: 'profile' })"
-                black
+                color="#00a0e9"
                 dark
                 class="text-capitalize"
               >
@@ -545,19 +545,16 @@ export default {
             this.$router.push({ name: "profile" });
           }
         } else {
-          console.log("entre aca");
           // this.HandlerCheckout();
           if (this.confirmOrder.length > 0) {
-            console.log("if");
-            // this.showAlertCheckout = !this.showAlertCheckout;
-            // this.dataAlertCheckout = {
-            //   order: this.confirmOrder,
-            //   pickup: this.radioGroup == 0 ? true : false,
-            //   address: this.radioGroup == 1 ? this.idAddress.id : "",
-            //   response: response.data.data,
-            // };
+            this.showAlertCheckout = !this.showAlertCheckout;
+            this.dataAlertCheckout = {
+              order: this.confirmOrder,
+              pickup: this.radioGroup == 0 ? true : false,
+              address: this.radioGroup == 1 ? this.idAddress.id : "",
+              response: response.data.data,
+            };
           } else {
-            console.log("else", this.radioGroupTransfer);
             if (this.radioGroupTransfer === 0) {
               this.HandlerTransferCheckout(shopping_cart);
             } else {
@@ -622,10 +619,14 @@ export default {
         );
         window.location.replace(response.data.data.url);
       } catch (error) {
-        this.$snotify.error(
-          "Ha ocurrido un error porfavor intente mas tarde",
-          "Error!"
-        );
+        if (
+          error.response.data.error.message ==
+          "perfil actual incompleto para realizar compra"
+        ) {
+          this.showAlertPerfil = true;
+          this.alertPerfil = error.response.data.error.details;
+          this.showSelectDelivery = !this.showSelectDelivery;
+        }
       } finally {
         this.loadingCheckout = false;
       }
@@ -739,7 +740,14 @@ export default {
         this.responseTransferCheckout = response.data.data;
         this.showModalTransfer = true;
       } catch (error) {
-        console.log(error);
+        if (
+          error.response.data.error.message ==
+          "perfil actual incompleto para realizar compra"
+        ) {
+          this.showAlertPerfil = true;
+          this.alertPerfil = error.response.data.error.details;
+          this.showSelectDelivery = !this.showSelectDelivery;
+        }
       } finally {
         this.loadingCheckout = false;
       }
