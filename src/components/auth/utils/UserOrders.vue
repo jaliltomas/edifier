@@ -2,6 +2,7 @@
   <v-card color="transparent" tile class="elevation-0 py-5 d-flex justify-center">
     <v-row justify="center">
       <v-col cols="12" sm="12" md="12">
+        {{ dataResponse }}
         <v-data-table
           v-if="!showDetailsOrder"
           tile
