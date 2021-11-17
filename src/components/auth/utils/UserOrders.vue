@@ -1,8 +1,11 @@
 <template>
-  <v-card color="transparent" tile class="elevation-0 py-5 d-flex justify-center">
+  <v-card
+    color="transparent"
+    tile
+    class="elevation-0 py-5 d-flex justify-center"
+  >
     <v-row justify="center">
       <v-col cols="12" sm="12" md="12">
-        {{ dataResponse }}
         <v-data-table
           v-if="!showDetailsOrder"
           tile
@@ -21,7 +24,9 @@
             {{ item.order_item.length }}
           </template>
           <template v-slot:[`item.total_amount`]="{ item }">
-            <span v-if="item.total_amount > 0">{{ item.total_amount | currencyTotal }}</span>
+            <span v-if="item.total_amount > 0">{{
+              item.total_amount | currencyTotal
+            }}</span>
           </template>
           <template v-slot:[`item.action`]="{ item }">
             <v-tooltip bottom>
@@ -95,7 +100,7 @@ export default {
         },
         { text: "#ID", value: "meli_id", class: "header-text" },
         { text: "Productos", value: "order_item", class: "header-text" },
-        { text: "Estado", value: "order_status", class: "header-text" },
+        { text: "Estado", value: "payment[0].status", class: "header-text" },
         { text: "Total", value: "total_amount", class: "header-text" },
         { text: "Acción", value: "action", class: "header-text" },
       ],
