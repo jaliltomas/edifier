@@ -133,7 +133,7 @@
               </v-col>
               <v-col cols="12" sm="6" md="6" class="mt-md-0">
                 <label for="provincia" class="text-uppercase font-weight-bold">
-                  Seleccione provincia
+                  provincia
                 </label>
                 <ValidationProvider
                   name="Provincia"
@@ -155,8 +155,8 @@
                 </ValidationProvider>
               </v-col>
               <v-col cols="12" sm="6" md="6" class="mt-md-n5">
-                <label for="localidad" class="text-capitalize font-weight-bold">
-                  Seleccione Localidad
+                <label for="localidad" class="text-uppercase font-weight-bold">
+                  Localidad
                 </label>
                 <ValidationProvider
                   name="Tipo de documento"
