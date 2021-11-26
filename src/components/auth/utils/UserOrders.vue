@@ -24,9 +24,14 @@
             {{ item.order_item.length }}
           </template>
           <template v-slot:[`item.total_amount`]="{ item }">
-            <span v-if="item.total_amount > 0">{{
-              item.total_amount | currencyTotal
-            }}</span>
+            <span v-if="item.total_amount > 0">
+              {{ item.total_amount | currencyTotal }}
+            </span>
+          </template>
+          <template v-slot:[`item.order`]="{ item }">
+            <span v-if="item.payment.length > 0" class="text-capitalize">
+              {{ item.payment[0].status | statusPay }}
+            </span>
           </template>
           <template v-slot:[`item.action`]="{ item }">
             <v-tooltip bottom>
@@ -100,7 +105,7 @@ export default {
         },
         { text: "#ID", value: "meli_id", class: "header-text" },
         { text: "Productos", value: "order_item", class: "header-text" },
-        { text: "Estado", value: "payment[0].status", class: "header-text" },
+        { text: "Estado", value: "order", class: "header-text" },
         { text: "Total", value: "total_amount", class: "header-text" },
         { text: "Acción", value: "action", class: "header-text" },
       ],
@@ -124,6 +129,23 @@ export default {
         currency: "ARS",
         style: "currency",
       }).format(value);
+    },
+    statusPay(val) {
+      switch (val) {
+        case "pending":
+          return "pendiente";
+        case "in_process=>":
+          return "en proceso";
+        case "approved =>":
+          return "aprovado";
+        case "refunded =>":
+          return "reintegrado";
+        case "rejected =>":
+          return "rechazado";
+        case "cancelled =>":
+          return "cancelado";
+      }
+      return val;
     },
   },
   watch: {
