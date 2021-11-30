@@ -80,7 +80,7 @@
                 <p class="mb-0 mt-2">
                   <span v-if="dataProduct.price != null">
                     <div
-                      style="border-left: 3px solid #00A0E9; padding-left: 8px"
+                      style="border-left: 3px solid #00a0e9; padding-left: 8px"
                     >
                       <div class="text-17" v-if="isAuth">
                         <span class="font-weight-bold text-20">
@@ -125,6 +125,24 @@
                   class="mt-auto"
                 />
               </div>
+
+              <div class="mt-4 mb-2">
+                <div
+                  v-if="
+                    dataProduct.product != null &&
+                    dataProduct.product.product_warehouse.length > 0
+                  "
+                >
+                  <span class="mr-1"> Stock en</span>
+                  {{ getWarehouse(dataProduct.product.product_warehouse) }}
+                </div>
+              </div>
+
+              <div>
+                <span style="color: #00A0E9">Este paquete sera preparado antes de: <br /></span>
+                {{ getDate() }}
+              </div>
+
               <div
                 v-if="
                   validateStock() &&
@@ -297,7 +315,6 @@
       </v-card>
     </v-dialog>
 
-
     <!-- MODAL AVISAME SE SUSTITUYO EN CP-INFORMATION COMPONENT -->
     <!-- <ValidationObserver ref="obs" v-slot="{ passes }">
       <v-dialog
@@ -375,6 +392,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import informationCP from "@/components/Utils/informationCP";
 export default {
@@ -979,6 +997,86 @@ export default {
       }
     },
 
+    getWarehouse(warehouse) {
+      let warehouseValue = null;
+      for (const iterator of warehouse) {
+        switch (iterator.warehouse_id) {
+          case 5:
+            if (iterator.current_stock > 0) {
+              warehouseValue = "Central";
+              break;
+            }
+          case 10:
+            if (iterator.current_stock > 0) {
+              warehouseValue = "Rosario";
+              break;
+            }
+          case 3:
+            if (iterator.current_stock > 0) {
+              warehouseValue = "Cordoba";
+              break;
+            }
+        }
+      }
+      return warehouseValue == null ? "Sin Stock" : warehouseValue;
+    },
+
+    getDate() {
+      // const date = moment().format("YYYY-MM-DD HH:mm:ss");
+      // return date
+      const dateParse = moment().format("YYYY-MM-DD HH:mm:ss");
+      const numberDay = moment(dateParse).day();
+      const dateHour = moment(dateParse).format("HH:mm:ss");
+
+      // FORMATO 24HRS
+      // const hour = moment(dateParse).format("HH:mm");
+      // const dateHour = moment(hour, ["h:mm A"]).format("HH:mm:ss");
+
+      if (numberDay > 0 && numberDay <= 5) {
+        const format = "HH:mm:ss";
+        const time = moment(dateHour, format);
+        const firstTime = moment("00:00:00", format);
+        const secondTime = moment("08:59:00", format);
+
+        const firstTime2 = moment("09:00:00", format);
+        const secondTime2 = moment("16:30:00", format);
+
+        // console.log('time', time)
+        // console.log('firstTime', firstTime)
+        // console.log('secondTime', secondTime)
+
+        /**
+         * 00:00:00 / 08:59:00
+         */
+        if (time.isBetween(firstTime, secondTime)) {
+          // console.log('primero',date)
+          return moment(dateParse).format("YYYY-MM-DD") + " 9:30";
+        } else if (time.isBetween(firstTime2, secondTime2)) {
+          /**
+           * 09:00:00 / 16:30:00
+           */
+          // console.log('segundo', date)
+
+          const add30Min = moment(time).add(30, "m").format("HH:mm");
+          return moment(dateParse).format("YYYY-MM-DD") + " " + add30Min;
+        } else {
+          const currentDay = moment(dateParse).format("YYYY-MM-DD");
+          const addNextDay = moment(currentDay)
+            .add(1, "d")
+            .format("YYYY-MM-DD");
+          return addNextDay + " " + "09:30";
+        }
+      } else {
+        console.log("numberDay", numberDay);
+        const number_diff = numberDay == 0 ? 1 : 2;
+        const currentDay = moment(dateParse).format("YYYY-MM-DD");
+        const addNextDay = moment(currentDay)
+          .add(number_diff, "d")
+          .format("YYYY-MM-DD");
+        return addNextDay + " " + "09:30";
+      }
+    },
+
     async HandlerDowloadManual() {
       window.open(this.dataProduct.product.product_manual, "manual_de_usuario");
     },
@@ -1013,7 +1111,7 @@ export default {
 }
 
 .text-20 {
-  font-size: 20px;
+  font-size: 30px;
 }
 
 .text-17 {

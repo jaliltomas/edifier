@@ -328,9 +328,9 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {
-            return "Recibilo dentro de las 24Hs HÁBILES";
+            return "Recibilo mañana";
           } else if (this.responseChazki == true) {
-            return "Recibilo dentro de las 72Hs HÁBILES";
+            return "Recibilo en 72HS";
           } else {
             return "Recibilo en 4-6 días hábiles";
           }
@@ -354,17 +354,17 @@ export default {
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Entrega o Retira en el día";
+          return "Recibilo hoy";
         } else if (
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Recibilo dentro de las 72Hs HÁBILES ";
+          return "Recibilo en 72HS ";
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
         ) {
-          return "Entrega o Retira en el día";
+          return "Recibilo hoy";
         } else if (
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -376,7 +376,7 @@ export default {
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Recibilo dentro de las 72Hs HÁBILES ";
+          return "Recibilo en 72HS ";
         } else if (getWarehouseFwl01.current_stock == 0) {
           return "AVISAME";
         }
@@ -385,7 +385,7 @@ export default {
         getWarehouseFwl01 == undefined
       ) {
         if (getWarehouseReg.current_stock > 0) {
-          return "Entrega o Retira en el día";
+          return "Recibilo hoy";
         } else if (getWarehouseReg.current_stock == 0) {
           return "AVISAME";
         }
