@@ -118,7 +118,7 @@
 
               <div class="d-flex justify-space-between mt-10">
                 <cp-information
-                  style="font-size: 18px"
+                  style="font-size: 18px; color: #00A650"
                   v-if="dataProduct"
                   :dataProduct="dataProduct"
                   :authUser="authUser"

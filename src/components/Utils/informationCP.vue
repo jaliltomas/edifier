@@ -9,7 +9,7 @@
       <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
         <p
           class="mb-0 text-uppercase"
-          style="font-color: #3f3c35; font-size: 1.2em; cursor: pointer"
+          style="font-color: #00A650; font-size: 1.2em; cursor: pointer"
           v-if="
             dataProduct.product != null &&
             dataProduct.product.product_warehouse.length > 0
@@ -29,7 +29,7 @@
               ) != 'AVISAME'
             "
           >
-            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
+            <v-icon color="#00A650" class="mr-0">mdi-truck-outline</v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
@@ -45,7 +45,7 @@
       <div v-else>
         <p
           class="mb-0 text-uppercase"
-          style="font-color: #3f3c35; font-size: 1.2em"
+          style="font-color: #00A650; font-size: 1.2em"
           v-if="
             dataProduct.product != null &&
             dataProduct.product.product_warehouse.length > 0
@@ -65,7 +65,7 @@
               ) != 'AVISAME'
             "
           >
-            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
+            <v-icon color="#00A650" class="mr-0">mdi-truck-outline</v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
@@ -102,8 +102,8 @@
             </v-btn>
             <span
               v-if="dataProduct.user_product_notification != null"
-              class="black--text d-flex justify-center mb-3"
-              style="cursor: default"
+              class="d-flex justify-center mb-3"
+              style="cursor: default; color: #00a650"
             >
               Próximamente
             </span>
@@ -129,8 +129,8 @@
             dataProduct.user_product_notification == null &&
             $route.name == 'products'
           "
-          class="black--text d-flex justify-center mt-n1 mb-4 text-uppercase"
-          style="cursor: default"
+          class="d-flex justify-center mt-n1 mb-4 text-uppercase"
+          style="cursor: default; color: #00a650"
         >
           Próximamente
         </span>
@@ -164,10 +164,10 @@
     <div v-else-if="isAuth == false" class="mb-5">
       <p
         class="mb-0 text-uppercase"
-        style="cursor: pointer; font-color: #3f3c35"
+        style="cursor: pointer; font-color: #00A650"
         @click="$router.push({ name: 'login' })"
       >
-        <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
+        <v-icon color="#00A650" class="mr-1">mdi-truck-outline</v-icon>
         Conocé el tiempo de entrega
       </p>
     </div>

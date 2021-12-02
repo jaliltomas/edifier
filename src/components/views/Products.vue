@@ -195,6 +195,7 @@
                         </span>
                       </p>
                       <cp-information
+                        style="color: #00a650"
                         class="text-center"
                         :dataProduct="item"
                         :authUser="authUser"

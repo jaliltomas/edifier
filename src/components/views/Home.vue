@@ -243,6 +243,7 @@
 
                           <v-col>
                             <information-cp
+                              style="color: #00a650"
                               class="text-start"
                               :dataProduct="item"
                               :authUser="authUser"
