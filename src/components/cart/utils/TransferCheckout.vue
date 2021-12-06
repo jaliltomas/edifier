@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showModalTransfer" fullscreen>
+  <v-dialog v-model="showModalTransfer" persistent height="400px">
     <v-card color="#F1F1F1">
       <v-container>
         <v-row>

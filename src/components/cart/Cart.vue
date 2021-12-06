@@ -489,7 +489,10 @@ export default {
 
     async HandlerConfirmItems() {
       try {
-        const request = { update_items: true, address_id: this.idAddress };
+        const request = {
+          update_items: true,
+          address_id: this.idAddress.id || this.idAddress,
+        };
         const response = await this.$store.dispatch(
           "cart/CONFIRM_PRODUCTS_CART",
           request
