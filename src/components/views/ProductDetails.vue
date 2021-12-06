@@ -68,12 +68,15 @@
           </v-col>
           <v-col cols="12" sm="6" md="5" class="ml-md-15 d-flex flex-column">
             <div>
-              <div class="title-font text-uppercase">
+              <div class="title-font-2 text-uppercase">
                 {{ dataProduct.keywords }}
               </div>
-              <p class="mt-1">
-                <span v-html="dataProduct.resume"></span>
-              </p>
+              <div class="mt-5 text-17">
+                <span
+                  style="line-height: 28px"
+                  v-html="dataProduct.resume"
+                ></span>
+              </div>
             </div>
             <div class="mt-auto">
               <div class="d-md-flex">
@@ -95,7 +98,7 @@
                             | currencyPVP
                         }}
                       </div>
-                      <div class="my-2 text-17">
+                      <div class="my-4 text-17">
                         <span class="font-weight-bold text-20">
                           $ {{ dataProduct.price.pvp | currencyPVP }}
                         </span>
@@ -118,7 +121,7 @@
 
               <div class="d-flex justify-space-between mt-10">
                 <cp-information
-                  style="font-size: 18px; color: #00A650"
+                  style="font-size: 18px; color: #00a650"
                   v-if="dataProduct"
                   :dataProduct="dataProduct"
                   :authUser="authUser"
@@ -139,7 +142,9 @@
               </div>
 
               <div>
-                <span style="color: #00A0E9">Este paquete sera preparado antes de: <br /></span>
+                <span style="color: #00a0e9"
+                  >Este paquete sera preparado antes de: <br
+                /></span>
                 {{ getDate() }}
               </div>
 
@@ -1085,7 +1090,8 @@ export default {
 </script>
 
 <style>
-.title-font {
+
+.title-font-2 {
   font-size: 2.5em;
   font-weight: 600;
 }
@@ -1111,10 +1117,14 @@ export default {
 }
 
 .text-20 {
-  font-size: 30px;
+  font-size: 1.5em;
 }
 
 .text-17 {
-  font-size: 17px;
+  font-size: 17px !important;
+}
+
+.in {
+  line-height: 25px in !important;
 }
 </style>
