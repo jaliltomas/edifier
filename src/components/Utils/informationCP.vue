@@ -9,7 +9,7 @@
       <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
         <p
           class="mb-0 text-uppercase"
-          style="font-color: #00A650; font-size: 1.2em; cursor: pointer"
+          style="font-color: #00a650; font-size: 1.2em; cursor: pointer"
           v-if="
             dataProduct.product != null &&
             dataProduct.product.product_warehouse.length > 0
@@ -45,7 +45,7 @@
       <div v-else>
         <p
           class="mb-0 text-uppercase"
-          style="font-color: #00A650; font-size: 1.2em"
+          style="font-color: #00a650; font-size: 1.2em"
           v-if="
             dataProduct.product != null &&
             dataProduct.product.product_warehouse.length > 0
@@ -164,7 +164,7 @@
     <div v-else-if="isAuth == false" class="mb-5">
       <p
         class="mb-0 text-uppercase"
-        style="cursor: pointer; font-color: #00A650"
+        style="cursor: pointer; font-color: #00a650"
         @click="$router.push({ name: 'login' })"
       >
         <v-icon color="#00A650" class="mr-1">mdi-truck-outline</v-icon>
@@ -479,6 +479,8 @@ export default {
                 (whr.warehouse_id == 5 && whr.current_stock > 0)
             );
 
+            console.log("***", warehouse5000)
+
             if (warehouse5000.length == 1) {
               const warehouseThreshold = warehouse5000.some(
                 (whr) => whr.current_stock > this.dataProduct.threshold
@@ -539,7 +541,7 @@ export default {
       if (this.isAuth) {
         this.showModalReserve = true;
       } else {
-        this.$router.push({name: 'login'});
+        this.$router.push({ name: "login" });
       }
     },
 

@@ -61,6 +61,10 @@ const routes = [
         component: AppDowload,
         name: 'app_dowload'
     },
+    {
+        path: '*',
+        redirect: "/"
+    },
 ]
 
 const router = new VueRouter({

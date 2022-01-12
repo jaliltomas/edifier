@@ -505,7 +505,6 @@ export default {
   methods: {
     async HandlerGetData() {
       try {
-        console.log("Order", this.dataOrder);
         const request = {
           id: this.dataOrder.id,
         };
@@ -514,8 +513,6 @@ export default {
           request
         );
         this.orderData = { ...response.data.data };
-        console.log("Detalle compras", this.orderData);
-        console.log("orderData", this.orderData);
       } catch (error) {
         console.log(error);
       }
@@ -535,7 +532,6 @@ export default {
 
     getTotal(price) {
       const payment = this.orderData?.payment;
-      console.log(payment);
       const typePayment = payment.map((pay) => {
         let pricePay = 0;
 
@@ -584,7 +580,6 @@ export default {
     },
 
     goToChat(go) {
-      console.log("entre");
       switch (go) {
         case "CABA":
           window.open("https://stadio.reamaze.com/chat-with-us/25264");

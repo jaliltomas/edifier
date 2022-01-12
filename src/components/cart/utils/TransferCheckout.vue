@@ -444,6 +444,17 @@
         </v-card>
       </ValidationObserver>
     </v-dialog>
+    <v-snackbar v-model="showAlertPay" centered multi-line>
+      <span style="font-size: 1.2em"
+        >Solo dispone una (1) hora para completar el pago</span
+      >
+
+      <template v-slot:action="{ attrs }">
+        <v-btn icon color="pink" text v-bind="attrs" @click="goToProfile()">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-dialog>
 </template>
 
@@ -481,6 +492,7 @@ export default {
       isCopyCBU: "CBU0",
       productPriceTotal: 0,
       loadingLocation: false,
+      showAlertPay: false,
     };
   },
 
@@ -491,6 +503,12 @@ export default {
   computed: {
     authUser() {
       return this.$store.getters["auth/GET_PROFILE"];
+    },
+  },
+
+  watch: {
+    showAlertPay(val) {
+      if (!val) this.goToProfile();
     },
   },
 
@@ -560,6 +578,10 @@ export default {
     },
 
     HandlerGoProfile() {
+      this.showAlertPay = true;
+    },
+
+    goToProfile() {
       this.$router.push({ name: "profile", query: { action: 3 } });
     },
 

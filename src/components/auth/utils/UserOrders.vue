@@ -32,6 +32,9 @@
             <span v-if="item.payment.length > 0" class="text-capitalize">
               {{ item.payment[0].status | statusPay }}
             </span>
+            <span v-else>
+              {{ item.order_status | statusPay }}
+            </span>
           </template>
           <template v-slot:[`item.action`]="{ item }">
             <v-tooltip bottom>
@@ -134,15 +137,15 @@ export default {
       switch (val) {
         case "pending":
           return "pendiente";
-        case "in_process=>":
+        case "in_process":
           return "en proceso";
-        case "approved =>":
+        case "approved":
           return "aprovado";
-        case "refunded =>":
+        case "refunded":
           return "reintegrado";
-        case "rejected =>":
+        case "rejected":
           return "rechazado";
-        case "cancelled =>":
+        case "cancelled":
           return "cancelado";
       }
       return val;
@@ -178,7 +181,6 @@ export default {
       }
     },
     HandlerMoreData(item) {
-      console.log(item);
       this.dataOrder = { ...item };
       this.showDetailsOrder = true;
       // const orderDetails = JSON.stringify(item);
