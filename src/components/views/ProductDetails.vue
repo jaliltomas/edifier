@@ -121,7 +121,7 @@
 
               <div class="d-flex justify-space-between mt-10">
                 <cp-information
-                  style="font-size: 18px; color: #00a650"
+                  style="font-size: 18px; color: #0000"
                   v-if="dataProduct"
                   :dataProduct="dataProduct"
                   :authUser="authUser"
@@ -129,7 +129,7 @@
                 />
               </div>
 
-              <div class="mt-4 mb-2">
+              <!-- <div class="mt-4 mb-2">
                 <div
                   v-if="
                     dataProduct.product != null &&
@@ -139,14 +139,14 @@
                   <span class="mr-1"> Stock en</span>
                   {{ getWarehouse(dataProduct.product.product_warehouse) }}
                 </div>
-              </div>
+              </div> -->
 
-              <div>
+              <!-- <div>
                 <span style="color: #00a0e9"
                   >Este paquete sera preparado antes de: <br
                 /></span>
                 {{ getDate() }}
-              </div>
+              </div> -->
 
               <div
                 v-if="
