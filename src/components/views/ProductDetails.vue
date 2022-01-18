@@ -79,33 +79,39 @@
               </div>
             </div>
             <div class="mt-auto">
-              <div class="d-md-flex">
+              <div class="d-md-flex mt-7">
                 <p class="mb-0 mt-2">
                   <span v-if="dataProduct.price != null">
                     <div
                       style="border-left: 3px solid #00a0e9; padding-left: 8px"
                     >
                       <div class="text-17" v-if="isAuth">
-                        <span class="font-weight-bold text-20">
+                        <span class="weight-medium text-20">
                           $
                           {{
                             dataProduct.price.pvp_18_installments | currencyPVP
                           }}
                         </span>
-                        en 18 cuotas de $
+                        hasta 18 cuotas de $
                         {{
                           (dataProduct.price.pvp_18_installments / 18)
                             | currencyPVP
                         }}
                       </div>
-                      <div class="my-4 text-17">
-                        <span class="font-weight-bold text-20">
+                      <div class="my-4 text-17 my-5">
+                        <span
+                          style="color: #5d7286"
+                          class="weight-medium text-20"
+                        >
                           $ {{ dataProduct.price.pvp | currencyPVP }}
                         </span>
                         <span v-if="isAuth">con Débito / Crédito</span>
                       </div>
                       <div class="text-17" v-if="isAuth">
-                        <span class="font-weight-bold text-20">
+                        <span
+                          style="color: #01d879"
+                          class="weight-medium text-20"
+                        >
                           $ {{ dataProduct.price.pvp_transfer | currencyPVP }}
                         </span>
                         por Transferencia Bancaria
@@ -113,7 +119,9 @@
                     </div>
                     <!-- $ {{ dataProduct.price.pvp | currencyPVP }} -->
                     <div class="mt-4">
-                      <i>Podras seleccionar la forma de pago en el Checkout</i>
+                      <em>
+                        Podras seleccionar la forma de pago en el Checkout
+                      </em>
                     </div>
                   </span>
                 </p>
@@ -121,7 +129,6 @@
 
               <div class="d-flex justify-space-between mt-10">
                 <cp-information
-                  style="font-size: 18px; color: #0000"
                   v-if="dataProduct"
                   :dataProduct="dataProduct"
                   :authUser="authUser"
@@ -129,7 +136,7 @@
                 />
               </div>
 
-              <!-- <div class="mt-4 mb-2">
+              <div class="mt-4 mb-2">
                 <div
                   v-if="
                     dataProduct.product != null &&
@@ -139,14 +146,11 @@
                   <span class="mr-1"> Stock en</span>
                   {{ getWarehouse(dataProduct.product.product_warehouse) }}
                 </div>
-              </div> -->
-
-              <!-- <div>
-                <span style="color: #00a0e9"
-                  >Este paquete sera preparado antes de: <br
-                /></span>
+                <span style="color: #00a0e9" class="mr-2">
+                  Este paquete sera preparado antes de:
+                </span>
                 {{ getDate() }}
-              </div> -->
+              </div>
 
               <div
                 v-if="
@@ -1029,7 +1033,7 @@ export default {
     getDate() {
       // const date = moment().format("YYYY-MM-DD HH:mm:ss");
       // return date
-      const dateParse = moment().format("YYYY-MM-DD HH:mm:ss");
+      const dateParse = moment().format("YYYY/MM/DD HH:mm:ss");
       const numberDay = moment(dateParse).day();
       const dateHour = moment(dateParse).format("HH:mm:ss");
 
@@ -1055,7 +1059,7 @@ export default {
          */
         if (time.isBetween(firstTime, secondTime)) {
           // console.log('primero',date)
-          return moment(dateParse).format("YYYY-MM-DD") + " 9:30";
+          return "9:30 " + moment(dateParse).format("YYYY/MM/DD");
         } else if (time.isBetween(firstTime2, secondTime2)) {
           /**
            * 09:00:00 / 16:30:00
@@ -1063,22 +1067,21 @@ export default {
           // console.log('segundo', date)
 
           const add30Min = moment(time).add(30, "m").format("HH:mm");
-          return moment(dateParse).format("YYYY-MM-DD") + " " + add30Min;
+          return `${add30Min} ${moment(dateParse).format("YYYY/MM/DD")}`;
         } else {
-          const currentDay = moment(dateParse).format("YYYY-MM-DD");
+          const currentDay = moment(dateParse).format("YYYY/MM/DD");
           const addNextDay = moment(currentDay)
             .add(1, "d")
-            .format("YYYY-MM-DD");
-          return addNextDay + " " + "09:30";
+            .format("YYYY/MM/DD");
+          return "09:30" + " " + addNextDay;
         }
       } else {
-        console.log("numberDay", numberDay);
         const number_diff = numberDay == 0 ? 1 : 2;
-        const currentDay = moment(dateParse).format("YYYY-MM-DD");
+        const currentDay = moment(dateParse).format("YYYY/MM/DD");
         const addNextDay = moment(currentDay)
           .add(number_diff, "d")
-          .format("YYYY-MM-DD");
-        return addNextDay + " " + "09:30";
+          .format("YYYY/MM/DD");
+        return "09:30" + " " + addNextDay;
       }
     },
 
@@ -1090,7 +1093,6 @@ export default {
 </script>
 
 <style>
-
 .title-font-2 {
   font-size: 2.5em;
   font-weight: 600;
@@ -1117,7 +1119,7 @@ export default {
 }
 
 .text-20 {
-  font-size: 1.5em;
+  font-size: 2.5em;
 }
 
 .text-17 {
@@ -1126,5 +1128,9 @@ export default {
 
 .in {
   line-height: 25px in !important;
+}
+
+.weight-medium {
+  font-weight: 400;
 }
 </style>

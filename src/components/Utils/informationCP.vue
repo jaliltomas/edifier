@@ -64,8 +64,14 @@
                 dataProduct.product.product_warehouse
               ) != 'AVISAME'
             "
+            :style="$route.name !== 'product_details' ? '' : 'color: #01D879'"
           >
-            <v-icon color="#3f3c35" class="mr-0">mdi-truck-outline</v-icon>
+            <v-icon
+              :color="$route.name !== 'product_details' ? '' : '#01D879'"
+              class="mr-0"
+            >
+              mdi-truck-outline
+            </v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
@@ -479,7 +485,7 @@ export default {
                 (whr.warehouse_id == 5 && whr.current_stock > 0)
             );
 
-            console.log("***", warehouse5000)
+            console.log("***", warehouse5000);
 
             if (warehouse5000.length == 1) {
               const warehouseThreshold = warehouse5000.some(
