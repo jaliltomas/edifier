@@ -79,52 +79,39 @@
               </div>
             </div>
             <div class="mt-auto">
-              <div class="d-md-flex mt-7">
-                <p class="mb-0 mt-2">
-                  <span v-if="dataProduct.price != null">
-                    <div
-                      style="border-left: 3px solid #00a0e9; padding-left: 8px"
-                    >
-                      <div class="text-17" v-if="isAuth">
-                        <span class="weight-medium text-20">
-                          $
-                          {{
-                            dataProduct.price.pvp_18_installments | currencyPVP
-                          }}
-                        </span>
-                        hasta 18 cuotas de $
-                        {{
-                          (dataProduct.price.pvp_18_installments / 18)
-                            | currencyPVP
-                        }}
-                      </div>
-                      <div class="my-4 text-17 my-5">
-                        <span
-                          style="color: #5d7286"
-                          class="weight-medium text-20"
-                        >
-                          $ {{ dataProduct.price.pvp | currencyPVP }}
-                        </span>
-                        <span v-if="isAuth">con Débito / Crédito</span>
-                      </div>
-                      <div class="text-17" v-if="isAuth">
-                        <span
-                          style="color: #01d879"
-                          class="weight-medium text-20"
-                        >
-                          $ {{ dataProduct.price.pvp_transfer | currencyPVP }}
-                        </span>
-                        por Transferencia Bancaria
-                      </div>
-                    </div>
-                    <!-- $ {{ dataProduct.price.pvp | currencyPVP }} -->
-                    <div class="mt-4">
-                      <em>
-                        Podras seleccionar la forma de pago en el Checkout
-                      </em>
-                    </div>
-                  </span>
-                </p>
+              <div class="mt-5">
+                <div
+                  v-if="dataProduct.price != null"
+                  style="border-left: 3px solid #00a0e9; padding-left: 8px"
+                >
+                  <div class="text-17" v-if="isAuth">
+                    <span class="weight-medium text-20">
+                      $
+                      {{ dataProduct.price.pvp_18_installments | currencyPVP }}
+                    </span>
+                    hasta 18 cuotas de $
+                    {{
+                      (dataProduct.price.pvp_18_installments / 18) | currencyPVP
+                    }}
+                  </div>
+                  <div class="my-4 text-17">
+                    <span style="color: #5d7286" class="weight-medium text-20">
+                      $ {{ dataProduct.price.pvp | currencyPVP }}
+                    </span>
+                    <span v-if="isAuth">con Débito / Crédito</span>
+                  </div>
+                  <div class="text-17" v-if="isAuth">
+                    <span style="color: #01d879" class="weight-medium text-20">
+                      $ {{ dataProduct.price.pvp_transfer | currencyPVP }}
+                    </span>
+                    por Transferencia Bancaria
+                  </div>
+                </div>
+                <br>
+                <!-- $ {{ dataProduct.price.pvp | currencyPVP }} -->
+                <div class="mt-4">
+                  <em> Podrás seleccionar la forma de pago en el Checkout </em>
+                </div>
               </div>
 
               <div class="d-flex justify-space-between mt-10">
@@ -143,13 +130,13 @@
                     dataProduct.product.product_warehouse.length > 0
                   "
                 >
-                  <span class="mr-1"> Stock en</span>
+                  <span class="mr-0">Stock en</span>
                   {{ getWarehouse(dataProduct.product.product_warehouse) }}
                 </div>
                 <span style="color: #00a0e9" class="mr-2">
                   Este paquete sera preparado antes de:
                 </span>
-                {{ getDate() }}
+                {{ getDate() | formatDay }}
               </div>
 
               <div
@@ -245,8 +232,7 @@
                 style="color: #00a0e9; cursor: pointer"
                 @click="$router.push({ name: 'cart' })"
               >
-                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. Ir al
-                carrito.
+                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. ir a mi Lista de Compras.
               </p>
             </div>
           </v-col>
@@ -492,6 +478,10 @@ export default {
       } else {
         return " ";
       }
+    },
+
+    formatDay(value) {
+      return moment(value).format("HH:mm DD/MM/YYYY");
     },
 
     currency(value) {
