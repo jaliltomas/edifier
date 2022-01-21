@@ -29,16 +29,34 @@
               ) != 'AVISAME'
             "
           >
-            <v-icon color="#3f3c35" class="mr-0">mdi-truck-outline</v-icon>
+            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
                 dataProduct.product.product_warehouse
               )
             }}
+            <br />
+            <v-btn
+              v-if="$route.name != 'product_details' && $route.name != 'cart'"
+              @click="HandlerShowProduct(dataProduct)"
+              rounded
+              outlined
+              color="#00A0E9"
+              class="mt-3"
+            >
+              Comprar
+            </v-btn>
           </span>
           <span v-else>
-            <v-btn outlined rounded color="#15A7EB">1 AVISAME</v-btn>
+            <v-btn
+              @click="HandlerModalAvisame()"
+              outlined
+              rounded
+              color="#15A7EB"
+            >
+              AVISAME
+            </v-btn>
           </span>
         </p>
       </div>
@@ -64,14 +82,8 @@
                 dataProduct.product.product_warehouse
               ) != 'AVISAME'
             "
-            :style="$route.name !== 'product_details' ? '' : 'color: #01D879'"
           >
-            <v-icon
-              :color="$route.name !== 'product_details' ? '' : '#01D879'"
-              class="mr-0"
-            >
-              mdi-truck-outline
-            </v-icon>
+            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
@@ -81,11 +93,11 @@
             <br />
             <v-btn
               class="mt-3"
-              v-if="$route.name != 'product_details'"
+              v-if="$route.name != 'product_details' && $route.name != 'cart'"
               @click="HandlerShowProduct(dataProduct)"
               outlined
               rounded
-              color="#15A7EB"
+              color="#00A0E9"
             >
               Comprar
             </v-btn>
@@ -101,24 +113,18 @@
               "
               outlined
               rounded
-              color="#15A7EB"
+              color="#00A0E9"
               v-if="dataProduct.user_product_notification == null"
             >
               AVISAME
             </v-btn>
             <span
               v-if="dataProduct.user_product_notification != null"
-              class="d-flex justify-center mb-3"
-              style="cursor: default; color: #3f3c35"
-            >
-              Próximamente
-            </span>
-            <!-- <span
-              v-if="dataProduct.user_product_notification != null"
+              class="black--text d-flex justify-center mb-3"
               style="cursor: default"
             >
-              TE AVISAMOS CUANDO ESTÉ
-            </span> -->
+              INGRESA EN ENERO
+            </span>
           </span>
         </p>
       </div>
@@ -126,19 +132,26 @@
 
     <div
       v-else-if="
-        (isAuth && dataProduct.out_stock == true) || validateUmbral() == false
+        isAuth == true &&
+        dataProduct.out_stock === false &&
+        validateUmbral() == false
       "
     >
       <p style="font-size: 1.2em" class="mb-0 pt-1">
         <span
           v-if="
-            dataProduct.user_product_notification == null &&
-            $route.name == 'products'
+            (dataProduct.user_product_notification == null &&
+              $route.name == 'products') ||
+            $route.name == 'home'
           "
-          class="d-flex justify-center mt-n1 mb-4 text-uppercase"
-          style="cursor: default; color: #3f3c35"
+          :class="
+            $route.name != 'home'
+              ? 'black--text d-flex justify-center mt-n1 mb-4 text-uppercase'
+              : 'black--text d-flex justify-start mt-n1 mb-4 text-uppercase'
+          "
+          style="cursor: default"
         >
-          Próximamente
+          INGRESA EN ENERO
         </span>
       </p>
       <v-btn
@@ -147,7 +160,7 @@
         class="mt-0"
         rounded
         outlined
-        color="#3FB7EE"
+        color="#00A0E9"
       >
         AVISAME
       </v-btn>
@@ -163,7 +176,7 @@
         >
           LO ELEGISTE
         </span>
-        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
+        <span style="color: #00A0E9"> TE AVISAMOS CUANDO ESTÉ </span>
       </p>
     </div>
 
@@ -173,7 +186,7 @@
         style="cursor: pointer; color: #3f3c35"
         @click="$router.push({ name: 'login' })"
       >
-        <v-icon color="#3f3c35" class="mr-1">mdi-truck-outline</v-icon>
+        <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
         Conocé el tiempo de entrega
       </p>
     </div>
@@ -236,34 +249,22 @@
             <v-spacer></v-spacer>
             <v-btn text @click="showModalReserve = false">Cancelar</v-btn>
             <v-btn
+              rounded
               :loading="loading"
-              dark
-              color="#00A0E9"
+              color="#AC2632"
+              class="white--text"
               @click="passes(HandlerNotification)"
-            >
-              Continuar
+              >Continuar
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </ValidationObserver>
-
-    <notification_componenet
-      :active="activeNotificacion"
-      :text="textNotification"
-      :color="colorNotification"
-      @dialog:change="responseNotification"
-    />
   </div>
 </template>
 
 <script>
-import NotificationComponent from "./notification_componenet.vue";
 export default {
-  components: {
-    notification_componenet: NotificationComponent,
-  },
-
   props: {
     dataProduct: {
       type: Object,
@@ -334,11 +335,14 @@ export default {
       if (getWarehouseFwl01 != undefined) {
         if (getWarehouseFwl01.current_stock > 0) {
           if (cp >= 1000 && cp < 1441) {
-            return "Recibilo mañana";
+            let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+            return `${text} dentro de las 24Hs HÁBILES`;
           } else if (this.responseChazki == true) {
-            return "Recibilo en 72HS";
+            let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+            return `${text} dentro de las 72Hs HÁBILES`;
           } else {
-            return "Recibilo en 4-6 días hábiles";
+            let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+            return `${text} en 4-6 días hábiles`;
           }
         } else {
           return "AVISAME";
@@ -360,17 +364,25 @@ export default {
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Recibilo hoy";
+          // if (this.warehouseValue === 5) {
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 24Hs HÁBILES `;
+          // } else {
+          //   let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          //   return `${text} en 4-6 días hábiles`;
+          // }
         } else if (
-          getWarehouseReg.current_stock == 0 &&
+          getWarehouseReg.current_stock === 0 &&
           getWarehouseFwl01.current_stock > 0
         ) {
-          return "Recibilo en 72HS ";
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} en 4-6 días hábiles`;
         } else if (
           getWarehouseReg.current_stock > 0 &&
           getWarehouseFwl01.current_stock == 0
         ) {
-          return "Recibilo hoy";
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 24Hs HÁBILES `;
         } else if (
           getWarehouseReg.current_stock == 0 &&
           getWarehouseFwl01.current_stock == 0
@@ -382,7 +394,8 @@ export default {
         getWarehouseFwl01 != undefined
       ) {
         if (getWarehouseFwl01.current_stock > 0) {
-          return "Recibilo en 72HS ";
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 72Hs HÁBILES`;
         } else if (getWarehouseFwl01.current_stock == 0) {
           return "AVISAME";
         }
@@ -391,7 +404,7 @@ export default {
         getWarehouseFwl01 == undefined
       ) {
         if (getWarehouseReg.current_stock > 0) {
-          return "Recibilo hoy";
+          return "Entrega o Retira en el día";
         } else if (getWarehouseReg.current_stock == 0) {
           return "AVISAME";
         }
@@ -426,10 +439,6 @@ export default {
 
         this.showModalReserve = false;
         this.dataProduct.user_product_notification = true;
-
-        // this.activeNotificacion = true;
-        // this.textNotification = "Se ha registrado la información";
-        // this.colorNotification = "#00a0e9";
       } catch (error) {
         console.log(error);
       } finally {
@@ -438,15 +447,15 @@ export default {
     },
 
     validateUmbral() {
-      // this.messageProductAdd = false;
       const userZipCode = this.authUserData.zipcode;
       let threshold = 0;
+      const dataProductValue = { ...this.dataProduct };
 
       if (
-        this.dataProduct.product != null &&
-        this.dataProduct.product.product_warehouse != null
+        dataProductValue.product != null &&
+        dataProductValue.product.product_warehouse != null
       ) {
-        const productWarehouse = this.dataProduct.product.product_warehouse;
+        const productWarehouse = dataProductValue.product.product_warehouse;
         switch (parseInt(userZipCode)) {
           case 2000:
             const warehouse2000 = productWarehouse.filter(
@@ -457,24 +466,31 @@ export default {
 
             if (warehouse2000.length == 1) {
               const warehouseThreshold = warehouse2000.some(
-                (whr) => whr.current_stock > this.dataProduct.threshold
+                (whr) => whr.current_stock > dataProductValue.threshold
               );
 
               if (warehouseThreshold) {
                 threshold =
-                  warehouse2000[0].current_stock - this.dataProduct.threshold;
+                  warehouse2000[0].current_stock - dataProductValue.threshold;
               }
             } else {
-              const userFindWarehouse2000 = warehouse2000.find(
+              const userFindWarehouse = warehouse2000.find(
                 (whr) => whr.warehouse_id == 10
               );
 
-              if (
-                userFindWarehouse2000.current_stock > this.dataProduct.threshold
-              ) {
-                threshold =
-                  userFindWarehouse2000.current_stock -
-                  this.dataProduct.threshold;
+              if (userFindWarehouse != undefined) {
+                if (
+                  userFindWarehouse.current_stock > dataProductValue.threshold
+                ) {
+                  threshold =
+                    userFindWarehouse.current_stock -
+                    dataProductValue.threshold;
+                } else {
+                  threshold = this.continue(
+                    productWarehouse,
+                    dataProductValue.threshold
+                  );
+                }
               }
             }
             break;
@@ -485,45 +501,41 @@ export default {
                 (whr.warehouse_id == 5 && whr.current_stock > 0)
             );
 
-            console.log("***", warehouse5000);
-
             if (warehouse5000.length == 1) {
               const warehouseThreshold = warehouse5000.some(
-                (whr) => whr.current_stock > this.dataProduct.threshold
+                (whr) => whr.current_stock > dataProductValue.threshold
               );
 
               if (warehouseThreshold) {
                 threshold =
-                  warehouse5000[0].current_stock - this.dataProduct.threshold;
+                  warehouse5000[0].current_stock - dataProductValue.threshold;
               }
             } else {
               const userFindWarehouse = warehouse5000.find(
                 (whr) => whr.warehouse_id == 3
               );
 
-              if (
-                userFindWarehouse.current_stock > this.dataProduct.threshold
-              ) {
-                threshold =
-                  userFindWarehouse.current_stock - this.dataProduct.threshold;
+              if (userFindWarehouse != undefined) {
+                if (
+                  userFindWarehouse.current_stock > dataProductValue.threshold
+                ) {
+                  threshold =
+                    userFindWarehouse.current_stock -
+                    dataProductValue.threshold;
+                } else {
+                  threshold = this.continue(
+                    productWarehouse,
+                    dataProductValue.threshold
+                  );
+                }
               }
             }
             break;
           default:
-            const warehouse = productWarehouse.filter(
-              (whr) => whr.warehouse_id == 5 && whr.current_stock > 0
+            threshold = this.continue(
+              productWarehouse,
+              dataProductValue.threshold
             );
-
-            if (warehouse.length > 0) {
-              const warehouseThreshold = warehouse.some(
-                (whr) => whr.current_stock > this.dataProduct.threshold
-              );
-
-              if (warehouseThreshold) {
-                threshold =
-                  warehouse[0].current_stock - this.dataProduct.threshold;
-              }
-            }
             break;
         }
         return threshold > 0 ? true : false;
@@ -551,10 +563,22 @@ export default {
       }
     },
 
-    responseNotification() {
-      this.activeNotificacion = false;
-      this.textNotification = "";
-      this.colorNotification = "";
+    continue(productWarehouse, thresholdValue) {
+      let threshold = false;
+      const warehouse = productWarehouse.filter(
+        (whr) => whr.warehouse_id == 5 && whr.current_stock > 0
+      );
+
+      if (warehouse.length > 0) {
+        const warehouseThreshold = warehouse.some(
+          (whr) => whr.current_stock > thresholdValue
+        );
+
+        if (warehouseThreshold) {
+          threshold = warehouse[0].current_stock - thresholdValue;
+        }
+      }
+      return threshold;
     },
   },
 };
