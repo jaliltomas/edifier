@@ -70,7 +70,7 @@
             </label>
             <ValidationProvider
               name="Numero de documento"
-              rules="required"
+              rules="required|numeric"
               v-slot="{ errors }"
             >
               <v-text-field
