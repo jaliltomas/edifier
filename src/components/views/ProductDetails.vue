@@ -107,7 +107,7 @@
                     por Transferencia Bancaria
                   </div>
                 </div>
-                <br>
+                <br />
                 <!-- $ {{ dataProduct.price.pvp | currencyPVP }} -->
                 <div class="mt-4">
                   <em> Podrás seleccionar la forma de pago en el Checkout </em>
@@ -130,8 +130,9 @@
                     dataProduct.product.product_warehouse.length > 0
                   "
                 >
-                  <span class="mr-0">Stock en</span>
-                  {{ getWarehouse(dataProduct.product.product_warehouse) }}
+                  <span class="mr-0">
+                    {{ getWarehouse(dataProduct.product.product_warehouse) }}
+                  </span>
                 </div>
                 <span style="color: #00a0e9" class="mr-2">
                   Este paquete sera preparado antes de:
@@ -232,7 +233,8 @@
                 style="color: #00a0e9; cursor: pointer"
                 @click="$router.push({ name: 'cart' })"
               >
-                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. ir a mi Lista de Compras.
+                Agregaste {{ dataProduct.keywords }} x {{ quantity }}. ir a mi
+                Lista de Compras.
               </p>
             </div>
           </v-col>
@@ -997,27 +999,19 @@ export default {
     },
 
     getWarehouse(warehouse) {
-      let warehouseValue = null;
+      const cpUser = parseInt(this.authUser?.address.zipcode);
       for (const iterator of warehouse) {
-        switch (iterator.warehouse_id) {
-          case 5:
-            if (iterator.current_stock > 0) {
-              warehouseValue = "Central";
-              break;
-            }
-          case 10:
-            if (iterator.current_stock > 0) {
-              warehouseValue = "Rosario";
-              break;
-            }
-          case 3:
-            if (iterator.current_stock > 0) {
-              warehouseValue = "Cordoba";
-              break;
-            }
+        if (iterator.warehouse_id === 5 && cpUser !== 2000 && cpUser !== 5000) {
+          return "Stock en Central";
+        }
+        if (iterator.warehouse_id === 10 && cpUser === 2000) {
+          return "Stock en Rosario";
+        }
+        if (iterator.warehouse_id === 3 && cpUser === 5000) {
+          return "Stock en Cordoba";
         }
       }
-      return warehouseValue == null ? "Sin Stock" : warehouseValue;
+      return "Sin Stock";
     },
 
     getDate() {
