@@ -999,7 +999,7 @@ export default {
     },
 
     getWarehouse(warehouse) {
-      const cpUser = parseInt(this.authUser?.address.zipcode);
+      const cpUser = parseInt(this.authUser?.address?.zipcode);
       for (const iterator of warehouse) {
         if (iterator.warehouse_id === 5 && cpUser !== 2000 && cpUser !== 5000) {
           return "Stock en Central";
