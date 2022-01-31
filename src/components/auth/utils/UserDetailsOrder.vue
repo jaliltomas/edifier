@@ -481,7 +481,7 @@ export default {
       orderData: {},
       canUploadFile: true,
       uploadTransfer: false,
-      colorStatus: "#2DA7E3"
+      colorStatus: "#2DA7E3",
     };
   },
 
@@ -606,24 +606,48 @@ export default {
     },
 
     bankTransfer() {
-      if (Object.keys(this.orderData).length > 0) {
-        const payment = this.orderData.payment;
-
-        const type_payment = payment.find(
-          (pay) => pay.payment_type_id == "bank_transfer"
-        );
-
-        if (
-          !type_payment?.status ||
-          ["cancelled", "rejected"].includes(type_payment.status)
-        ) {
-          return false;
-        }
-
-        this.canUploadFile =
-          type_payment.path_proof_payment == null ? true : false;
-        return true;
+      if (Object.keys(this.orderData).length === 0) {
+        return false;
       }
+      const payment = this.orderData.payment;
+
+      const type_payment = payment.find(
+        (pay) => pay.payment_type_id == "bank_transfer"
+      );
+
+      if (
+        !type_payment ||
+        ["cancelled", "rejected"].includes(this.orderData.order_status)
+      ) {
+        return false;
+      }
+
+      this.canUploadFile =
+        type_payment.path_proof_payment == null ? true : false;
+      return true;
+    },
+
+    typePayment() {
+      const { order_status } = this.dataOrder || null;
+      if (!order_status) return;
+
+      switch (order_status) {
+        case "cancelled":
+          this.colorPayment("cancelled");
+          return "Se ha vencido el tiempo de pago de 1 hora vuelva a realizar la compra.";
+        case "rejected":
+          this.colorPayment("rejected");
+          return "Su compra ha sido rechazada";
+        default:
+          this.colorPayment("default");
+          return "Su compra esta pendiente de validar posee 1 hora para registrar el pago";
+      }
+    },
+
+    colorPayment(status) {
+      if (status === "cancelled") return (this.colorStatus = "color: red");
+      if (status === "rejected") return (this.colorStatus = "color: red");
+      if (status === "default") return (this.colorStatus = "color: #2DA7E3");
     },
 
     async handlerUploadFile() {
@@ -647,31 +671,6 @@ export default {
       } finally {
         this.loadingUpload = false;
       }
-    },
-
-    typePayment() {
-      if (Object.keys(this.orderData).length > 0) {
-        const [payment] = this.orderData?.payment || [];
-        if (!payment) return;
-
-        switch (payment.status) {
-          case "cancelled":
-            this.colorPayment("cancelled");
-            return "Se ha vencido el tiempo de pago de 1 hora vuelva a realizar la compra.";
-          case "rejected":
-            this.colorPayment("rejected");
-            return "Su compra ha sido rechazada";
-          default:
-            this.colorPayment("default");
-            return "Su compra esta pendiente de validar posee 1 hora para registrar el pago";
-        }
-      }
-    },
-
-    colorPayment(status) {
-      if (status === "cancelled") return this.colorStatus = "color: red";
-      if (status === "rejected") return this.colorStatus = "color: red";
-      if (status === "default") return this.colorStatus = "color: #2DA7E3";
     },
   },
 };
