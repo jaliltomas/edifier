@@ -82,6 +82,11 @@
                 </v-btn>
               </div>
             </v-col>
+            <v-col cols="12" md="6" v-if="!bankTransfer()">
+              <div class="d-flex justify-end mr-md-5" :style="colorStatus">
+                {{ typePayment() }}
+              </div>
+            </v-col>
           </v-row>
         </v-container>
         <div class="py-3"></div>
@@ -476,6 +481,7 @@ export default {
       orderData: {},
       canUploadFile: true,
       uploadTransfer: false,
+      colorStatus: "#2DA7E3"
     };
   },
 
@@ -607,13 +613,16 @@ export default {
           (pay) => pay.payment_type_id == "bank_transfer"
         );
 
-        if (type_payment != undefined) {
-          this.canUploadFile =
-            type_payment.path_proof_payment == null ? true : false;
-          return true;
-        } else {
+        if (
+          !type_payment?.status ||
+          ["cancelled", "rejected"].includes(type_payment.status)
+        ) {
           return false;
         }
+
+        this.canUploadFile =
+          type_payment.path_proof_payment == null ? true : false;
+        return true;
       }
     },
 
@@ -638,6 +647,31 @@ export default {
       } finally {
         this.loadingUpload = false;
       }
+    },
+
+    typePayment() {
+      if (Object.keys(this.orderData).length > 0) {
+        const [payment] = this.orderData?.payment || [];
+        if (!payment) return;
+
+        switch (payment.status) {
+          case "cancelled":
+            this.colorPayment("cancelled");
+            return "Se ha vencido el tiempo de pago de 1 hora vuelva a realizar la compra.";
+          case "rejected":
+            this.colorPayment("rejected");
+            return "Su compra ha sido rechazada";
+          default:
+            this.colorPayment("default");
+            return "Su compra esta pendiente de validar posee 1 hora para registrar el pago";
+        }
+      }
+    },
+
+    colorPayment(status) {
+      if (status === "cancelled") return this.colorStatus = "color: red";
+      if (status === "rejected") return this.colorStatus = "color: red";
+      if (status === "default") return this.colorStatus = "color: #2DA7E3";
     },
   },
 };
