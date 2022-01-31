@@ -29,10 +29,15 @@
             </span>
           </template>
           <template v-slot:[`item.order`]="{ item }">
-            <span v-if="item.payment.length > 0" class="text-capitalize">
+            <span
+              v-if="
+                item.payment.length > 0 && item.order_status !== 'cancelled'
+              "
+              class="text-capitalize"
+            >
               {{ item.payment[0].status | statusPay }}
             </span>
-            <span v-else>
+            <span v-else class="text-capitalize">
               {{ item.order_status | statusPay }}
             </span>
           </template>
