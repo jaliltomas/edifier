@@ -145,7 +145,7 @@ export default {
         case "in_process":
           return "en proceso";
         case "approved":
-          return "aprovado";
+          return "aprobado";
         case "refunded":
           return "reintegrado";
         case "rejected":
