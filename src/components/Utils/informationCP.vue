@@ -123,7 +123,7 @@
               class="black--text d-flex justify-center mb-3"
               style="cursor: default"
             >
-              INGRESA EN ENERO
+              INGRESA EN {{ getMonth() }}
             </span>
           </span>
         </p>
@@ -151,7 +151,7 @@
           "
           style="cursor: default"
         >
-          INGRESA EN ENERO
+          INGRESA EN {{ getMonth() }}
         </span>
       </p>
       <v-btn
@@ -264,6 +264,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   props: {
     dataProduct: {
@@ -444,6 +446,18 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+
+    getMonth() {
+      const currentDay = moment().format("DD");
+      const currentMonth = moment().format("MM") - 1;
+      if (currentDay < 15) {
+        return moment().locale("es").format("MMMM");
+      }
+      return moment()
+        .month(parseInt(currentMonth) + 1)
+        .locale("es")
+        .format("MMMM");
     },
 
     validateUmbral() {
