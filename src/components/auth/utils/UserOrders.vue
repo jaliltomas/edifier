@@ -74,7 +74,7 @@
           </v-btn>
         </div>
       </v-col>
-      <v-col cols="6" md="4">
+      <v-col cols="6" md="4" v-if="!showDetailsOrder">
         <v-pagination
           v-model="page"
           :length="paginate.lastPage"
@@ -117,7 +117,6 @@ export default {
         { text: "Total", value: "total_amount", class: "header-text" },
         { text: "Acción", value: "action", class: "header-text" },
       ],
-      dataTable: [],
 
       //Details Orders
       showDetailsOrder: false,
@@ -188,9 +187,6 @@ export default {
     HandlerMoreData(item) {
       this.dataOrder = { ...item };
       this.showDetailsOrder = true;
-      // const orderDetails = JSON.stringify(item);
-      // this.$router.push({ name: "order_details", query: orderDetails });
-      // console.log(item);
     },
   },
 };

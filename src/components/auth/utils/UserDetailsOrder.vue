@@ -539,23 +539,13 @@ export default {
     getTotal(price) {
       const payment = this.orderData?.payment;
       const typePayment = payment.map((pay) => {
-        let pricePay = 0;
-
-        if (pay.payment_type_id == "credit_card") {
-          pricePay = price.pvp;
-        } else if (pay.payment_type_id == "bank_transfer") {
-          pricePay = price.pvp_transfer;
-        } else {
-          pricePay = price.pvp_18_installments;
-        }
-
-        return pricePay;
+        if (pay.payment_type_id === "credit_card") return price.pvp;
+        if (pay.payment_type_id === "bank_transfer") return price.pvp_transfer;
+        return price.pvp_18_installments;
       });
-      if (typePayment.length > 0) {
-        return typePayment[0];
-      } else {
-        return 0;
-      }
+
+      if (typePayment.length) return typePayment[0];
+      return 0;
     },
 
     HandlerGoProfile() {
@@ -582,6 +572,7 @@ export default {
         this.message = error.response.data.error.details;
       } finally {
         this.loadingUpload = false;
+        this.uploadTransfer = false;
       }
     },
 
@@ -609,7 +600,7 @@ export default {
       if (Object.keys(this.orderData).length === 0) {
         return false;
       }
-      const payment = this.orderData.payment;
+      const payment = this.orderData?.payment;
 
       const type_payment = payment.find(
         (pay) => pay.payment_type_id == "bank_transfer"
