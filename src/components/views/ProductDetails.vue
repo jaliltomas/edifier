@@ -123,7 +123,7 @@
                 />
               </div>
 
-              <div class="mt-4 mb-2">
+              <!-- <div class="mt-4 mb-2">
                 <div
                   v-if="
                     dataProduct.product != null &&
@@ -138,7 +138,7 @@
                   Este paquete sera preparado antes de:
                 </span>
                 {{ getDate() | formatDay }}
-              </div>
+              </div> -->
 
               <div
                 v-if="
