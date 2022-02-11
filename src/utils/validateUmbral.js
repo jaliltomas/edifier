@@ -4,7 +4,7 @@ export const isValidUmbral = function ({ zipCode, dataProduct }) {
     const threshold = dataProduct.threshold;
 
     if (!productWarehouse.length) {
-        return false;
+        return 0;
     }
 
     if (userZipCode === 2000) {

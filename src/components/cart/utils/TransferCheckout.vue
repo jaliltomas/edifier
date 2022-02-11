@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showModalTransfer" persistent height="400px">
+  <v-dialog v-model="showModalTransfer" max-width="100%" max-height="100%" persistent scrollable>
     <v-card color="#F1F1F1">
       <v-container>
         <v-row>
@@ -35,72 +35,7 @@
                         | currencyTotal
                     }}
                   </span>
-                  <!-- a la siguiente cuenta bancaria: -->
                 </div>
-                <!-- <div class="d-flex ml-5 mt-5">
-                  <div class="font-weight-bold mr-4 d-flex" style="width: 10%">
-                    Banco:
-                  </div>
-                  <span> BBVA Frances </span>
-                </div>
-                <div class="d-flex ml-5">
-                  <div class="font-weight-bold mr-4 d-flex" style="width: 10%">
-                    Alias:
-                  </div>
-                  <span> ikono </span>
-                  <span
-                    class="ml-2"
-                    @click="handlerCoy('ikono')"
-                    style="cursor: pointer"
-                  >
-                    <v-icon
-                      v-if="isCopyAlias == 'ikono0'"
-                      size="15"
-                      color="#9D122E"
-                    >
-                      mdi-clipboard-multiple-outline
-                    </v-icon>
-                    <v-icon
-                      v-if="isCopyAlias == 'ikono1'"
-                      size="15"
-                      color="#9D122E"
-                    >
-                      mdi-clipboard-multiple
-                    </v-icon>
-                    <span style="color: #9d122e; font-size: 0.8em">
-                      {{ isCopyAlias == "ikono0" ? "Copiar Alias" : "copiado" }}
-                    </span>
-                  </span>
-                </div>
-                <div class="d-flex ml-5">
-                  <div class="font-weight-bold mr-4 d-flex" style="width: 10%">
-                    CBU:
-                  </div>
-                  <span> 0170470320000000397319 </span>
-                  <span
-                    class="ml-2"
-                    style="cursor: pointer"
-                    @click="handlerCoy('0170470320000000397319')"
-                  >
-                    <v-icon
-                      v-if="isCopyCBU == 'CBU0'"
-                      size="15"
-                      color="#9D122E"
-                    >
-                      mdi-clipboard-multiple-outline
-                    </v-icon>
-                    <v-icon
-                      v-if="isCopyCBU == 'CBU1'"
-                      size="15"
-                      color="#9D122E"
-                    >
-                      mdi-clipboard-multiple
-                    </v-icon>
-                    <span style="color: #9d122e; font-size: 0.8em">
-                      {{ isCopyCBU == "CBU0" ? "Copiar CBU" : "copiado" }}
-                    </span>
-                  </span>
-                </div> -->
                 <v-btn
                   @click="goToChat()"
                   class="text-lowercase ml-5 mt-5"
@@ -385,76 +320,75 @@
           </div>
         </v-row>
       </v-container>
-    </v-card>
-
-    <v-dialog
-      v-model="uploadTransfer"
-      v-if="uploadTransfer"
-      max-width="600"
-      persistent
-    >
-      <ValidationObserver ref="obs" v-slot="{ passes }">
-        <v-card class="px-5 py-5">
-          <label for="">Numero de transferencia</label>
-          <ValidationProvider
-            name="transferencia"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <v-text-field
-              v-model="transfer_id"
-              class="mt-2"
-              color="#A81331"
-              dense
-              filled
-              :error-messages="errors"
-            ></v-text-field>
-          </ValidationProvider>
-          <label for="">Comprobante de transferencia</label>
-          <ValidationProvider
-            name="comprobante"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <v-file-input
-              v-model="file"
-              prepend-icon=""
-              dense
-              filled
-              :error-messages="errors"
-            ></v-file-input>
-            <div class="d-flex">
-              {{ message }}
-            </div>
-          </ValidationProvider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text @click="uploadTransfer = false">cancelar</v-btn>
-            <v-btn
-              :disabled="dowloadTransfer == true"
-              :loading="loadingUpload"
-              rounded
-              color="#A5253E"
-              :dark="dowloadTransfer == true ? false : true"
-              @click="passes(handlerUploadFile)"
-            >
-              continuar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </ValidationObserver>
-    </v-dialog>
-    <v-snackbar v-model="showAlertPay" centered multi-line>
-      <span style="font-size: 1.2em"
-        >Solo dispone una (1) hora para completar el pago</span
+      <v-dialog
+        v-model="uploadTransfer"
+        v-if="uploadTransfer"
+        max-width="600"
+        persistent
       >
+        <ValidationObserver ref="obs" v-slot="{ passes }">
+          <v-card class="px-5 py-5">
+            <label for="">Numero de transferencia</label>
+            <ValidationProvider
+              name="transferencia"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                v-model="transfer_id"
+                class="mt-2"
+                color="#A81331"
+                dense
+                filled
+                :error-messages="errors"
+              ></v-text-field>
+            </ValidationProvider>
+            <label for="">Comprobante de transferencia</label>
+            <ValidationProvider
+              name="comprobante"
+              rules="required"
+              v-slot="{ errors }"
+            >
+              <v-file-input
+                v-model="file"
+                prepend-icon=""
+                dense
+                filled
+                :error-messages="errors"
+              ></v-file-input>
+              <div class="d-flex">
+                {{ message }}
+              </div>
+            </ValidationProvider>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn text @click="uploadTransfer = false">cancelar</v-btn>
+              <v-btn
+                :disabled="dowloadTransfer == true"
+                :loading="loadingUpload"
+                rounded
+                color="#A5253E"
+                :dark="dowloadTransfer == true ? false : true"
+                @click="passes(handlerUploadFile)"
+              >
+                continuar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </ValidationObserver>
+      </v-dialog>
+      <v-snackbar v-model="showAlertPay" centered multi-line>
+        <span style="font-size: 1.2em"
+          >Solo dispone una (1) hora para completar el pago</span
+        >
 
-      <template v-slot:action="{ attrs }">
-        <v-btn icon color="pink" text v-bind="attrs" @click="goToProfile()">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </template>
-    </v-snackbar>
+        <template v-slot:action="{ attrs }">
+          <v-btn icon color="pink" text v-bind="attrs" @click="goToProfile()">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </v-card>
   </v-dialog>
 </template>
 
