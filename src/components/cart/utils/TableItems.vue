@@ -97,6 +97,7 @@
 <script>
 import DialogNotification from "../DialogNotification";
 import DeleteProduct from "./DeleteProduct.vue";
+import { isValidUmbral } from "@/utils/validateUmbral.js";
 export default {
   components: {
     DialogNotification,
@@ -137,7 +138,6 @@ export default {
           quantity == "plus"
             ? item.original_quantity + 1
             : item.original_quantity - 1;
-
         if (count > 0 && umbral >= count) {
           if (count < 5) {
             this.$store.commit("cart/UPDATE_ITEM", {
@@ -172,97 +172,11 @@ export default {
     },
 
     validateUmbral(item) {
-      this.messageProductAdd = false;
       const userZipCode = this.authUser.zipcode;
-      let threshold = 0;
 
-      if (
-        item.publication != null &&
-        item.publication.product != null &&
-        item.publication.product.product_warehouse != null
-      ) {
-        const productWarehouse = item.publication.product.product_warehouse;
-        switch (parseInt(userZipCode)) {
-          case 2000:
-            const warehouse2000 = productWarehouse.filter(
-              (whr) =>
-                (whr.warehouse_id == 10 && whr.current_stock > 0) ||
-                (whr.warehouse_id == 5 && whr.current_stock > 0)
-            );
+      const paylod = { zipCode: userZipCode, dataProduct: item.publication };
 
-            if (warehouse2000.length == 1) {
-              const warehouseThreshold = warehouse2000.some(
-                (whr) => whr.current_stock > item.publication.threshold
-              );
-
-              if (warehouseThreshold) {
-                threshold =
-                  warehouse2000[0].current_stock - item.publication.threshold;
-              }
-            } else {
-              const userFindWarehouse2000 = warehouse2000.find(
-                (whr) => whr.warehouse_id == 10
-              );
-
-              if (
-                userFindWarehouse2000.current_stock > item.publication.threshold
-              ) {
-                threshold =
-                  userFindWarehouse2000.current_stock -
-                  item.publication.threshold;
-              }
-            }
-            break;
-          case 5000:
-            const warehouse5000 = productWarehouse.filter(
-              (whr) =>
-                (whr.warehouse_id == 3 && whr.current_stock > 0) ||
-                (whr.warehouse_id == 5 && whr.current_stock > 0)
-            );
-
-            if (warehouse5000.length == 1) {
-              const warehouseThreshold = warehouse5000.some(
-                (whr) => whr.current_stock > item.publication.threshold
-              );
-
-              if (warehouseThreshold) {
-                threshold =
-                  warehouse5000[0].current_stock - item.publication.threshold;
-              }
-            } else {
-              const userFindWarehouse = warehouse5000.find(
-                (whr) => whr.warehouse_id == 3
-              );
-
-              if (
-                userFindWarehouse.current_stock > item.publication.threshold
-              ) {
-                threshold =
-                  userFindWarehouse.current_stock - item.publication.threshold;
-              }
-            }
-            break;
-          default:
-            const warehouse = productWarehouse.filter(
-              (whr) => whr.warehouse_id == 5 && whr.current_stock > 0
-            );
-
-            if (warehouse.length > 0) {
-              const warehouseThreshold = warehouse.some(
-                (whr) => whr.current_stock > item.publication.threshold
-              );
-
-              if (warehouseThreshold) {
-                threshold =
-                  warehouse[0].current_stock - item.publication.threshold;
-              }
-            }
-            break;
-        }
-        return threshold;
-      } else {
-        return false;
-      }
+      return isValidUmbral(paylod);
     },
 
     HandlerCloseDeleteProduct() {

@@ -391,6 +391,7 @@
 import moment from "moment";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import informationCP from "@/components/Utils/informationCP";
+import { isValidUmbral } from "@/utils/validateUmbral.js";
 export default {
   components: {
     "suscribe-component": SuscribeComponent,
@@ -874,101 +875,106 @@ export default {
     },
 
     validateUmbral() {
-      const userZipCode = this.authUser.zipcode;
-      let threshold = 0;
+      const userZipCode = this.authUserData.zipcode;
       const dataProductValue = { ...this.dataProduct };
+      const paylod = { zipCode: userZipCode, dataProduct: dataProductValue };
 
-      if (
-        dataProductValue.product != null &&
-        dataProductValue.product.product_warehouse != null
-      ) {
-        const productWarehouse = dataProductValue.product.product_warehouse;
-        switch (parseInt(userZipCode)) {
-          case 2000:
-            const warehouse2000 = productWarehouse.filter(
-              (whr) =>
-                (whr.warehouse_id == 10 && whr.current_stock > 0) ||
-                (whr.warehouse_id == 5 && whr.current_stock > 0)
-            );
+      return isValidUmbral(paylod) > 0 ? true : false;
+      // const userZipCode = this.authUser.zipcode;
+      // let threshold = 0;
+      // const dataProductValue = { ...this.dataProduct };
 
-            if (warehouse2000.length == 1) {
-              const warehouseThreshold = warehouse2000.some(
-                (whr) => whr.current_stock > dataProductValue.threshold
-              );
+      // if (
+      //   dataProductValue.product != null &&
+      //   dataProductValue.product.product_warehouse != null
+      // ) {
+      //   const productWarehouse = dataProductValue.product.product_warehouse;
+      //   switch (parseInt(userZipCode)) {
+      //     case 2000:
+      //       const warehouse2000 = productWarehouse.filter(
+      //         (whr) =>
+      //           (whr.warehouse_id == 10 && whr.current_stock > 0) ||
+      //           (whr.warehouse_id == 5 && whr.current_stock > 0)
+      //       );
 
-              if (warehouseThreshold) {
-                threshold =
-                  warehouse2000[0].current_stock - dataProductValue.threshold;
-              }
-            } else {
-              const userFindWarehouse = warehouse2000.find(
-                (whr) => whr.warehouse_id == 10
-              );
+      //       if (warehouse2000.length == 1) {
+      //         const warehouseThreshold = warehouse2000.some(
+      //           (whr) => whr.current_stock > dataProductValue.threshold
+      //         );
 
-              if (userFindWarehouse != undefined) {
-                if (
-                  userFindWarehouse.current_stock > dataProductValue.threshold
-                ) {
-                  threshold =
-                    userFindWarehouse.current_stock -
-                    dataProductValue.threshold;
-                } else {
-                  threshold = this.continue(
-                    productWarehouse,
-                    dataProductValue.threshold
-                  );
-                }
-              }
-            }
-            break;
-          case 5000:
-            const warehouse5000 = productWarehouse.filter(
-              (whr) =>
-                (whr.warehouse_id == 3 && whr.current_stock > 0) ||
-                (whr.warehouse_id == 5 && whr.current_stock > 0)
-            );
+      //         if (warehouseThreshold) {
+      //           threshold =
+      //             warehouse2000[0].current_stock - dataProductValue.threshold;
+      //         }
+      //       } else {
+      //         const userFindWarehouse = warehouse2000.find(
+      //           (whr) => whr.warehouse_id == 10
+      //         );
 
-            if (warehouse5000.length == 1) {
-              const warehouseThreshold = warehouse5000.some(
-                (whr) => whr.current_stock > dataProductValue.threshold
-              );
+      //         if (userFindWarehouse != undefined) {
+      //           if (
+      //             userFindWarehouse.current_stock > dataProductValue.threshold
+      //           ) {
+      //             threshold =
+      //               userFindWarehouse.current_stock -
+      //               dataProductValue.threshold;
+      //           } else {
+      //             threshold = this.continue(
+      //               productWarehouse,
+      //               dataProductValue.threshold
+      //             );
+      //           }
+      //         }
+      //       }
+      //       break;
+      //     case 5000:
+      //       const warehouse5000 = productWarehouse.filter(
+      //         (whr) =>
+      //           (whr.warehouse_id == 3 && whr.current_stock > 0) ||
+      //           (whr.warehouse_id == 5 && whr.current_stock > 0)
+      //       );
 
-              if (warehouseThreshold) {
-                threshold =
-                  warehouse5000[0].current_stock - dataProductValue.threshold;
-              }
-            } else {
-              const userFindWarehouse = warehouse5000.find(
-                (whr) => whr.warehouse_id == 3
-              );
+      //       if (warehouse5000.length == 1) {
+      //         const warehouseThreshold = warehouse5000.some(
+      //           (whr) => whr.current_stock > dataProductValue.threshold
+      //         );
 
-              if (userFindWarehouse != undefined) {
-                if (
-                  userFindWarehouse.current_stock > dataProductValue.threshold
-                ) {
-                  threshold =
-                    userFindWarehouse.current_stock -
-                    dataProductValue.threshold;
-                } else {
-                  threshold = this.continue(
-                    productWarehouse,
-                    dataProductValue.threshold
-                  );
-                }
-              }
-            }
-            break;
-          default:
-            threshold = this.continue(
-              productWarehouse,
-              dataProductValue.threshold
-            );
-            break;
-        }
-        return threshold > 0 ? true : false;
-      } else {
-        return false;
-      }
+      //         if (warehouseThreshold) {
+      //           threshold =
+      //             warehouse5000[0].current_stock - dataProductValue.threshold;
+      //         }
+      //       } else {
+      //         const userFindWarehouse = warehouse5000.find(
+      //           (whr) => whr.warehouse_id == 3
+      //         );
+
+      //         if (userFindWarehouse != undefined) {
+      //           if (
+      //             userFindWarehouse.current_stock > dataProductValue.threshold
+      //           ) {
+      //             threshold =
+      //               userFindWarehouse.current_stock -
+      //               dataProductValue.threshold;
+      //           } else {
+      //             threshold = this.continue(
+      //               productWarehouse,
+      //               dataProductValue.threshold
+      //             );
+      //           }
+      //         }
+      //       }
+      //       break;
+      //     default:
+      //       threshold = this.continue(
+      //         productWarehouse,
+      //         dataProductValue.threshold
+      //       );
+      //       break;
+      //   }
+      //   return threshold > 0 ? true : false;
+      // } else {
+      //   return false;
+      // }
     },
 
     continue(productWarehouse, thresholdValue) {
