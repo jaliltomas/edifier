@@ -211,7 +211,11 @@
                           class="mx-7 my-7"
                           width="auto"
                           height="300px"
-                          :src="item.length ? item.images[0] : ''"
+                          :src="
+                            item.images === null
+                              ? '../../assets/img/no_image.jpg'
+                              : item.images[0]
+                          "
                         >
                         </v-img>
                       </v-hover>
