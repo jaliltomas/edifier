@@ -25,7 +25,8 @@
             v-if="
               HandlerReturnWarehouse(
                 authUser.zipcode,
-                dataProduct.product.product_warehouse
+                dataProduct.product.product_warehouse,
+                dataProduct
               ) != 'AVISAME'
             "
           >
@@ -33,7 +34,8 @@
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
-                dataProduct.product.product_warehouse
+                dataProduct.product.product_warehouse,
+                dataProduct
               )
             }}
             <br />
@@ -79,7 +81,8 @@
             v-if="
               HandlerReturnWarehouse(
                 authUser.zipcode,
-                dataProduct.product.product_warehouse
+                dataProduct.product.product_warehouse,
+                dataProduct
               ) != 'AVISAME'
             "
           >
@@ -87,7 +90,8 @@
             {{
               HandlerReturnWarehouse(
                 authUser.zipcode,
-                dataProduct.product.product_warehouse
+                dataProduct.product.product_warehouse,
+                dataProduct
               )
             }}
             <br />
@@ -319,12 +323,12 @@ export default {
   },
 
   methods: {
-    HandlerReturnWarehouse(cp, warehouse) {
+    HandlerReturnWarehouse(cp, warehouse, dataProduct) {
       switch (parseInt(cp)) {
         case 2000:
-          return this.getDeposit(warehouse, 10, 5);
+          return this.getDeposit(warehouse, 10, 5, dataProduct);
         case 5000:
-          return this.getDeposit(warehouse, 3, 5);
+          return this.getDeposit(warehouse, 3, 5, dataProduct);
         default:
           return this.getDepostCentral(warehouse, cp, 5);
       }
@@ -334,26 +338,23 @@ export default {
       const getWarehouseFwl01 = warehouse.find(
         (value) => value.warehouse_id == cenId
       );
-
-      if (getWarehouseFwl01 != undefined) {
-        if (getWarehouseFwl01.current_stock > 0) {
-          if (cp >= 1000 && cp < 1441) {
-            let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-            return `${text} dentro de las 24Hs HÁBILES`;
-          } else if (this.responseChazki == true) {
-            let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-            return `${text} dentro de las 72Hs HÁBILES`;
-          } else {
-            let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-            return `${text} en 4-6 días hábiles`;
-          }
+      if (getWarehouseFwl01?.current_stock > 0) {
+        if (cp >= 1000 && cp < 1441) {
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 24Hs HÁBILES`;
+        } else if (this.responseChazki == true) {
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 72Hs HÁBILES`;
         } else {
-          return "AVISAME";
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} en 4-6 días hábiles`;
         }
+      } else {
+        return "AVISAME";
       }
     },
 
-    getDeposit(warehouse, regId, cenId) {
+    getDeposit(warehouse, regId, cenId, dataProduct) {
       const getWarehouseReg = warehouse.find(
         (value) => value.warehouse_id == regId
       );
@@ -362,36 +363,38 @@ export default {
         (value) => value.warehouse_id == cenId
       );
 
-      if (getWarehouseReg != undefined && getWarehouseFwl01 != undefined) {
-        if (
-          getWarehouseReg.current_stock > 0 &&
-          getWarehouseFwl01.current_stock > 0
-        ) {
-          // if (this.warehouseValue === 5) {
-          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-          return `${text} dentro de las 24Hs HÁBILES `;
-          // } else {
-          //   let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-          //   return `${text} en 4-6 días hábiles`;
-          // }
-        } else if (
-          getWarehouseReg.current_stock === 0 &&
-          getWarehouseFwl01.current_stock > 0
-        ) {
-          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-          return `${text} en 4-6 días hábiles`;
-        } else if (
-          getWarehouseReg.current_stock > 0 &&
-          getWarehouseFwl01.current_stock == 0
-        ) {
-          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-          return `${text} dentro de las 24Hs HÁBILES `;
-        } else if (
-          getWarehouseReg.current_stock == 0 &&
-          getWarehouseFwl01.current_stock == 0
-        ) {
-          return "AVISAME";
-        }
+      console.log("regional", getWarehouseReg);
+      console.log("central", getWarehouseFwl01);
+      console.log("dataProduct", dataProduct);
+
+      if (
+        getWarehouseReg?.current_stock > dataProduct.threshold &&
+        getWarehouseFwl01?.current_stock > 0
+      ) {
+        // if (this.warehouseValue === 5) {
+        let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+        return `${text} dentro de las 24Hs HÁBILES `;
+        // } else {
+        //   let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+        //   return `${text} en 4-6 días hábiles`;
+        // }
+      } else if (
+        getWarehouseReg.current_stock === 0 &&
+        getWarehouseFwl01.current_stock > 0
+      ) {
+        let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+        return `${text} en 4-6 días hábiles`;
+      } else if (
+        getWarehouseReg.current_stock > 0 &&
+        getWarehouseFwl01.current_stock == 0
+      ) {
+        let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+        return `${text} dentro de las 24Hs HÁBILES `;
+      } else if (
+        getWarehouseReg.current_stock == 0 &&
+        getWarehouseFwl01.current_stock == 0
+      ) {
+        return "AVISAME";
       } else if (
         getWarehouseReg == undefined &&
         getWarehouseFwl01 != undefined
