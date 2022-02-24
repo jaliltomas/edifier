@@ -22,6 +22,7 @@ const mutations = {
   SET_USER: (state, payload) => {
     state.user = payload;
     localStorage.setItem('store_id', payload.store_id);
+    localStorage.setItem('zipcode', payload.zipcode);
   },
 
   CLEAR_DATA: (state) => {

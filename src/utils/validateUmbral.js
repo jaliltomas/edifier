@@ -38,7 +38,10 @@ const validateStock = function ({ warehouse, threshold, cp_regional, productWare
 
     const warehouseThreshold = warehouse.some((whr) => whr.current_stock > threshold);
 
-    if (warehouseThreshold) return warehouse[0].current_stock - threshold;
+    if (warehouseThreshold) {
+        console.log("************", warehouse[0].current_stock - threshold)
+        return warehouse[0].current_stock - threshold;
+    }
     return 0;
 };
 

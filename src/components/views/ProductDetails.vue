@@ -293,94 +293,11 @@
     </v-container>
     <div class="py-5"></div>
     <v-dialog v-model="showImageBackground" width="600">
-      <v-card width="600" height="auto">
-        <v-img
-          style="width: 100%; height: auto"
-          :src="imageBackground"
-          :lazy-src="imageBackground"
-        >
-          <template v-slot:placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="grey lighten-5"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
-      </v-card>
+      <image-background
+        :imageBackground="imageBackground"
+        @close:change="closeImageBackground"
+      />
     </v-dialog>
-
-    <!-- MODAL AVISAME SE SUSTITUYO EN CP-INFORMATION COMPONENT -->
-    <!-- <ValidationObserver ref="obs" v-slot="{ passes }">
-      <v-dialog
-        v-if="showModalReserve"
-        v-model="showModalReserve"
-        max-width="600"
-      >
-        <v-card>
-          <v-card-title>
-            Completá con tus datos y nos comunicaremos
-          </v-card-title>
-          <v-card-text>
-            <ValidationProvider
-              name="nombre"
-              rules="required"
-              v-slot="{ errors }"
-            >
-              <v-text-field
-                @keyup="passes(HandlerNotification)"
-                filled
-                rounded
-                v-model="authUser.buyer.first_name"
-                label="Nombre"
-                :error-messages="errors"
-              ></v-text-field>
-            </ValidationProvider>
-            <ValidationProvider
-              name="email"
-              rules="email|required"
-              v-slot="{ errors }"
-            >
-              <v-text-field
-                @keyup="passes(HandlerNotification)"
-                filled
-                rounded
-                label="Email"
-                v-model="authUser.buyer.email"
-                :error-messages="errors"
-              ></v-text-field>
-            </ValidationProvider>
-            <ValidationProvider
-              name="teléfono"
-              rules="numeric|min:8|required"
-              v-slot="{ errors }"
-            >
-              <v-text-field
-                @keyup="passes(HandlerNotification)"
-                filled
-                rounded
-                label="Teléfono"
-                v-model="authUser.buyer.phone"
-                :error-messages="errors"
-              ></v-text-field>
-            </ValidationProvider>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text @click="showModalReserve = false">Cancelar</v-btn>
-            <v-btn
-              :loading="loading"
-              dark
-              color="#00A0E9"
-              @click="passes(HandlerNotification)"
-            >
-              Continuar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </ValidationObserver> -->
 
     <div v-html="dataProduct.text_html"></div>
     <suscribe-component />
@@ -391,11 +308,13 @@
 import moment from "moment";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import informationCP from "@/components/Utils/informationCP";
+import ImageBackground from "./utils/ImageBackground";
 import { isValidUmbral } from "@/utils/validateUmbral.js";
 export default {
   components: {
     "suscribe-component": SuscribeComponent,
     "cp-information": informationCP,
+    "image-background": ImageBackground,
   },
   data() {
     return {
@@ -431,17 +350,13 @@ export default {
 
   async created() {
     const id = this.$route.query.data;
-    const decryptedID = this.CryptoJS.AES.decrypt(
-      id,
-      "MyS3c3rtIdPr0Duct"
-    ).toString(this.CryptoJS.enc.Utf8);
-    this.HandlerGetProducts(decryptedID);
-    if (this.isAuth) {
-      this.HandlerGetCartsProducts();
-    }
-    this.id = decryptedID;
+    this.id = this.CryptoJS.AES.decrypt(id, "MyS3c3rtIdPr0Duct").toString(
+      this.CryptoJS.enc.Utf8
+    );
+    this.HandlerGetProducts(this.id);
 
     if (this.isAuth) {
+      this.HandlerGetCartsProducts();
       const responseChazki = await this.$store.dispatch(
         "products/CHAZKI_VALIDATE"
       );
@@ -504,11 +419,8 @@ export default {
 
   methods: {
     toggleNavClass() {
-      if (this.active == false) {
-        return "nav";
-      } else {
-        return "sticky-nav";
-      }
+      if (this.active == false) return "nav";
+      return "sticky-nav";
     },
 
     quotes(pvp) {
@@ -517,8 +429,8 @@ export default {
     },
 
     HandlerGetProducts(id) {
-      if (this.isAuth === false) this.HandlerGetProductsNoAuth(id);
-      if (this.isAuth == true) this.HandlerGetAuthProducts(id);
+      if (!this.isAuth) this.HandlerGetProductsNoAuth(id);
+      if (this.isAuth) this.HandlerGetAuthProducts(id);
     },
 
     async HandlerGetProductsNoAuth(id) {
@@ -875,7 +787,9 @@ export default {
     },
 
     validateUmbral() {
-      const userZipCode = this.authUserData?.zipcode;
+      const userZipCode =
+        this.authUserData?.zipcode ?? localStorage.getItem("zipcode");
+
       const dataProductValue = { ...this.dataProduct };
       const paylod = { zipCode: userZipCode, dataProduct: dataProductValue };
 
@@ -985,6 +899,10 @@ export default {
 
     async HandlerDowloadManual() {
       window.open(this.dataProduct.product.product_manual, "manual_de_usuario");
+    },
+
+    closeImageBackground() {
+      this.showImageBackground = false;
     },
   },
 };

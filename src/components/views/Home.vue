@@ -211,7 +211,7 @@
                           class="mx-7 my-7"
                           width="auto"
                           height="300px"
-                          :src="item.images[0]"
+                          :src="item.length ? item.images[0] : ''"
                         >
                         </v-img>
                       </v-hover>
