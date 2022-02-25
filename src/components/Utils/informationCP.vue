@@ -379,7 +379,7 @@ export default {
         //   return `${text} en 4-6 días hábiles`;
         // }
       } else if (
-        getWarehouseReg.current_stock === 0 &&
+        getWarehouseReg.current_stock < dataProduct.threshold &&
         getWarehouseFwl01.current_stock > 0
       ) {
         let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
