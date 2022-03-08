@@ -1,9 +1,7 @@
 <template>
   <div>
     <div
-      v-if="
-        isAuth && dataProduct.out_stock == false && validateUmbral() == true
-      "
+      v-if="isAuth && !dataProduct.out_stock && validateUmbral()"
       class="mb-0"
     >
       <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
@@ -134,13 +132,51 @@
       </div>
     </div>
 
-    <div
-      v-else-if="
-        isAuth == true &&
-        dataProduct.out_stock === false &&
-        validateUmbral() == false
-      "
-    >
+    <div v-else-if="isAuth && !dataProduct.out_stock && !validateUmbral()">
+      <p style="font-size: 1.2em" class="mb-0 pt-1">
+        <span
+          v-if="
+            (dataProduct.user_product_notification == null &&
+              $route.name == 'products') ||
+            $route.name == 'home'
+          "
+          :class="
+            $route.name != 'home'
+              ? 'black--text d-flex justify-center mt-n1 mb-4 text-uppercase'
+              : 'black--text d-flex justify-start mt-n1 mb-4 text-uppercase'
+          "
+          style="cursor: default"
+        >
+          INGRESA EN {{ getMonth() }}
+        </span>
+      </p>
+      <v-btn
+        v-if="dataProduct.user_product_notification == null"
+        @click="HandlerModalAvisame()"
+        class="mt-0"
+        rounded
+        outlined
+        color="#00A0E9"
+      >
+        AVISAME
+      </v-btn>
+      <p
+        class="mb-0 text-uppercase"
+        style="font-size: 1.2em"
+        v-else-if="dataProduct.user_product_notification != null"
+      >
+        <span
+          class="black--text d-flex justify-center mt-n1 mb-6"
+          style="cursor: default"
+          v-if="$route.name == 'products'"
+        >
+          LO ELEGISTE
+        </span>
+        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
+      </p>
+    </div>
+
+    <div v-else-if="isAuth && dataProduct.out_stock && validateUmbral()">
       <p style="font-size: 1.2em" class="mb-0 pt-1">
         <span
           v-if="
@@ -362,10 +398,6 @@ export default {
       const getWarehouseFwl01 = warehouse.find(
         (value) => value.warehouse_id == cenId
       );
-
-      console.log("regional", getWarehouseReg);
-      console.log("central", getWarehouseFwl01);
-      console.log("dataProduct", dataProduct);
 
       if (
         getWarehouseReg?.current_stock > dataProduct.threshold &&
