@@ -89,7 +89,7 @@
         </div>
 
         <!-- PERFIL AUTENTICADO -->
-        <div v-if="!isMobile && isAuth == true">
+        <div v-if="isAuth == true">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
