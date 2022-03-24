@@ -1,4 +1,4 @@
-import { product, store, decentralized } from '../../services';
+import { product, store, decentralized } from "../../services";
 
 const state = {
   productFavorite: [],
@@ -6,27 +6,28 @@ const state = {
   paginate: {},
   categories: [],
   paginateCategories: {}
-}
+};
 
 const getters = {
-  GET_PRODUCT_FAVORITES: (state) => state.productFavorite,
-  GET_PRODUCTS: (state) => state.product,
-  GET_PAGINATE_PRODUCT: (state) => state.paginate,
+  GET_PRODUCT_FAVORITES: state => state.productFavorite,
+  GET_PRODUCTS: state => state.product,
+  GET_PAGINATE_PRODUCT: state => state.paginate,
   // CATEGORIAS
-  GET_CATGORIES: (state) => state.categories,
-  GET_PAGINATE_CATEGORIES: (state) => state.paginateCategories,
-}
+  GET_CATGORIES: state => state.categories,
+  GET_PAGINATE_CATEGORIES: state => state.paginateCategories
+};
 
 const mutations = {
-  SET_PRODUCT_FAVORITES: (state, payload) => state.productFavorite = payload == null ? [] : [payload],
+  SET_PRODUCT_FAVORITES: (state, payload) =>
+    (state.productFavorite = payload == null ? [] : [payload]),
   SET_PRODUCT: (state, payload) => {
     state.product = payload.data;
     state.paginate = {
       lastPage: payload.lastPage,
       page: payload.page,
       perPage: payload.perPage,
-      total: payload.total,
-    }
+      total: payload.total
+    };
   },
   SET_CATEGORIES: (state, payload) => {
     state.categories = payload.data;
@@ -34,15 +35,31 @@ const mutations = {
       lastPage: payload.lastPage,
       page: payload.page,
       perPage: payload.perPage,
-      total: payload.total,
-    }
-  },
-}
+      total: payload.total
+    };
+  }
+};
 
 const actions = {
   async GET_PRODUCTS({ commit }, payload) {
     try {
-      const response = await store.get(`api/publication/products_store_data?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&warehouse_id=${payload.warehouse_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}&sub_category_ids=${payload.sub_category_ids}&category_ids=${payload.category_ids}&everything=${payload.everything}&feature_ids=${payload.feature_ids}&sort_position=${payload.sort_position}`);
+      const response = await store.get(
+        `api/publication/products_store_data?store=${payload.store}&page=${
+          payload.page
+        }&per_page=${payload.per_page}&paginate=${
+          payload.paginate
+        }&product_id=${
+          payload.product_id == undefined ? "" : payload.product_id
+        }&warehouse_id=${payload.warehouse_id}&keywords=${
+          payload.keywords
+        }&brand_ids=${payload.brand_ids}&sub_category_ids=${
+          payload.sub_category_ids
+        }&category_ids=${payload.category_ids}&everything=${
+          payload.everything
+        }&feature_ids=${payload.feature_ids}&sort_position=${
+          payload.sort_position
+        }`
+      );
       commit("SET_PRODUCT", response.data.data);
       return response;
     } catch (error) {
@@ -53,7 +70,21 @@ const actions = {
   async GET_AUTH_PRODUCTS({ commit }, payload) {
     try {
       const response = await store.get(
-        `/api/publication/products_store_data_auth?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&product_id=${payload.product_id == undefined ? '' : payload.product_id}&warehouse_id=${payload.warehouse_id}&keywords=${payload.keywords}&brand_ids=${payload.brand_ids}&sub_category_ids=${payload.sub_category_ids}&category_ids=${payload.category_ids}&everything=${payload.everything}&feature_ids=${payload.feature_ids}&sort_position=${payload.sort_position}`
+        `/api/publication/products_store_data_auth?store=${
+          payload.store
+        }&page=${payload.page}&per_page=${payload.per_page}&paginate=${
+          payload.paginate
+        }&product_id=${
+          payload.product_id == undefined ? "" : payload.product_id
+        }&warehouse_id=${payload.warehouse_id}&keywords=${
+          payload.keywords
+        }&brand_ids=${payload.brand_ids}&sub_category_ids=${
+          payload.sub_category_ids
+        }&category_ids=${payload.category_ids}&everything=${
+          payload.everything
+        }&feature_ids=${payload.feature_ids}&sort_position=${
+          payload.sort_position
+        }`
       );
       commit("SET_PRODUCT", response.data.data);
       return response;
@@ -64,7 +95,9 @@ const actions = {
 
   async GET_CATEGORIES({ commit }, payload) {
     try {
-      const response = await store.get(`api/publication/products_store_category?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&everything=${payload.everything}`);
+      const response = await store.get(
+        `api/publication/products_store_category?store=${payload.store}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}&everything=${payload.everything}`
+      );
       commit("SET_CATEGORIES", response.data.data);
       return response;
     } catch (error) {
@@ -76,7 +109,7 @@ const actions = {
     try {
       const response = await product.get(
         `api/product/image_product?url=${payload.image}`,
-        { responseType: 'blob' }
+        { responseType: "blob" }
       );
       return response;
     } catch (error) {
@@ -86,11 +119,8 @@ const actions = {
 
   async ADD_FAVORITES({ dispatch }, payload) {
     try {
-      const response = await store.post(
-        `api/buyers/product_favorite`,
-        payload
-      );
-      dispatch('GET_FAVORITES_PRODUCTS', payload);
+      const response = await store.post(`api/buyers/product_favorite`, payload);
+      dispatch("GET_FAVORITES_PRODUCTS", payload);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -102,7 +132,7 @@ const actions = {
       const response = await store.get(
         `api/buyers/product_favorite?page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}`
       );
-      commit('SET_PRODUCT_FAVORITES', response.data.data);
+      commit("SET_PRODUCT_FAVORITES", response.data.data);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -120,7 +150,10 @@ const actions = {
 
   async CHECKOUT_DO(_, payload) {
     try {
-      const response = await store.post(`api/auth_mercado_pago/preference`, payload);
+      const response = await store.post(
+        `api/auth_mercado_pago/preference`,
+        payload
+      );
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -129,7 +162,10 @@ const actions = {
 
   async GET_ANSWER(_, payload) {
     try {
-      const response = await store.post(`api/auth_mercado_pago/answer`, payload);
+      const response = await store.post(
+        `api/auth_mercado_pago/answer`,
+        payload
+      );
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -138,7 +174,9 @@ const actions = {
 
   async FEATURED_PRODUCTS(_, payload) {
     try {
-      const response = await store.get(`api/publication/index_featured?store_id=${payload.store_id}&warehouse_id=${payload.warehouse_id}&limit=${payload.limit}`);
+      const response = await store.get(
+        `api/publication/index_featured?store_id=${payload.store_id}&warehouse_id=${payload.warehouse_id}&limit=${payload.limit}`
+      );
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -147,7 +185,9 @@ const actions = {
 
   async SEARCH_PRODUCTS({ commit }, payload) {
     try {
-      const response = await store.get(`api/publication/product_search?page=${payload.page}&per_page=${payload.per_page}&keywords=${payload.keywords}`);
+      const response = await store.get(
+        `api/publication/product_search?page=${payload.page}&per_page=${payload.per_page}&keywords=${payload.keywords}`
+      );
       commit("SET_PRODUCT", response.data.data);
       return response;
     } catch (error) {
@@ -157,7 +197,9 @@ const actions = {
 
   async GET_ORDERS_USER(_, payload) {
     try {
-      const response = await store.get(`api/orders/buyer?page=${payload.page}&per_page=${payload.per_page}&date_from=${payload.date_from}&date_to=${payload.date_to}`);
+      const response = await store.get(
+        `api/orders/buyer?page=${payload.page}&per_page=${payload.per_page}&date_from=${payload.date_from}&date_to=${payload.date_to}`
+      );
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -177,9 +219,7 @@ const actions = {
 
   async CHAZKI_VALIDATE() {
     try {
-      const response = await store.get(
-        `api/chazki/validate`
-      );
+      const response = await store.get(`api/chazki/validate`);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -209,7 +249,9 @@ const actions = {
 
   async PRODUCTS_BRAND(_, payload) {
     try {
-      const response = await product.get(`api/brand/brand?has_publications=${payload.has_publications}&store_id=${payload.store_id}`);
+      const response = await product.get(
+        `api/brand/brand?has_publications=${payload.has_publications}&store_id=${payload.store_id}`
+      );
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -241,15 +283,28 @@ const actions = {
     try {
       const response = await product({
         url: `api/product/download_manual?url=${paylaod.url}`,
-        method: 'GET',
-        responseType: 'blob',
+        method: "GET",
+        responseType: "blob"
       });
       return response;
     } catch (error) {
       return Promise.reject(error);
     }
   },
-}
+
+  async PRINT_LABEL({ dispatch }, payload) {
+    try {
+      const response = await store({
+        url: `api/shippings/ticket_public?url=${payload.path}`,
+        method: "GET",
+        responseType: "blob"
+      });
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+};
 
 export const products = {
   namespaced: true,
@@ -257,4 +312,4 @@ export const products = {
   getters,
   mutations,
   actions
-}
+};

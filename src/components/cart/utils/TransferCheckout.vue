@@ -12,7 +12,12 @@
           <v-row>
             <v-col cols="12" sm="12" md="12" class="mt-10">
               <div
-                class="text-title text-capitalize ml-10 d-flex justify-space-between"
+                class="
+                  text-title text-capitalize
+                  ml-10
+                  d-flex
+                  justify-space-between
+                "
                 style="color: #393939; font-size: 1.6em"
               >
                 FELICITACIONES Y GRACIAS POR TU COMPRA
@@ -158,26 +163,16 @@
               <div class="text-sub-title-order ml-10 mb-5">
                 DATOS DE FACTURACIÓN
               </div>
-              <v-sheet color="#FFFFFF" height="219px">
+              <v-sheet color="#FFFFFF">
                 <div class="py-5 px-5">
                   <div class="d-flex ml-5">
-                    <div
-                      class="font-weight-bold mr-4 d-flex"
-                      style="font-size: 0.9em; width: 30%; color: #393939"
-                    >
-                      Nombre:
-                    </div>
+                    <div class="font-title mr-4 d-flex">Nombre:</div>
                     <span v-if="authUser.buyer != null">
                       {{ authUser.buyer.first_name }}
                     </span>
                   </div>
                   <div class="d-flex ml-5">
-                    <div
-                      class="font-weight-bold mr-0 d-flex"
-                      style="font-size: 0.9em; width: 30%; color: #393939"
-                    >
-                      Email:
-                    </div>
+                    <div class="font-title mr-0 d-flex">Email:</div>
                     <span
                       v-if="authUser.buyer != null"
                       style="
@@ -191,22 +186,14 @@
                     </span>
                   </div>
                   <div class="d-flex ml-5">
-                    <div
-                      class="font-weight-bold mr-4 d-flex"
-                      style="font-size: 0.9em; width: 30%; color: #393939"
-                    >
-                      Teléfono:
-                    </div>
+                    <div class="font-title mr-4 d-flex">Teléfono:</div>
                     <span v-if="authUser.buyer != null">
                       {{ authUser.buyer.phone }}
                     </span>
                   </div>
                   <div class="d-flex ml-5">
-                    <div
-                      class="font-weight-bold mr-4 d-flex"
-                      style="font-size: 0.9em; width: 30%; color: #393939"
-                    >
-                      DNI/CUIT:
+                    <div class="font-title mr-4 d-flex">
+                      {{ authUser.buyer.doc_type }}:
                     </div>
                     <span v-if="authUser.buyer != null">
                       {{ authUser.buyer.doc_number }}
@@ -219,105 +206,60 @@
               <div class="text-sub-title-order ml-5 mb-5">DATOS DE ENVIO</div>
               <v-sheet color="#FFFFFF">
                 <div class="py-5 px-5">
-                  <v-row>
-                    <v-col cols="12" md="7">
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Quien recibe:
-                        </div>
-                        <span>{{ authUser.contact_name }}</span>
-                      </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Teléfono:
-                        </div>
-                        <span>
-                          {{ authUser.contact_phone }}
+                  <v-row v-if="authUser.address != null">
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <div>
+                        <span class="font-title"> Estado: </span>
+                        <span class="text-capitalize">
+                          {{ authUser.address.state.name }}
                         </span>
                       </div>
                     </v-col>
-                    <v-col cols="12" md="5">
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Código Postal:
-                        </div>
-                        <span v-if="authUser.address != null">
-                          {{ authUser.address.zipcode }}
-                        </span>
-                      </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Provincia:
-                        </div>
-                        <span>provincia</span>
-                      </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Localidad:
-                        </div>
-                        <span v-if="authUser.address != null">
-                          {{ authUser.address.location }}
-                        </span>
-                      </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Calle:
-                        </div>
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <span class="font-title"> Municipio: </span>
+                      <span class="text-capitalize">
+                        {{ authUser.address.location }}
+                      </span>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <span class="font-title"> Código Postal: </span>
+                      <span>
+                        {{ authUser.address.zipcode }}
+                      </span>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="authUser.address != null">
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <div>
+                        <span class="font-title"> Calle: </span>
                         <span v-if="authUser.address != null">
                           {{ authUser.address.street }}
                         </span>
                       </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Nº:
-                        </div>
-                        <span v-if="authUser.address != null">
-                          {{ authUser.address.street_number }}
-                        </span>
-                      </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Piso:
-                        </div>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <span class="font-title"> Nº: </span>
+                      <span v-if="authUser.address != null">
+                        {{ authUser.address.street_number }}
+                      </span>
+                    </v-col>
+                  </v-row>
+                  <v-row v-if="authUser.address != null">
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <div>
+                        <span class="font-title"> Piso: </span>
+
                         <span v-if="authUser.address != null">
                           {{ authUser.address.floor_number }}
                         </span>
                       </div>
-                      <div class="d-flex">
-                        <div
-                          style="width: 50%; font-size: 0.9em; color: #393939"
-                          class="font-weight-bold mr-4"
-                        >
-                          Dpto:
-                        </div>
-                        <span v-if="authUser.address != null">
-                          {{ authUser.address.department_number }}
-                        </span>
-                      </div>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4" class="py-1">
+                      <span class="font-title"> Dpto: </span>
+
+                      <span v-if="authUser.address != null">
+                        {{ authUser.address.department_number }}
+                      </span>
                     </v-col>
                   </v-row>
                 </div>
@@ -608,5 +550,12 @@ export default {
   color: #393939;
   font-size: 1.2em;
   font-weight: 500;
+}
+
+.font-title {
+  font-weight: 500 !important;
+  font-size: 0.9em;
+  width: 30%;
+  color: #393939;
 }
 </style>

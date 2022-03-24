@@ -1,77 +1,35 @@
 <template>
   <div>
-    <v-card tile>
+    <v-card tile flat>
       <v-sheet color="#EBF1F7">
         <div class="py-3"></div>
         <v-container>
           <v-row>
             <v-col
               cols="12"
+              sm="6"
               md="6"
               class="d-flex flex-column align-self-center"
             >
               <div
                 style="color: #393939; font-size: 1.2em"
-                class="font-weight-bold mb-5 ml-md-5"
+                class="font-title mb-5 ml-md-5"
               >
                 DETALLE DE TU COMPRA
               </div>
-              <v-tooltip left>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-hover v-slot="{ hover }">
-                    <div
-                      class="mb-1 ml-md-5"
-                      :style="
-                        hover
-                          ? 'text-decoration: underline #00A0E9; cursor: pointer'
-                          : ''
-                      "
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      <span class="font-weight-bold">Factura:</span>
-                      {{ orderData.meli_id }}
-                    </div>
-                  </v-hover>
-                </template>
-                <span>Descargar</span>
-              </v-tooltip>
+              <div class="mb-1 ml-md-5">
+                <span class="font-title">Factura:</span>
+                {{ orderData.meli_id }}
+              </div>
               <div class="ml-5">
-                <span class="font-weight-bold">Comprado el:</span>
+                <span class="font-title">Comprado el:</span>
                 {{ orderData.created_at | today }}
               </div>
             </v-col>
-            <v-col cols="12" md="6" v-if="bankTransfer()">
-              <div class="d-flex justify-end mr-md-5">
-                <v-btn
-                  @click="uploadTransfer = true"
-                  class="text-lowercase"
-                  color="#00A0E9"
-                  rounded
-                  dark
-                  small
-                >
-                  <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
-                  <span class="text-capitalize mr-1">Enviá</span>
-                  tu comprobante de pago
-                </v-btn>
-              </div>
-              <div class="d-flex justify-end mr-md-5">
-                <v-btn
-                  @click="goToChatData()"
-                  class="text-lowercase my-3"
-                  color="#FFFFFF"
-                  rounded
-                  small
-                >
-                  <v-icon size="20">mdi-bank</v-icon>
-                  Consulta los datos de transferencia en el chat
-                </v-btn>
-              </div>
-              <div class="d-flex justify-end mr-md-5">
-                <v-btn
-                  v-if="!canUploadFile"
-                  class="text-lowercase"
+            <v-col cols="12" sm="6" md="6">
+              <div v-if="orderData.order_invoice.length > 0">
+                <div
+                  class="text-lowercase d-flex justify-end mr-md-5"
                   color="#FFFFFF"
                   small
                   rounded
@@ -79,12 +37,64 @@
                   <v-icon>mdi-arrow-down-bold-circle-outline</v-icon>
                   <span class="text-capitalize mr-1">Descargá</span>
                   tus Facturas
-                </v-btn>
+                </div>
+                <div
+                  class="d-flex justify-end mr-md-5"
+                  v-for="(item, i) in orderData.order_invoice"
+                  :key="i"
+                >
+                  <v-btn color="blue" text @click="HandlerPrintBill(item)">
+                    {{ item.bill_number }}
+                  </v-btn>
+                </div>
               </div>
-            </v-col>
-            <v-col cols="12" md="6" v-if="!bankTransfer()">
-              <div class="d-flex justify-end mr-md-5" :style="colorStatus">
-                {{ typePayment() }}
+              <div v-if="bankTransfer()">
+                <div class="d-flex justify-end mr-md-5">
+                  <v-btn
+                    @click="uploadTransfer = true"
+                    class="text-lowercase"
+                    color="#00A0E9"
+                    rounded
+                    dark
+                    small
+                  >
+                    <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
+                    <span class="text-capitalize mr-1">Enviá</span>
+                    tu comprobante de pago
+                  </v-btn>
+                </div>
+                <div class="d-flex justify-end mr-md-5">
+                  <v-btn
+                    @click="goToChat()"
+                    class="text-lowercase my-3"
+                    color="#FFFFFF"
+                    rounded
+                    small
+                  >
+                    <v-icon size="20">mdi-bank</v-icon>
+                    Consulta los datos de transferencia en el chat
+                  </v-btn>
+                </div>
+                <div class="d-flex justify-end mr-md-5">
+                  <v-btn
+                    v-if="!canUploadFile"
+                    class="text-lowercase"
+                    color="#FFFFFF"
+                    small
+                    rounded
+                  >
+                    <v-icon>mdi-arrow-down-bold-circle-outline</v-icon>
+                    <span class="text-capitalize mr-1">Descargá</span>
+                    tus Facturas
+                  </v-btn>
+                </div>
+              </div>
+              <div
+                v-if="!bankTransfer() && orderData.order_invoice.length == 0"
+              >
+                <div class="d-flex justify-end mr-md-5" :style="colorStatus">
+                  {{ typePayment() }}
+                </div>
               </div>
             </v-col>
           </v-row>
@@ -93,100 +103,111 @@
       </v-sheet>
       <v-sheet>
         <v-container>
-          <v-row class="mt-5">
-            <v-col
-              cols="12"
-              md="5"
-              class="ml-md-5"
-              style="border-right: 1px #e6e6e6 solid"
-            >
-              <div
-                style="color: #393939; font-size: 1em"
-                class="font-weight-bold mb-10"
-              >
-                DATOS DE FACTURACIÓN
-              </div>
-              <div class="d-flex">
-                <div class="font-weight-bold mr-4 d-flex" style="width: 30%">
-                  Nombre:
-                </div>
-                <span v-if="authUser.buyer != null">
-                  {{ authUser.buyer.first_name }}
-                </span>
-              </div>
-              <div class="d-flex">
-                <div style="width: 30%" class="font-weight-bold mr-3">
-                  Email:
-                </div>
-                <span v-if="authUser.buyer != null" class="ml-1 long-text">
-                  {{ authUser.buyer.email }}
-                </span>
-              </div>
-              <div class="d-flex">
-                <div style="width: 30%" class="font-weight-bold mr-4">
-                  Teléfono:
-                </div>
-                <span v-if="authUser.buyer != null" class="long-text">
-                  {{ authUser.buyer.phone }}
-                </span>
-              </div>
-              <div class="d-flex">
-                <div style="width: 30%" class="font-weight-bold mr-4">
-                  DNI/CUIT:
-                </div>
-                <span v-if="authUser.buyer != null">
-                  {{ authUser.buyer.doc_number }}
-                </span>
-              </div>
+          <v-row class="mt-5 pl-md-5">
+            <v-col cols="12" sm="12" md="6">
+              <v-list-item three-line>
+                <v-list-item-content>
+                  <v-list-item-title class="font-title"
+                    >DATOS DE FACTURACIÓN</v-list-item-title
+                  >
+                  <v-list-item-subtitle class="mt-2">
+                    Nombre:
+                    <span v-if="authUser.buyer != null">
+                      {{ authUser.buyer.first_name }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Email:
+                    <span v-if="authUser.buyer != null" class="ml-1 long-text">
+                      {{ authUser.buyer.email }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Teléfono:
+                    <span v-if="authUser.buyer != null" class="long-text">
+                      {{ authUser.buyer.phone }}
+                    </span>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </v-col>
-            <v-col cols="12" md="3" style="border-right: 1px #e6e6e6 solid">
-              <div
-                style="color: #393939; font-size: 1em"
-                class="font-weight-bold mb-10 ml-md-4"
-              >
-                DATOS DE ENVÍO
-              </div>
-              <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
-                  Quien recibe:
-                </div>
-                <span>{{ authUser.contact_name }}</span>
-              </div>
-              <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
-                  Teléfono:
-                </div>
-                <span>
-                  {{ authUser.contact_phone }}
-                </span>
-              </div>
+            <v-col cols="12" sm="12" md="6">
+              <v-list-item three-line>
+                <v-list-item-content>
+                  <v-list-item-title class="font-title"
+                    >DATOS DE ENVÍO</v-list-item-title
+                  >
+                  <v-list-item-subtitle class="mt-2">
+                    Estado:
+                    <span
+                      v-if="authUser.address != null"
+                      class="text-capitalize"
+                    >
+                      {{ authUser.address.state.name }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Municipio:
+                    <span
+                      v-if="authUser.address != null"
+                      class="text-capitalize"
+                    >
+                      {{ authUser.address.location }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Código Postal:
+                    <span v-if="authUser.address != null">
+                      {{ authUser.address.zipcode }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Calle:
+                    <span v-if="authUser.address != null">
+                      {{ authUser.address.street }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Nº:
+                    <span v-if="authUser.address != null">
+                      {{ authUser.address.street_number }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Piso:
+                    <span v-if="authUser.address != null">
+                      {{ authUser.address.floor_number }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    Dpto:
+                    <span v-if="authUser.address != null">
+                      {{ authUser.address.department_number }}
+                    </span>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </v-col>
-            <v-col cols="12" md="3">
+            <!-- <v-col cols="12">
               <div class="mb-14"></div>
               <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
-                  Código Postal:
+                <div style="width: 50%" class="font-title mr-4">
+                  Estado:
                 </div>
-                <span v-if="authUser.address != null">
-                  {{ authUser.address.zipcode }}
+                <span v-if="authUser.address != null" class="text-capitalize">
+                  {{ authUser.address.state.name }}
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
-                  Provincia:
+                <div style="width: 50%" class="font-title mr-4">
+                  Municipio:
                 </div>
-                <span>provincia</span>
-              </div>
-              <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
-                  Localidad:
-                </div>
-                <span v-if="authUser.address != null">
+                <span v-if="authUser.address != null" class="text-capitalize">
                   {{ authUser.address.location }}
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-title mr-4">
                   Calle:
                 </div>
                 <span v-if="authUser.address != null">
@@ -194,13 +215,13 @@
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">Nº:</div>
+                <div style="width: 50%" class="font-title mr-4">Nº:</div>
                 <span v-if="authUser.address != null">
                   {{ authUser.address.street_number }}
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-title mr-4">
                   Piso:
                 </div>
                 <span v-if="authUser.address != null">
@@ -208,14 +229,14 @@
                 </span>
               </div>
               <div class="d-flex ml-md-3">
-                <div style="width: 50%" class="font-weight-bold mr-4">
+                <div style="width: 50%" class="font-title mr-4">
                   Dpto:
                 </div>
                 <span v-if="authUser.address != null">
                   {{ authUser.address.department_number }}
                 </span>
               </div>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-container>
       </v-sheet>
@@ -663,6 +684,32 @@ export default {
         this.loadingUpload = false;
       }
     },
+
+    async HandlerPrintBill(order) {
+      try {
+        this.loadingPrintBill = true;
+        const invoice_path = order.invoice_path_label;
+        const name_array = invoice_path.split("/");
+        const name = name_array[1];
+        const request = {
+          path: invoice_path,
+        };
+        const response = await this.$store.dispatch(
+          "products/PRINT_LABEL",
+          request
+        );
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", name);
+        document.body.appendChild(link);
+        link.click();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loadingPrintBill = false;
+      }
+    },
   },
 };
 </script>
@@ -675,5 +722,8 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.font-title {
+  font-weight: 500 !important;
 }
 </style>
