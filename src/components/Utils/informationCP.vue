@@ -485,15 +485,16 @@ export default {
     },
 
     getMonth() {
-      const currentDay = moment().format("DD");
-      const currentMonth = moment().format("MM") - 1;
-      if (currentDay < 15) {
-        return moment().locale("es").format("MMMM");
-      }
-      return moment()
-        .month(parseInt(currentMonth) + 1)
-        .locale("es")
-        .format("MMMM");
+      return moment().add(1, "month").locale("es").format("MMMM");
+      // const currentDay = moment().format("DD");
+      // const currentMonth = moment().format("MM") - 1;
+      // if (currentDay < 15) {
+      //   return moment().locale("es").format("MMMM");
+      // }
+      // return moment()
+      //   .month(parseInt(currentMonth) + 1)
+      //   .locale("es")
+      //   .format("MMMM");
     },
 
     validateUmbral() {
