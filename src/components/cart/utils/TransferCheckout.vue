@@ -47,7 +47,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="ml-5" style="font-size: 0.8em">
+                  <div class="ml-5" style="font-size: 1em">
                     Finalizá tu compra realizando una transferencia por la suma
                     de
                     <span class="font-weight-bold" v-if="price()">
@@ -57,8 +57,15 @@
                       }}
                     </span>
                   </div>
+                  <div class="d-flex ml-5 mt-5">
+                    <small>
+                      Deberas subir el comprobante hasta las
+                      <strong> {{ orderData.date_created | today }} hs</strong>,
+                      desde COMPRAS -> Ver mas en tu Perfil
+                    </small>
+                  </div>
                   <v-btn
-                    @click="goToChat()"
+                    @click="goToEmailTransfer()"
                     class="text-lowercase ml-5 mt-5"
                     small
                     color="#00A0E9"
@@ -67,8 +74,8 @@
                     :loading="loadingLocation"
                   >
                     <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
-                    <span class="text-capitalize mr-1">Solicita</span>
-                    los datos de transferencia en el chat
+                    <span class="text-capitalize mr-1">Enviar</span>
+                    datos bancarios a mi e-mail
                   </v-btn>
                   <div class="d-flex ml-5 mt-5">
                     <small>
@@ -354,6 +361,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   props: {
     showModalTransfer: {
@@ -408,6 +417,9 @@ export default {
   },
 
   filters: {
+    today(val) {
+      return moment(val).locale("es").format("HH:mm");
+    },
     currencyTotal(value) {
       return new Intl.NumberFormat("es-AR", {
         currency: "ARS",
@@ -417,6 +429,20 @@ export default {
   },
 
   methods: {
+    async goToEmailTransfer() {
+      try {
+        this.loadingLocation = true;
+        const response = await this.$store.dispatch("products/EMAIL_TRANSFER");
+        this.$snotify.success(
+          `Email enviado con los datos bancarios`,
+          "Exitos"
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loadingLocation = false;
+      }
+    },
     async HandlerGetData() {
       try {
         const request = {

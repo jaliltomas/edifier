@@ -44,20 +44,20 @@
                   small
                 >
                   <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
-                  <span class="text-capitalize mr-1">Enviá</span>
+                  <span class="text-capitalize mr-1">Subí</span>
                   tu comprobante de pago
                 </v-btn>
               </div>
               <div class="d-flex justify-end mr-md-5">
                 <v-btn
-                  @click="goToChatData()"
+                  @click="goToEmailTransfer()"
                   class="text-lowercase my-3"
                   color="#FFFFFF"
                   rounded
                   small
                 >
                   <v-icon size="20">mdi-bank</v-icon>
-                  Consulta los datos de transferencia en el chat
+                  Enviar datos bancarios a mi e-mail
                 </v-btn>
               </div>
               <div class="d-flex justify-end mr-md-5">
@@ -538,6 +538,18 @@ export default {
   },
 
   methods: {
+    async goToEmailTransfer() {
+      try {
+        const response = await this.$store.dispatch("products/EMAIL_TRANSFER");
+        this.$snotify.success(
+          `Email enviado con los datos bancarios`,
+          "Exitos"
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async HandlerGetData() {
       try {
         const request = {

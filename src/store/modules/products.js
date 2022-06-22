@@ -303,6 +303,15 @@ const actions = {
     } catch (error) {
       return Promise.reject(error);
     }
+  },
+
+  async EMAIL_TRANSFER() {
+    try {
+      const response = await store.get(`api/email_transfer`);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 };
 
