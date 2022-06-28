@@ -1,5 +1,5 @@
 export const isValidUmbral = function({ zipCode, dataProduct }) {
-  if (dataProduct.store.out_stock == true) {
+  if (dataProduct?.store.out_stock == true) {
     return 0;
   }
   const userZipCode = parseInt(zipCode);
