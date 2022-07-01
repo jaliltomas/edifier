@@ -417,6 +417,8 @@ export default {
       // Error Checkout
       showAlertPerfil: false,
       alertPerfil: [],
+
+      loadingLocation: false
     };
   },
 
@@ -740,6 +742,8 @@ export default {
           request
         );
 
+        await this.goToEmailTransfer();
+
         this.responseTransferCheckout = response.data.data;
         this.showModalTransfer = true;
       } catch (error) {
@@ -772,6 +776,25 @@ export default {
         }, 0);
       }
       return priceTotal;
+    },
+
+    async goToEmailTransfer() {
+      try {
+        this.loadingLocation = true;
+
+        await this.$store.dispatch("products/EMAIL_TRANSFER");
+        this.$snotify.success(
+          `Se ha enviado un email con los datos bancarios`,
+          "Exitos"
+        );
+      } catch (error) {
+        this.$snotify.error(
+          "No se ha podido enviar los datos al correo, intente mas tarde",
+          "Error"
+        );
+      } finally {
+        this.loadingLocation = false;
+      }
     },
   },
 };

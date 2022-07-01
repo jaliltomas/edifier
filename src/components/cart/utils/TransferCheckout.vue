@@ -64,7 +64,25 @@
                       desde COMPRAS -> Ver mas en tu Perfil
                     </small>
                   </div>
-                  <v-btn
+                  <div class="ml-5" style="font-size: 1.1em">
+                    Por seguridad nuestros datos bancarios fueron enviados a tu
+                    casilla de e-mail
+                  </div>
+                  <div class="ml-5 mt-3" style="font-size: 0.9em">
+                    Finalizá tu compra realizando una transferencia por la suma
+                    de
+                    {{ orderData.total_amount | currencyTotal }}
+                  </div>
+                  <div class="ml-5 mt-3" style="font-size: 0.9em">
+                    Tu operación se mantiene activa por 1 hora para hacer el
+                    pago
+                  </div>
+                  <div class="ml-5 mt-3" style="font-size: 0.9em">
+                    Podrás subir el comprobante hasta las
+                    {{ orderData.date_created | today }} hs, desde COMPRAS ->
+                    Ver más en tu Perfil
+                  </div>
+                  <!-- <v-btn
                     @click="goToEmailTransfer()"
                     class="text-lowercase ml-5 mt-5"
                     small
@@ -76,7 +94,7 @@
                     <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
                     <span class="text-capitalize mr-1">Enviar</span>
                     datos bancarios a mi e-mail
-                  </v-btn>
+                  </v-btn> -->
                   <div class="d-flex ml-5 mt-5">
                     <small>
                       Podrás enviar tu comprobante de pago mas tarde ingresando
@@ -429,10 +447,15 @@ export default {
   },
 
   methods: {
+    currentHour() {
+      return moment(new Date(), "DD-MM-YYYY hh:mm:ss")
+        .add(60, "minutes")
+        .format("DD/MM/YYYY hh:mm:ss");
+    },
     async goToEmailTransfer() {
       try {
         this.loadingLocation = true;
-        const response = await this.$store.dispatch("products/EMAIL_TRANSFER");
+        await this.$store.dispatch("products/EMAIL_TRANSFER");
         this.$snotify.success(
           `Email enviado con los datos bancarios`,
           "Exitos"
@@ -443,6 +466,7 @@ export default {
         this.loadingLocation = false;
       }
     },
+
     async HandlerGetData() {
       try {
         const request = {
