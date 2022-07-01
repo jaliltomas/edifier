@@ -47,23 +47,6 @@
                       </div>
                     </div>
                   </div>
-                  <div class="ml-5" style="font-size: 1em">
-                    Finalizá tu compra realizando una transferencia por la suma
-                    de
-                    <span class="font-weight-bold" v-if="price()">
-                      {{
-                        orderData.order_item[0].publication.price.pvp_transfer
-                          | currencyTotal
-                      }}
-                    </span>
-                  </div>
-                  <div class="d-flex ml-5 mt-5">
-                    <small>
-                      Deberas subir el comprobante hasta las
-                      <strong> {{ orderData.date_created | today }} hs</strong>,
-                      desde COMPRAS -> Ver mas en tu Perfil
-                    </small>
-                  </div>
                   <div class="ml-5" style="font-size: 1.1em">
                     Por seguridad nuestros datos bancarios fueron enviados a tu
                     casilla de e-mail
@@ -81,25 +64,6 @@
                     Podrás subir el comprobante hasta las
                     {{ orderData.date_created | today }} hs, desde COMPRAS ->
                     Ver más en tu Perfil
-                  </div>
-                  <!-- <v-btn
-                    @click="goToEmailTransfer()"
-                    class="text-lowercase ml-5 mt-5"
-                    small
-                    color="#00A0E9"
-                    rounded
-                    dark
-                    :loading="loadingLocation"
-                  >
-                    <v-icon size="20">mdi-arrow-up-bold-circle-outline</v-icon>
-                    <span class="text-capitalize mr-1">Enviar</span>
-                    datos bancarios a mi e-mail
-                  </v-btn> -->
-                  <div class="d-flex ml-5 mt-5">
-                    <small>
-                      Podrás enviar tu comprobante de pago mas tarde ingresando
-                      al sector de compras en tu perfil de usuario.
-                    </small>
                   </div>
                 </div>
               </v-card>
