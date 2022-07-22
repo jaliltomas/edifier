@@ -25,6 +25,10 @@
                 {{ orderData.created_at | today }}
               </div>
               <div class="ml-5 mt-1">
+                <span class="font-title">Monto de envio:</span>
+                {{ orderData.total_amount_with_shipping - orderData.total_amount  | currencyTotal }}
+              </div>
+              <div class="ml-5 mt-1">
                 <span class="font-title">Monto total a transferir:</span>
                 {{ orderData.total_amount_with_shipping | currencyTotal }}
               </div>

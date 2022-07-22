@@ -1,34 +1,22 @@
 <template>
-  <v-dialog
-    v-model="showModalTransfer"
-    max-width="100%"
-    max-height="100%"
-    persistent
-    scrollable
-  >
+  <v-dialog v-model="showModalTransfer" max-width="100%" max-height="100%" persistent scrollable>
     <v-card color="#F1F1F1">
       <v-card-text>
         <v-container>
           <v-row>
             <v-col cols="12" sm="12" md="12" class="mt-10">
-              <div
-                class="
+              <div class="
                   text-title text-capitalize
                   ml-10
                   d-flex
                   justify-space-between
-                "
-                style="color: #393939; font-size: 1.6em"
-              >
+                " style="color: #393939; font-size: 1.6em">
                 FELICITACIONES Y GRACIAS POR TU COMPRA
                 <v-btn icon @click="HandlerGoProfile()">
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
               </div>
-              <div
-                v-if="bankTransfer()"
-                class="text-sub-title-order mt-3 ml-10"
-              >
+              <div v-if="bankTransfer()" class="text-sub-title-order mt-3 ml-10">
                 FORMA DE PAGO ELEGIDA
               </div>
             </v-col>
@@ -37,11 +25,7 @@
                 <div class="px-5 py-5">
                   <div class="d-flex justify-space-between">
                     <div class="d-flex">
-                      <v-img
-                        width="100px"
-                        contain
-                        src="@/assets/img/checkout/transferencia.svg"
-                      ></v-img>
+                      <v-img width="100px" contain src="@/assets/img/checkout/transferencia.svg"></v-img>
                       <div class="align-self-center">
                         Transferencia Bancaria
                       </div>
@@ -54,7 +38,9 @@
                   <div class="ml-5 mt-3" style="font-size: 0.9em">
                     Finalizá tu compra realizando una transferencia por la suma
                     de
-                    {{ orderData.total_amount | currencyTotal }}
+                    {{ orderData.total_amount + ((orderData.total_amount_with_shipping -
+                        orderData.total_amount)) | currencyTotal
+                    }}
                   </div>
                   <div class="ml-5 mt-3" style="font-size: 0.9em">
                     Tu operación se mantiene activa por 1 hora para hacer el
@@ -74,42 +60,23 @@
                 <template v-slot:default>
                   <thead style="background-color: #fafafa">
                     <tr>
-                      <th
-                        style="font-size: 14px; font-weight: 600; width: 70%"
-                        class="text-left pl-10"
-                      >
+                      <th style="font-size: 14px; font-weight: 600; width: 70%" class="text-left pl-10">
                         Producto
                       </th>
-                      <th
-                        style="font-size: 14px; font-weight: 600; width: 15%"
-                        class="text-center"
-                      >
+                      <th style="font-size: 14px; font-weight: 600; width: 15%" class="text-center">
                         Cantidad
                       </th>
-                      <th
-                        style="font-size: 14px; font-weight: 600; width: 15%"
-                        class="text-center"
-                      >
+                      <th style="font-size: 14px; font-weight: 600; width: 15%" class="text-center">
                         Precio
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      v-for="(item, index) in orderData.order_item"
-                      :key="index"
-                    >
+                    <tr v-for="(item, index) in orderData.order_item" :key="index">
                       <td v-if="item.publication != null">
                         <div class="d-flex align-center pl-5">
-                          <v-avatar
-                            tile
-                            v-if="item.publication.images.length > 0"
-                          >
-                            <v-img
-                              :src="item.publication.images[0]"
-                              :lazy-src="item.publication.images[0]"
-                              contain
-                            >
+                          <v-avatar tile v-if="item.publication.images.length > 0">
+                            <v-img :src="item.publication.images[0]" :lazy-src="item.publication.images[0]" contain>
                             </v-img>
                           </v-avatar>
                           <div class="text-uppercase ml-2">
@@ -122,7 +89,7 @@
                       </td>
                       <td class="text-center">
                         {{
-                          priceProduct(item.publication.price) | currencyTotal
+                            priceProduct(item.publication.price) | currencyTotal
                         }}
                       </td>
                     </tr>
@@ -130,21 +97,25 @@
                 </template>
               </v-simple-table>
               <v-card class="mt-2 py-2 elevation-0" color="transparent">
-                <v-card
-                  max-width="200px"
-                  class="
-                    ml-auto
-                    py-2
-                    pr-md-12
-                    d-flex
-                    justify-space-between
-                    elevation-0
-                  "
-                >
-                  <span style="font-size: 0.8.5em" class="pl-3">TOTAL</span>
-                  <span style="font-size: 0.8.5em">
-                    {{ orderData.total_amount | currencyTotal }}
-                  </span>
+                <v-card max-width="200px" class="ml-auto py-2 pr-md-12 elevation-0">
+                  <div class="d-flex justify-space-between">
+                    <span style="font-size: 0.8.5em" class="pl-3">ENVÍO</span>
+                    <span style="font-size: 0.8.5em">
+                      {{
+                          (orderData.total_amount_with_shipping -
+                            orderData.total_amount)
+                          | currencyTotal
+                      }}
+                    </span>
+                  </div>
+                  <div class="d-flex justify-space-between mt-3">
+                    <span style="font-size: 0.8.5em" class="pl-3">TOTAL</span>
+                    <span style="font-size: 0.8.5em">
+                      {{
+                          orderData.total_amount_with_shipping | currencyTotal
+                      }}
+                    </span>
+                  </div>
                 </v-card>
               </v-card>
             </v-col>
@@ -162,15 +133,11 @@
                   </div>
                   <div class="d-flex ml-5">
                     <div class="font-title mr-0 d-flex">Email:</div>
-                    <span
-                      v-if="authUser.buyer != null"
-                      style="
+                    <span v-if="authUser.buyer != null" style="
                         white-space: nowrap;
                         text-overflow: ellipsis;
                         overflow: hidden;
-                      "
-                      class="ml-4"
-                    >
+                      " class="ml-4">
                       {{ authUser.buyer.email }}
                     </span>
                   </div>
@@ -257,13 +224,7 @@
           </v-row>
           <v-row justify="center">
             <div class="d-flex justify-center">
-              <v-btn
-                @click="HandlerGoProfile()"
-                color="#00A0E9"
-                dark
-                rounded
-                class="d-flex justify-center"
-              >
+              <v-btn @click="HandlerGoProfile()" color="#00A0E9" dark rounded class="d-flex justify-center">
                 Cerrar
               </v-btn>
             </div>
@@ -271,42 +232,17 @@
         </v-container>
       </v-card-text>
     </v-card>
-    <v-dialog
-      v-model="uploadTransfer"
-      v-if="uploadTransfer"
-      max-width="600"
-      persistent
-    >
+    <v-dialog v-model="uploadTransfer" v-if="uploadTransfer" max-width="600" persistent>
       <ValidationObserver ref="obs" v-slot="{ passes }">
         <v-card class="px-5 py-5">
           <label for="">Numero de transferencia</label>
-          <ValidationProvider
-            name="transferencia"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <v-text-field
-              v-model="transfer_id"
-              class="mt-2"
-              color="#A81331"
-              dense
-              filled
-              :error-messages="errors"
-            ></v-text-field>
+          <ValidationProvider name="transferencia" rules="required" v-slot="{ errors }">
+            <v-text-field v-model="transfer_id" class="mt-2" color="#A81331" dense filled :error-messages="errors">
+            </v-text-field>
           </ValidationProvider>
           <label for="">Comprobante de transferencia</label>
-          <ValidationProvider
-            name="comprobante"
-            rules="required"
-            v-slot="{ errors }"
-          >
-            <v-file-input
-              v-model="file"
-              prepend-icon=""
-              dense
-              filled
-              :error-messages="errors"
-            ></v-file-input>
+          <ValidationProvider name="comprobante" rules="required" v-slot="{ errors }">
+            <v-file-input v-model="file" prepend-icon="" dense filled :error-messages="errors"></v-file-input>
             <div class="d-flex">
               {{ message }}
             </div>
@@ -314,14 +250,8 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn text @click="uploadTransfer = false">cancelar</v-btn>
-            <v-btn
-              :disabled="dowloadTransfer == true"
-              :loading="loadingUpload"
-              rounded
-              color="#A5253E"
-              :dark="dowloadTransfer == true ? false : true"
-              @click="passes(handlerUploadFile)"
-            >
+            <v-btn :disabled="dowloadTransfer == true" :loading="loadingUpload" rounded color="#A5253E"
+              :dark="dowloadTransfer == true ? false : true" @click="passes(handlerUploadFile)">
               continuar
             </v-btn>
           </v-card-actions>
@@ -329,9 +259,7 @@
       </ValidationObserver>
     </v-dialog>
     <v-snackbar v-model="showAlertPay" centered multi-line>
-      <span style="font-size: 1.2em"
-        >Solo dispone una (1) hora para completar el pago</span
-      >
+      <span style="font-size: 1.2em">Solo dispone una (1) hora para completar el pago</span>
 
       <template v-slot:action="{ attrs }">
         <v-btn icon color="pink" text v-bind="attrs" @click="goToProfile()">
@@ -354,12 +282,12 @@ export default {
     },
     productCartState: {
       type: Object,
-      default: () => {},
+      default: () => { },
       required: true,
     },
     responseTransferCheckout: {
       type: Object,
-      default: () => {},
+      default: () => { },
       required: true,
     },
   },

@@ -23,9 +23,9 @@
           <template v-slot:[`item.order_item`]="{ item }">
             {{ item.order_item.length }}
           </template>
-          <template v-slot:[`item.total_amount`]="{ item }">
-            <span v-if="item.total_amount > 0">
-              {{ item.total_amount | currencyTotal }}
+          <template v-slot:[`item.total_amount_with_shipping`]="{ item }">
+            <span v-if="item.total_amount_with_shipping > 0">
+              {{ item.total_amount_with_shipping | currencyTotal }}
             </span>
           </template>
           <template v-slot:[`item.order`]="{ item }">
@@ -114,7 +114,7 @@ export default {
         { text: "#ID", value: "meli_id", class: "header-text" },
         { text: "Productos", value: "order_item", class: "header-text" },
         { text: "Estado", value: "order", class: "header-text" },
-        { text: "Total", value: "total_amount", class: "header-text" },
+        { text: "Total", value: "total_amount_with_shipping", class: "header-text" },
         { text: "Acción", value: "action", class: "header-text" },
       ],
 

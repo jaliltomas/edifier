@@ -18,7 +18,7 @@ const mutations = {
   },
 
   ADD_ITEM: (state, payload) => {
-    state.productsInCart.shopping_cart_items.push({publication: payload});
+    state.productsInCart.shopping_cart_items.push({ publication: payload });
   },
 
   UPDATE_ITEM: (state, payload) => {
@@ -68,6 +68,18 @@ const mutations = {
 }
 
 const actions = {
+  async SHIPPING_QUOTE_ARG(_, payload) {
+    try {
+      const response = await store.post(
+        "api/quote_arg",
+        payload
+      );
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+
   async CREATE_CART(_, payload) {
     try {
       const response = await store.post(
