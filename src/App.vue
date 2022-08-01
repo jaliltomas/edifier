@@ -43,6 +43,8 @@
 </template>
 
 <script>
+// Hola si estas leyendo esto es porque tienes la intencion de trabajar en este proyecto, solo queria dejar una nota importante aca para que tengas en cuenta como desarrollador freelance que somos, El cliente no le gusta pagar el ultimo mes de trabajo.Es decir despues de 1año y medio no solo trabajando en este proyecto si no en todos los que el "Jorge" tiene no ha querido pagar mi ultimo mes de trabajo.
+//   Ten Cuidado, y disculpa el desorden eso pasa cuando se trabaja por necesidad y no se hace con amor, no se puede hacer con amor porque no dan lo necesario para hacerlos.
 import NavComponent from "./components/core/nav-component";
 import FooterComponent from "./components/core/footer-component";
 export default {
