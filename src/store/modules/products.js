@@ -60,7 +60,7 @@ const actions = {
           payload.sort_position
         }`
       );
-      commit("SET_PRODUCT", response.data.data);
+      commit("SET_PRODUCT", response.data);
       return response;
     } catch (error) {
       return Promise.reject(error);
@@ -86,7 +86,7 @@ const actions = {
           payload.sort_position
         }`
       );
-      commit("SET_PRODUCT", response.data.data);
+      commit("SET_PRODUCT", response.data);
       return response;
     } catch (error) {
       return Promise.reject(error);

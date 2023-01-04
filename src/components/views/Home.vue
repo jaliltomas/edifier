@@ -237,12 +237,21 @@
                             <div class="mr-3 mt-n5" v-html="item.resume"></div>
                           </v-col>
                           <v-col cols="12" class="align-self-end">
-                            <div
-                              v-if="item.price != null"
-                              class="my-auto black--text featured-product-price"
+                            <span
+                              v-if="
+                                getPvpInfo(item).value >=
+                                  getPvpTransferInfo(item).value
+                              "
                             >
-                              $ {{ item.price.pvp | currency }}
-                            </div>
+                              <featured-products-price
+                                :price="getPvpTransferInfo(item)"
+                              />
+                            </span>
+                            <span v-else>
+                              <featured-products-price
+                                :price="getPvpInfo(item)"
+                              />
+                            </span>
                           </v-col>
 
                           <v-col>
@@ -281,17 +290,18 @@
 </template>
 
 <script>
-import CategoryComponent from "@/components/Utils/categories_component";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import { Carousel, Slide } from "vue-carousel";
 import informationCP from "../Utils/informationCP.vue";
+import FeaturedProductsCarrouselPrice from "./utils/products/FeaturedProductsPrice";
+
 export default {
   components: {
-    "category-component": CategoryComponent,
     "suscribe-component": SuscribeComponent,
     Carousel,
     Slide,
-    "information-cp": informationCP,
+    "featured-products-price": FeaturedProductsCarrouselPrice,
+    "information-cp": informationCP
   },
 
   data() {
@@ -303,7 +313,7 @@ export default {
       attrs: {
         class: "mb-6",
         boilerplate: true,
-        elevation: 2,
+        elevation: 2
       },
 
       // IMAGES
@@ -316,7 +326,7 @@ export default {
       item: 0,
 
       //Carrusel
-      perPage: 3,
+      perPage: 3
     };
   },
 
@@ -336,7 +346,7 @@ export default {
   watch: {
     isVisible(val) {
       if (val) this.$refs.slideGroup.setWidths();
-    },
+    }
   },
 
   computed: {
@@ -358,7 +368,7 @@ export default {
 
     prevLabel() {
       return "<img src='../../../flacha-izquierda.png' >";
-    },
+    }
   },
 
   filters: {
@@ -368,13 +378,13 @@ export default {
           // currency: "ARS",
           // style: "currency",
           maximumFractionDigits: 0,
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 0
         }).format(value);
         return AMOUNT_FORMAT;
       } else {
         return " ";
       }
-    },
+    }
   },
 
   methods: {
@@ -385,7 +395,7 @@ export default {
           store: 3,
           page: myPage,
           per_page: 10,
-          paginate: true,
+          paginate: true
         };
         await this.$store.dispatch("products/GET_PRODUCTS", request);
       } catch (error) {
@@ -399,7 +409,7 @@ export default {
           store_id: 3,
           warehouse_id: 3,
           limit: 12,
-          paginate: true,
+          paginate: true
         };
         const response = await this.$store.dispatch(
           "products/FEATURED_PRODUCTS",
@@ -419,7 +429,7 @@ export default {
       ).toString();
       this.$router.push({
         name: "product_details",
-        query: { data: encryptedID },
+        query: { data: encryptedID }
       });
     },
 
@@ -429,7 +439,7 @@ export default {
           publication_id: item.publication_id,
           page: 1,
           per_page: 1,
-          paginate: false,
+          paginate: false
         };
 
         const response = await this.$store.dispatch(
@@ -457,7 +467,7 @@ export default {
           type: "",
           page: 1,
           per_page: 12,
-          paginate: true,
+          paginate: true
         };
 
         const response = await this.$store.dispatch(
@@ -502,7 +512,25 @@ export default {
     HandlerLocationCarrusel(url) {
       location.href = url.url;
     },
-  },
+
+    getPvpInfo(item) {
+      return {
+        paymentType: "Tarjeta",
+        value: item.price.pvp,
+        discount: Math.round(item.price.discount),
+        value_no_discount: item.price.pvp_no_discount
+      };
+    },
+
+    getPvpTransferInfo(item) {
+      return {
+        paymentType: "Transferencia",
+        value: item.price.pvp_transfer,
+        discount: Math.round(item.price.transfer_discount),
+        value_no_discount: item.price.pvp_transfer_no_discount
+      };
+    }
+  }
 };
 </script>
 
