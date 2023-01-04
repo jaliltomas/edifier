@@ -27,7 +27,7 @@
           @click="HandlerDowloadManual"
           v-if="
             dataProduct.product != null &&
-            dataProduct.product.product_manual !== null
+              dataProduct.product.product_manual !== null
           "
         >
           <span v-if="!loadingManual">MANUAL DE USUARIO</span>
@@ -79,40 +79,7 @@
               </div>
             </div>
             <div class="mt-auto">
-              <div class="mt-5">
-                <div
-                  v-if="dataProduct.price != null"
-                  style="border-left: 3px solid #00a0e9; padding-left: 8px"
-                >
-                  <div class="text-17" v-if="isAuth">
-                    <span class="weight-medium text-20">
-                      $
-                      {{ dataProduct.price.pvp_18_installments | currencyPVP }}
-                    </span>
-                    hasta 18 cuotas de $
-                    {{
-                      (dataProduct.price.pvp_18_installments / 18) | currencyPVP
-                    }}
-                  </div>
-                  <div class="my-4 text-17">
-                    <span style="color: #5d7286" class="weight-medium text-20">
-                      $ {{ dataProduct.price.pvp | currencyPVP }}
-                    </span>
-                    <span v-if="isAuth">con Débito / Crédito</span>
-                  </div>
-                  <div class="text-17" v-if="isAuth">
-                    <span style="color: #01d879" class="weight-medium text-20">
-                      $ {{ dataProduct.price.pvp_transfer | currencyPVP }}
-                    </span>
-                    por Transferencia Bancaria
-                  </div>
-                </div>
-                <br />
-                <!-- $ {{ dataProduct.price.pvp | currencyPVP }} -->
-                <div class="mt-4">
-                  <em> Podrás seleccionar la forma de pago en el Checkout </em>
-                </div>
-              </div>
+              <price-details :prices="dataProduct.price"/>
 
               <div class="d-flex justify-space-between mt-10">
                 <cp-information
@@ -143,8 +110,8 @@
               <div
                 v-if="
                   validateStock() &&
-                  validateUmbral() &&
-                  dataProduct.out_stock == false
+                    validateUmbral() &&
+                    dataProduct.out_stock == false
                 "
                 class="d-flex align-center justify-start py-1"
               >
@@ -183,8 +150,8 @@
                 style="width: 80%"
                 v-if="
                   validateStock() &&
-                  validateUmbral() &&
-                  dataProduct.out_stock == false
+                    validateUmbral() &&
+                    dataProduct.out_stock == false
                 "
               >
                 <v-btn
@@ -309,13 +276,17 @@ import moment from "moment";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import informationCP from "@/components/Utils/informationCP";
 import ImageBackground from "./utils/ImageBackground";
+import ProductDetailsPrices from "./utils/products/ProductDetailsPrices"
 import { isValidUmbral } from "@/utils/validateUmbral.js";
+
 export default {
   components: {
     "suscribe-component": SuscribeComponent,
     "cp-information": informationCP,
     "image-background": ImageBackground,
+    "price-details": ProductDetailsPrices
   },
+
   data() {
     return {
       dataProduct: {},

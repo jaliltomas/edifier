@@ -189,11 +189,21 @@
                       >
                         {{ item.keywords }}
                       </p>
-                      <p class="text-center" v-if="item.price != null">
-                        <span class="product-price">
-                          ${{ item.price.pvp | currencyPVP }}
-                        </span>
-                      </p>
+
+                      <span
+                        v-if="
+                          getPvpInfo(item).value >=
+                            getPvpTransferInfo(item).value
+                        "
+                      >
+                        <price-component :price="getPvpTransferInfo(item)" />
+                        <price-component :price="getPvpInfo(item)" />
+                      </span>
+                      <span v-else>
+                        <price-component :price="getPvpInfo(item)" />
+                        <price-component :price="getPvpTransferInfo(item)" />
+                      </span>
+
                       <cp-information
                         style="color: #0000"
                         class="text-center"
@@ -232,11 +242,14 @@
 
 <script>
 import NavegationComponent from "@/components/Utils/navegation_component";
+import ProductGridViewPrice from "./utils/products/ProductGridViewPrice";
 import informationCP from "@/components/Utils/informationCP";
+
 export default {
   components: {
     "navegation-component": NavegationComponent,
-    "cp-information": informationCP,
+    "price-component": ProductGridViewPrice,
+    "cp-information": informationCP
   },
   data() {
     return {
@@ -245,23 +258,23 @@ export default {
         {
           title: "Auriculares",
           icon: "mdi-inbox",
-          text: "Inbox",
+          text: "Inbox"
         },
         {
           title: "Auriculares",
           icon: "mdi-star",
-          text: "Star",
+          text: "Star"
         },
         {
           title: "Auriculares",
           icon: "mdi-send",
-          text: "Send",
+          text: "Send"
         },
         {
           title: "Auriculares",
           icon: "mdi-email-open",
-          text: "Drafts",
-        },
+          text: "Drafts"
+        }
       ],
       model: 1,
 
@@ -271,7 +284,7 @@ export default {
       items: [
         { text: "Real-Time", icon: "mdi-clock" },
         { text: "Audience", icon: "mdi-account" },
-        { text: "Conversions", icon: "mdi-flag" },
+        { text: "Conversions", icon: "mdi-flag" }
       ],
       dataProducts: [],
       dataCategories: [],
@@ -296,7 +309,7 @@ export default {
       everything: 1,
       feature_ids: [],
       loadingProducts: false,
-      isTodo: false,
+      isTodo: false
     };
   },
 
@@ -337,7 +350,7 @@ export default {
         this.everything = 1;
       }
       this.HandlerGetProducts(this.page);
-    },
+    }
   },
 
   filters: {
@@ -345,13 +358,13 @@ export default {
       if (value) {
         const AMOUNT_FORMAT = new Intl.NumberFormat("de-DE", {
           maximumFractionDigits: 0,
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 0
         }).format(value);
         return AMOUNT_FORMAT;
       } else {
         return " ";
       }
-    },
+    }
   },
   computed: {
     isAuth() {
@@ -372,7 +385,7 @@ export default {
 
     paginationCategories() {
       return this.$store.getters["products/GET_PAGINATE_CATEGORIES"];
-    },
+    }
   },
 
   methods: {
@@ -395,7 +408,7 @@ export default {
           this.category_id = this.productsCategories[0].id;
           this.$router.push({
             path: this.$route.path,
-            query: { data: this.category_id },
+            query: { data: this.category_id }
           });
         }
         this.loading = true;
@@ -428,7 +441,7 @@ export default {
               : JSON.stringify([this.category_id]),
           everything: this.everything,
           feature_ids: JSON.stringify(this.feature_ids),
-          sort_position: "asc",
+          sort_position: "asc"
         };
 
         const response = await this.$store.dispatch(
@@ -490,7 +503,7 @@ export default {
           this.category_id = this.productsCategories[0].id;
           this.$router.push({
             path: this.$route.path,
-            query: { data: this.category_id },
+            query: { data: this.category_id }
           });
         }
         this.loading = true;
@@ -523,7 +536,7 @@ export default {
               : JSON.stringify([this.category_id]),
           everything: this.everything,
           feature_ids: JSON.stringify(this.feature_ids),
-          sort_position: "asc",
+          sort_position: "asc"
         };
 
         const response = await this.$store.dispatch(
@@ -583,7 +596,7 @@ export default {
       ).toString();
       this.$router.push({
         name: "product_details",
-        query: { data: encryptedID },
+        query: { data: encryptedID }
       });
     },
 
@@ -614,7 +627,7 @@ export default {
       if (action == 2) {
         if (this.categoriesArray.includes(value.id.toString())) {
           const indexDelete = this.categoriesArray.findIndex(
-            (val) => val == value.id.toString()
+            val => val == value.id.toString()
           );
           this.categoriesArray.splice(indexDelete, 1);
         } else {
@@ -624,9 +637,9 @@ export default {
           this.$router
             .push({
               path: this.$route.path,
-              query: { sub_data: this.categoriesArray[0] },
+              query: { sub_data: this.categoriesArray[0] }
             })
-            .catch((err) => err);
+            .catch(err => err);
         }
         this.everything = 1;
         this.HandlerGetProducts(this.page);
@@ -636,15 +649,15 @@ export default {
         this.$router
           .push({
             path: this.$route.path,
-            query: { data: this.category_id },
+            query: { data: this.category_id }
           })
-          .catch((err) => err);
+          .catch(err => err);
         this.everything = 1;
         this.HandlerGetProducts(this.page);
       } else {
         this.categoriesArray = [];
         this.category_id = null;
-        this.$router.push(this.$route.path).catch((err) => err);
+        this.$router.push(this.$route.path).catch(err => err);
         this.everything = 0;
         this.feature_ids = [];
         this.isTodo = true;
@@ -655,7 +668,7 @@ export default {
     HandlerFilterFeatures(feature) {
       if (this.feature_ids.includes(feature.id.toString())) {
         const indexDelete = this.feature_ids.findIndex(
-          (val) => val == feature.id.toString()
+          val => val == feature.id.toString()
         );
         this.feature_ids.splice(indexDelete, 1);
       } else {
@@ -676,10 +689,26 @@ export default {
         return true;
       }
     },
-  },
+
+    getPvpInfo(item) {
+      return {
+        paymentType: "Tarjeta",
+        value: item.price.pvp,
+        discount: Math.round(item.price.discount),
+        value_no_discount: item.price.pvp_no_discount
+      };
+    },
+
+    getPvpTransferInfo(item) {
+      return {
+        paymentType: "Transferencia",
+        value: item.price.pvp_transfer,
+        discount: Math.round(item.price.transfer_discount),
+        value_no_discount: item.price.pvp_transfer_no_discount
+      };
+    }
+  }
 };
 </script>
 
-<style>
-</style>
-
+<style></style>
