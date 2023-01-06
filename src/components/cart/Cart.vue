@@ -18,8 +18,13 @@
         <v-row>
           <v-col cols="12" md="9">
             <table-items :products="productCartState.shopping_cart_items" />
-            <v-btn rounded dark color="#00A0E9" @click="$router.go(-1)"
-              class="d-flex justify-center justify-md-start mt-5">
+            <v-btn
+              rounded
+              dark
+              color="#00A0E9"
+              @click="$router.go(-1)"
+              class="d-flex justify-center justify-md-start mt-5"
+            >
               <v-icon>mdi-arrow-left</v-icon>
               <p class="mt-4">Continuar comprando</p>
             </v-btn>
@@ -27,19 +32,36 @@
           <v-col cols="12" md="3">
             <v-card class="elevation-3 mt-5" color="#FAFAFA">
               <v-card-text>
-                <div class="font-weight-bold black--text text-center" style="font-size: 1.1em; color: #3c3c3c">
+                <div
+                  class="font-weight-bold black--text text-center"
+                  style="font-size: 1.1em; color: #3c3c3c"
+                >
                   FORMA DE PAGO
                 </div>
                 <v-row class="mt-2">
                   <v-col cols="12" md="4" class="d-flex align-stretch">
-                    <v-sheet color="#E9E9E9" width="100%" class="d-flex flex-column">
+                    <v-sheet
+                      color="#E9E9E9"
+                      width="100%"
+                      class="d-flex flex-column"
+                    >
                       <div>
-                        <v-img width="100%" class="d-flex justify-center pt-5" contain
-                          src="@/assets/img/checkout/18cuotas.svg"></v-img>
-                        <span class="d-flex justify-center mt-n2" style="font-size: 0.83em">
+                        <v-img
+                          width="100%"
+                          class="d-flex justify-center pt-5"
+                          contain
+                          src="@/assets/img/checkout/18cuotas.svg"
+                        ></v-img>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
                           18
                         </span>
-                        <span class="d-flex justify-center mt-n2" style="font-size: 0.83em">
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
                           Cuotas
                         </span>
                       </div>
@@ -53,17 +75,34 @@
                     </v-sheet>
                   </v-col>
                   <v-col cols="12" md="4" class="d-flex align-stretch">
-                    <v-sheet color="#E9E9E9" width="100%" class="d-flex flex-column">
+                    <v-sheet
+                      color="#E9E9E9"
+                      width="100%"
+                      class="d-flex flex-column"
+                    >
                       <div>
-                        <v-img width="250" class="d-flex justify-center pt-5" contain
-                          src="@/assets/img/checkout/deb-cred.svg"></v-img>
-                        <span class="d-flex justify-center mt-n2" style="font-size: 0.83em">
+                        <v-img
+                          width="250"
+                          class="d-flex justify-center pt-5"
+                          contain
+                          src="@/assets/img/checkout/deb-cred.svg"
+                        ></v-img>
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
                           1 Pago
                         </span>
-                        <span class="d-flex justify-center mt-n2" style="font-size: 0.83em">
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
                           Débito
                         </span>
-                        <span class="d-flex justify-center mt-n2" style="font-size: 0.83em">
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
                           Crédito
                         </span>
                       </div>
@@ -77,21 +116,38 @@
                     </v-sheet>
                   </v-col>
                   <v-col cols="12" md="4" class="d-flex align-stretch">
-                    <v-sheet color="#E9E9E9" width="100%" class="d-flex flex-column">
+                    <v-sheet
+                      color="#E9E9E9"
+                      width="100%"
+                      class="d-flex flex-column"
+                    >
                       <div>
-                        <v-img width="250" class="d-flex justify-center pt-4" contain
-                          src="@/assets/img/checkout/transferencia.svg"></v-img>
-                        <span class="d-flex justify-center mt-n1" style="font-size: 0.83em">
+                        <v-img
+                          width="250"
+                          class="d-flex justify-center pt-4"
+                          contain
+                          src="@/assets/img/checkout/transferencia.svg"
+                        ></v-img>
+                        <span
+                          class="d-flex justify-center mt-n1"
+                          style="font-size: 0.83em"
+                        >
                           Transferencia
                         </span>
-                        <span class="d-flex justify-center mt-n2" style="font-size: 0.83em">
+                        <span
+                          class="d-flex justify-center mt-n2"
+                          style="font-size: 0.83em"
+                        >
                           Bancaria
                         </span>
                       </div>
                       <div class="mt-auto">
                         <div class="d-flex justify-center">
                           <v-radio-group v-model="radioGroupTransfer">
-                            <v-radio @change="checkoutType(3)" class="mt-1 ml-2"></v-radio>
+                            <v-radio
+                              @change="checkoutType(3)"
+                              class="mt-1 ml-2"
+                            ></v-radio>
                           </v-radio-group>
                         </div>
                       </div>
@@ -100,15 +156,20 @@
                 </v-row>
                 <v-divider class="my-3"></v-divider>
                 <div>
-                  <div class="font-weight-bold black--text text-center" style="font-size: 1.1em; color: #3c3c3c">
+                  <div
+                    class="font-weight-bold black--text text-center"
+                    style="font-size: 1.1em; color: #3c3c3c"
+                  >
                     TOTAL DEL CARRITO
                   </div>
                   <div class="d-flex justify-space-between">
                     <span class="ml-4 mt-2">TOTAL</span>
-                    <span v-if="totalPrice(originalItems.shopping_cart_items) > 0"
-                      class="font-weight-bold black--text mr-4 mt-2">
+                    <span
+                      v-if="totalPrice(originalItems.shopping_cart_items) > 0"
+                      class="font-weight-bold black--text mr-4 mt-2"
+                    >
                       ${{
-                          totalPrice(originalItems.shopping_cart_items) | currency
+                        totalPrice(originalItems.shopping_cart_items) | currency
                       }}
                     </span>
                     <span v-else class="font-weight-bold black--text mr-4 mt-2">
@@ -117,14 +178,21 @@
                   </div>
                 </div>
                 <div class="d-flex justify-center">
-                  <v-btn :disabled="
-                    radioGroupDues == null ||
+                  <v-btn
+                    :disabled="
+                      radioGroupDues == null ||
                       radioGroupCredit == null ||
                       radioGroupTransfer == null
-                      ? true
-                      : false
-                  " :loading="loadingAcceptItem" style="cursor: pointer" class="mt-10 mx-5 white--text" color="#00a0e9"
-                    rounded @click="canCheckout()">
+                        ? true
+                        : false
+                    "
+                    :loading="loadingAcceptItem"
+                    style="cursor: pointer"
+                    class="mt-10 mx-5 white--text"
+                    color="#00a0e9"
+                    rounded
+                    @click="canCheckout()"
+                  >
                     Continuar al checkout
                   </v-btn>
                 </div>
@@ -133,17 +201,35 @@
           </v-col>
         </v-row>
 
-        <dialog-notification v-if="showAlertCheckout" :active="showAlertCheckout">
-          <acept-no-items :data="dataAlertCheckout" @dialog:change="HandlerCloseAcceptProduct" />
+        <dialog-notification
+          v-if="showAlertCheckout"
+          :active="showAlertCheckout"
+        >
+          <acept-no-items
+            :data="dataAlertCheckout"
+            @dialog:change="HandlerCloseAcceptProduct"
+          />
         </dialog-notification>
 
-        <v-dialog v-model="showSelectDelivery" v-if="showSelectDelivery" max-width="600">
+        <v-dialog
+          v-model="showSelectDelivery"
+          v-if="showSelectDelivery"
+          max-width="600"
+        >
           <v-card :loading="loadingCheckout">
             <v-card-title>Elige el medio de retiro</v-card-title>
             <v-card-text>
-              <v-radio-group v-model="radioGroup" @change="HandlerShippingQuote()">
-                <v-radio v-for="n in ['Retiro en tienda', 'Entrega a domicilio']" :key="n" :label="`${n}`" :value="n"
-                  v-model="retirementValue"></v-radio>
+              <v-radio-group
+                v-model="radioGroup"
+                @change="HandlerShippingQuote()"
+              >
+                <v-radio
+                  v-for="n in ['Retiro en tienda', 'Entrega a domicilio']"
+                  :key="n"
+                  :label="`${n}`"
+                  :value="n"
+                  v-model="retirementValue"
+                ></v-radio>
               </v-radio-group>
               <div v-if="radioGroup == 0">
                 <div v-if="canBuyWarehouse == null" class="title">
@@ -154,7 +240,10 @@
                   <br />
                   <div class="d-flex">
                     <v-icon>mdi-warehouse</v-icon>
-                    <span v-if="canBuyWarehouse != null" class="ml-1 font-weight-bold align-self-end">
+                    <span
+                      v-if="canBuyWarehouse != null"
+                      class="ml-1 font-weight-bold align-self-end"
+                    >
                       {{ canBuyWarehouse.name }}
                     </span>
                   </div>
@@ -166,7 +255,13 @@
                   registra una para poder continuar con el pago
                 </span>
                 <br />
-                <v-btn class="mt-2" color="#00a0e9" dark rounded @click="$router.push({ name: 'profile' })">
+                <v-btn
+                  class="mt-2"
+                  color="#00a0e9"
+                  dark
+                  rounded
+                  @click="$router.push({ name: 'profile' })"
+                >
                   Perfil
                 </v-btn>
               </div>
@@ -174,19 +269,34 @@
                 <span class="font-weight-bold" style="cursor: pointer">
                   Seleccione la dirección de entrega
                 </span>
-                <v-select @change="HandlerShippingQuote()" :items="userAddress" :item-text="
-                  (item) =>
-                    `${item.street} ${item.street_number} ${item.floor_number} ${item.department_number} ${item.location}`
-                " item-value="id" outlined label="Dirección" v-model="idAddress"></v-select>
+                <v-select
+                  @change="HandlerShippingQuote()"
+                  :items="userAddress"
+                  :item-text="
+                    item =>
+                      `${item.street} ${item.street_number} ${item.floor_number} ${item.department_number} ${item.location}`
+                  "
+                  item-value="id"
+                  outlined
+                  label="Dirección"
+                  v-model="idAddress"
+                ></v-select>
 
-                <div>Costo del envio: <span class="font-weight-bold black--text">${{ quote | currency }}</span></div>
+                <div>
+                  Costo del envio:
+                  <span class="font-weight-bold black--text"
+                    >${{ quote | currency }}</span
+                  >
+                </div>
                 <div>
                   Total:
 
-                  <span v-if="totalPrice(originalItems.shopping_cart_items) > 0"
-                    class="font-weight-bold black--text mr-4 mt-2">
+                  <span
+                    v-if="totalPrice(originalItems.shopping_cart_items) > 0"
+                    class="font-weight-bold black--text mr-4 mt-2"
+                  >
                     ${{
-                        (totalPrice(originalItems.shopping_cart_items) + quote)
+                      (totalPrice(originalItems.shopping_cart_items) + quote)
                         | currency
                     }}
                   </span>
@@ -199,24 +309,25 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn @click="HandlerClose" text black>Cancelar</v-btn>
-              <v-btn rounded :loading="loadingCheckout" :disabled="
-                radioGroup == null
-                  ? true
-                  : canBuyWarehouse == null && radioGroup == 0
-                    ? true
-                    : radioGroup == 0
-                      ? false
-                      : idAddress === null
-                        ? true
-                        : false
-              " @click="HandlerConfirmItems()" color="#14A7EB" class="white--text">
+              <v-btn
+                rounded
+                :loading="loadingCheckout"
+                :disabled="disableCheckoutButton()"
+                @click="HandlerConfirmItems()"
+                color="#14A7EB"
+                class="white--text"
+              >
                 Continuar
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="showAlertPerfil" v-if="showAlertPerfil" max-width="600">
+        <v-dialog
+          v-model="showAlertPerfil"
+          v-if="showAlertPerfil"
+          max-width="600"
+        >
           <v-card>
             <v-card-text>
               <div class="font-weight-bold py-5 title">
@@ -224,15 +335,29 @@
                 siguiente campos:
               </div>
               <ul>
-                <li v-for="(item, index) in alertPerfil" :key="index" class="text-uppercase font-weight-bold">
+                <li
+                  v-for="(item, index) in alertPerfil"
+                  :key="index"
+                  class="text-uppercase font-weight-bold"
+                >
                   {{ item.message }}
                 </li>
               </ul>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn text class="text-capitalize" @click="showAlertPerfil = !showAlertPerfil">Cancelar</v-btn>
-              <v-btn @click="$router.push({ name: 'profile' })" color="#00a0e9" dark class="text-capitalize">
+              <v-btn
+                text
+                class="text-capitalize"
+                @click="showAlertPerfil = !showAlertPerfil"
+                >Cancelar</v-btn
+              >
+              <v-btn
+                @click="$router.push({ name: 'profile' })"
+                color="#00a0e9"
+                dark
+                class="text-capitalize"
+              >
                 Ir
                 <span class="text-lowercase mx-1">al</span>
                 Perfil
@@ -243,8 +368,12 @@
       </v-container>
     </v-sheet>
     <!-- PAGO POR TRANSFERENCIA -->
-    <transfer-checkout v-if="showModalTransfer" :showModalTransfer="showModalTransfer"
-      :productCartState="productCartState" :responseTransferCheckout="responseTransferCheckout" />
+    <transfer-checkout
+      v-if="showModalTransfer"
+      :showModalTransfer="showModalTransfer"
+      :productCartState="productCartState"
+      :responseTransferCheckout="responseTransferCheckout"
+    />
     <suscribe-component />
   </div>
 </template>
@@ -261,12 +390,13 @@ export default {
     AceptNoItems,
     TableItems,
     "suscribe-component": Suscribe,
-    "transfer-checkout": TransferCheckout,
+    "transfer-checkout": TransferCheckout
   },
   data() {
     return {
       quote: 0,
       errorGetQuoute: false,
+      statusQuote: false,
       items: [],
       originalItems: [],
       showAlertRemove: false,
@@ -319,12 +449,11 @@ export default {
 
   watch: {
     radioGroup(val) {
-      console.log(val);
       if (val == 0) {
         this.getUserAddressPriority();
         this.ValidateProductWarehouse();
       }
-    },
+    }
   },
 
   computed: {
@@ -338,10 +467,24 @@ export default {
 
     totalAmount() {
       return this.$store.getters["cart/TOTAL_AMOUNT"];
-    },
+    }
   },
 
   methods: {
+    disableCheckoutButton() {
+      const condition1 = this.radioGroup == null || !this.statusQuote;
+      const condition2 = this.canBuyWarehouse == null && this.radioGroup == 0;
+      const condition3 = this.radioGroup == 0;
+      const condition4 = this.idAddress === null;
+
+      const disabled =
+        condition1 ||
+        condition2 ||
+        (!condition3 && (condition4 || this.errorGetQuoute));
+
+      return disabled;
+    },
+
     async HandlerShippingQuote() {
       try {
         this.statusQuote = false;
@@ -351,7 +494,7 @@ export default {
         }
 
         const request = {
-          address_id: this.idAddress?.id || this.idAddress,
+          address_id: this.idAddress?.id || this.idAddress
         };
 
         const response = await this.$store.dispatch(
@@ -382,14 +525,14 @@ export default {
       try {
         const response = await this.$store.dispatch("auth/GET_ADDRESS");
         this.userAddress = response.data.data;
-        this.idAddress = this.userAddress.find((addr) => addr.status == true);
+        this.idAddress = this.userAddress.find(addr => addr.status == true);
       } catch (error) {
         console.log(error);
       }
     },
 
     getUserAddressPriority() {
-      const userAddress = this.userAddress.find((addrr) => {
+      const userAddress = this.userAddress.find(addrr => {
         if (addrr.status == true) {
           return addrr;
         }
@@ -410,7 +553,7 @@ export default {
       try {
         const request = {
           update_items: true,
-          address_id: this.idAddress.id || this.idAddress,
+          address_id: this.idAddress.id || this.idAddress
         };
         const response = await this.$store.dispatch(
           "cart/CONFIRM_PRODUCTS_CART",
@@ -423,7 +566,7 @@ export default {
         this.$store.commit("cart/SET_CART_SUMMART", summary);
 
         this.confirmOrder = [
-          ...this.getShoppingCartItems(summary, shopping_cart),
+          ...this.getShoppingCartItems(summary, shopping_cart)
         ];
 
         // VERIFICAR SI TIENE DIRECCION REGISTRADA
@@ -442,7 +585,7 @@ export default {
                 address: this.radioGroup == 1 ? this.idAddress : "",
                 response: response.data.data,
                 payment_type: this.payments_type,
-                default_installments: this.default_installments,
+                default_installments: this.default_installments
               };
             } else {
               if (this.confirmOrder.length > 0) {
@@ -453,7 +596,7 @@ export default {
                   address: this.radioGroup == 1 ? this.idAddress : "",
                   response: response.data.data,
                   payment_type: this.payments_type,
-                  default_installments: this.default_installments,
+                  default_installments: this.default_installments
                 };
               } else {
                 if (this.radioGroupTransfer === 0) {
@@ -474,7 +617,7 @@ export default {
               order: this.confirmOrder,
               pickup: this.radioGroup == 0 ? true : false,
               address: this.radioGroup == 1 ? this.idAddress.id : "",
-              response: response.data.data,
+              response: response.data.data
             };
           } else {
             if (this.radioGroupTransfer === 0) {
@@ -496,7 +639,7 @@ export default {
       return summary.reduce((out, current) => {
         cont++;
         if (current.available < current.requested) {
-          const getItem = shopping_cart.shopping_cart_items.find((item) => {
+          const getItem = shopping_cart.shopping_cart_items.find(item => {
             return item.id == current.shopping_cart_item_id;
           });
 
@@ -506,7 +649,7 @@ export default {
               summary_position: cont,
               requested: current.requested,
               available: current.available,
-              product: getItem,
+              product: getItem
             });
           }
         }
@@ -532,7 +675,7 @@ export default {
           warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
           store_id: 3,
           payment_type: this.payments_type,
-          default_installments: this.default_installments,
+          default_installments: this.default_installments
         };
 
         const response = await this.$store.dispatch(
@@ -561,14 +704,14 @@ export default {
     async ValidateProductWarehouse() {
       try {
         const publication_ids = this.originalItems.shopping_cart_items.map(
-          (item) => {
+          item => {
             return [item.publication_id];
           }
         );
 
         const request = {
           publication_ids: [...publication_ids.flat()],
-          debug: true,
+          debug: true
         };
 
         const response = await this.$store.dispatch(
@@ -643,8 +786,8 @@ export default {
           this.idAddress == undefined
             ? ""
             : typeof this.idAddress == "number"
-              ? this.idAddress
-              : this.idAddress.id;
+            ? this.idAddress
+            : this.idAddress.id;
         const id = address;
         const request = {
           store_id: 3,
@@ -652,7 +795,7 @@ export default {
           shopping_cart_id: cart.id,
           addresse_id: id,
           warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
-          quote: this.quote,
+          quote: this.quote
         };
 
         const response = await this.$store.dispatch(
@@ -713,11 +856,9 @@ export default {
       } finally {
         this.loadingLocation = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
-
+<style></style>
