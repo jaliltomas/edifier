@@ -79,7 +79,7 @@
               </div>
             </div>
             <div class="mt-auto">
-              <price-details :prices="dataProduct.price"/>
+              <price-details :prices="dataProduct.price" :isAuth="isAuth"/>
 
               <div class="d-flex justify-space-between mt-10">
                 <cp-information

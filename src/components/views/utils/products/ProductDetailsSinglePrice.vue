@@ -11,7 +11,7 @@
       >
         $ {{ price.value | currencyPVP }}
       </span>
-      <span>{{ price.paymentType }}</span>
+      <span v-if="isAuth">{{ price.paymentType }}</span>
     </span>
     <span v-else class="pb-0 mb-0">
       <v-row>
@@ -21,7 +21,7 @@
           >
             $ {{ price.value_no_discount | currencyPVP }}
           </span>
-          <span class="ml-3">{{ price.paymentType }}</span>
+          <span v-if="isAuth" class="ml-3">{{ price.paymentType }}</span>
         </v-col>
       </v-row>
       <v-row class="mt-0">
@@ -52,6 +52,11 @@ export default {
       type: Object,
       required: true,
       default: () => {}
+    },
+    isAuth: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
 

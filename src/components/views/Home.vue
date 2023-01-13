@@ -237,15 +237,22 @@
                             <div class="mr-3 mt-n5" v-html="item.resume"></div>
                           </v-col>
                           <v-col cols="12" class="align-self-end">
-                            <span
-                              v-if="
-                                getPvpInfo(item).value >=
-                                  getPvpTransferInfo(item).value
-                              "
-                            >
-                              <featured-products-price
-                                :price="getPvpTransferInfo(item)"
-                              />
+                            <span v-if="isAuth">
+                              <span
+                                v-if="
+                                  getPvpInfo(item).value >=
+                                    getPvpTransferInfo(item).value
+                                "
+                              >
+                                <featured-products-price
+                                  :price="getPvpTransferInfo(item)"
+                                />
+                              </span>
+                              <span v-else>
+                                <featured-products-price
+                                  :price="getPvpInfo(item)"
+                                />
+                              </span>
                             </span>
                             <span v-else>
                               <featured-products-price

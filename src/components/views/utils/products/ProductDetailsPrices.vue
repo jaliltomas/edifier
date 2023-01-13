@@ -14,12 +14,20 @@
       </div>
 
       <div v-if="getPvpInfo(prices).value >= getPvpTransferInfo(prices).value">
-        <price-display :price="getPvpTransferInfo(prices)" />
-        <price-display :price="getPvpInfo(prices)" />
+        <price-display
+          v-if="isAuth"
+          :price="getPvpTransferInfo(prices)"
+          :isAuth="isAuth"
+        />
+        <price-display :price="getPvpInfo(prices)" :isAuth="isAuth" />
       </div>
       <div v-else>
-        <price-display :price="getPvpInfo(prices)" />
-        <price-display :price="getPvpTransferInfo(prices)" />
+        <price-display :price="getPvpInfo(prices)" :isAuth="isAuth" />
+        <price-display
+          v-if="isAuth"
+          :price="getPvpTransferInfo(prices)"
+          :isAuth="isAuth"
+        />
       </div>
     </div>
     <br />
@@ -42,7 +50,7 @@ export default {
     isAuth: {
       type: Boolean,
       required: false,
-      default: true
+      default: false
     }
   },
 
@@ -56,7 +64,7 @@ export default {
         paymentType: "con Débito / Crédito",
         value: prices.pvp,
         discount: Math.round(prices.discount),
-        value_no_discount: prices.pvp_no_discount,
+        value_no_discount: prices.pvp_no_discount
       };
     },
 
@@ -65,7 +73,7 @@ export default {
         paymentType: "por Transferencia Bancaria",
         value: prices.pvp_transfer,
         discount: Math.round(prices.transfer_discount),
-        value_no_discount: prices.pvp_transfer_no_discount,
+        value_no_discount: prices.pvp_transfer_no_discount
       };
     }
   },

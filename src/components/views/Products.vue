@@ -190,18 +190,23 @@
                         {{ item.keywords }}
                       </p>
 
-                      <span
-                        v-if="
-                          getPvpInfo(item).value >=
-                            getPvpTransferInfo(item).value
-                        "
-                      >
-                        <price-component :price="getPvpTransferInfo(item)" />
-                        <price-component :price="getPvpInfo(item)" />
+                      <span v-if="isAuth">
+                        <span
+                          v-if="
+                            getPvpInfo(item).value >=
+                              getPvpTransferInfo(item).value
+                          "
+                        >
+                          <price-component :price="getPvpTransferInfo(item)" />
+                          <price-component :price="getPvpInfo(item)" />
+                        </span>
+                        <span v-else>
+                          <price-component :price="getPvpInfo(item)" />
+                          <price-component :price="getPvpTransferInfo(item)" />
+                        </span>
                       </span>
                       <span v-else>
                         <price-component :price="getPvpInfo(item)" />
-                        <price-component :price="getPvpTransferInfo(item)" />
                       </span>
 
                       <cp-information
