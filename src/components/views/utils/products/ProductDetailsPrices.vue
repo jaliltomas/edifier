@@ -4,15 +4,6 @@
       v-if="prices != null"
       style="border-left: 3px solid #00a0e9; padding-left: 8px"
     >
-      <div class="text-17" v-if="isAuth">
-        <span class="weight-medium text-20">
-          $
-          {{ prices.pvp_18_installments | currencyPVP }}
-        </span>
-        hasta 18 cuotas de $
-        {{ (prices.pvp_18_installments / 18) | currencyPVP }}
-      </div>
-
       <div v-if="getPvpInfo(prices).value >= getPvpTransferInfo(prices).value">
         <price-display
           v-if="isAuth"
@@ -29,6 +20,16 @@
           :isAuth="isAuth"
         />
       </div>
+      <div class="mt-5 text-17" v-if="isAuth">
+        <span class="weight-medium text-20">
+          $
+          {{ prices.pvp_18_installments | currencyPVP }}
+        </span>
+        hasta 18 cuotas de $
+        {{ (prices.pvp_18_installments / 18) | currencyPVP }}
+      </div>
+
+      
     </div>
     <br />
     <div class="mt-4">
