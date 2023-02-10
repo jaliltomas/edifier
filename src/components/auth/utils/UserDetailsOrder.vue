@@ -520,6 +520,7 @@ export default {
 
   created() {
     this.HandlerGetData();
+    window.fbq("trackCustom", "OrderDetailView");
   },
 
   filters: {

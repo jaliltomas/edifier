@@ -445,6 +445,7 @@ export default {
   created() {
     this.HandlerGetCartsProducts();
     this.HandlerGetAddress();
+    window.fbq("trackCustom", "CartView");
   },
 
   watch: {

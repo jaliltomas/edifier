@@ -320,6 +320,7 @@ export default {
   },
 
   async created() {
+    window.fbq("trackCustom", "ProductDetailsView");
     const id = this.$route.query.data;
     this.id = this.CryptoJS.AES.decrypt(id, "MyS3c3rtIdPr0Duct").toString(
       this.CryptoJS.enc.Utf8

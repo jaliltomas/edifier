@@ -64,6 +64,9 @@ export default {
     "suscribe-component": Suscribe,
   },
 
+  created() {
+    window.fbq("trackCustom", "DownloadView");
+  },
   methods: {
     goTo(item) {
       window.open(item);

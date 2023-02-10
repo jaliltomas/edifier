@@ -110,6 +110,7 @@ export default {
       this.action = parseInt(this.$route.query.action);
       this.tab = parseInt(this.$route.query.action);
     }
+    window.fbq("trackCustom", "ProfileView");
   },
 
   watch: {

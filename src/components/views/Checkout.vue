@@ -184,6 +184,9 @@ export default {
   components: {
     "navegation-component": NavegationComponent,
   },
+  created() {
+    window.fbq("trackCustom", "CheckoutView");
+  }
 };
 </script>
 

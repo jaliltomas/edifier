@@ -65,6 +65,7 @@ export default {
     if (this.$route.query?.preference_id) {
       this.HandlerGetAutorize();
     }
+    window.fbq("trackCustom", "CheckoutNotificationView");
   },
 
   methods: {

@@ -71,6 +71,9 @@ export default {
       return this.$store.getters["products/GET_PRODUCT_FAVORITES"];
     },
   },
+  mounted() {
+    window.fbq("trackCustom", "ProducstsFavoritesView");
+  },
   methods: {
     HandlerShowImage(pictures) {
       const images = JSON.parse(pictures);

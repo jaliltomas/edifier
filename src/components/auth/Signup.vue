@@ -258,6 +258,8 @@ export default {
 
   created() {
     this.HandlerGetState();
+
+    window.fbq("trackCustom", "SignUpView");
   },
 
   methods: {

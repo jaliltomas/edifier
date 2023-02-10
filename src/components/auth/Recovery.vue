@@ -89,6 +89,9 @@ export default {
       errorContent: "",
     };
   },
+  mounted() {
+    window.fbq("trackCustom", "RecoveryView");
+  },
 
   methods: {
     async HandlerVerifyCode() {

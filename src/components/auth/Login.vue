@@ -155,6 +155,9 @@ export default {
       canRegister: true,
     };
   },
+  mounted() {
+    window.fbq("trackCustom", "LoginView");
+  },
 
   methods: {
     HandlerRouter(router) {

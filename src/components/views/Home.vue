@@ -346,8 +346,10 @@ export default {
     const remaze = window._support || { ui: {}, user: {} };
     remaze["account"] = "edifier";
     remaze["contact_custom_fields"] = remaze["contact_custom_fields"] || {};
+    
     remaze["contact_custom_fields"]["rmz_form_id_27495"] = {};
     this.$refs.remaze = remaze;
+    window.fbq("trackCustom", "HomeView")
   },
 
   watch: {

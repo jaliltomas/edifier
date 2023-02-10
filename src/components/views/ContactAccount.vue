@@ -22,6 +22,9 @@ export default {
     "information-component": InformationComponent,
     "remaze-component": RemazeContact,
   },
+  created() {
+    window.fbq("trackCustom", "ContactView");
+  },
 };
 </script>
 

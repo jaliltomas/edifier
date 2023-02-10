@@ -334,6 +334,9 @@ export default {
     this.HandlerGetProducts(this.page);
     // this.HanderGetProductsBrand();
   },
+  mounted() {
+    window.fbq("trackCustom", "ProductView");
+  },
   watch: {
     page(page) {
       this.HandlerGetProducts(page);
