@@ -676,7 +676,8 @@ export default {
           warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
           store_id: 3,
           payment_type: this.payments_type,
-          default_installments: this.default_installments
+          default_installments: this.default_installments,
+          quote: this.quote,
         };
 
         const response = await this.$store.dispatch(
