@@ -240,8 +240,9 @@
                             <span v-if="isAuth">
                               <span
                                 v-if="
-                                  getPvpInfo(item).value >=
-                                    getPvpTransferInfo(item).value
+                                  (getPvpTransferInfo(item).value > 0) &&
+                                  (getPvpInfo(item).value >=
+                                    getPvpTransferInfo(item).value)
                                 "
                               >
                                 <featured-products-price

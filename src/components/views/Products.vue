@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-sheet>
+    <v-sheet style="position:relative">
       <v-img
         v-if="imageBanner() && productsCategories.length > 0"
         contain
@@ -47,6 +47,25 @@
           </v-row>
         </v-container> -->
       </v-img>
+      <v-col v-if="!isAuth" cols="12" md="9" class="banner-box">
+      <div class="banner-container">
+        <div class="banner-text">
+          Regístrate para acceder a beneficios y promociones
+        </div>
+        <div class="banner-btn">
+          <v-btn
+            block
+            color="black"
+            class="white--text "
+            rounded
+            style="height: 28px; text-transform: none;"
+            @click="HandlerRouter('login', { propsShow: false })"
+          >
+            Regístrate aquí
+          </v-btn>
+        </div>
+      </div>
+    </v-col>
     </v-sheet>
 
     <v-sheet color="#F1F1F1">
@@ -190,24 +209,19 @@
                         {{ item.keywords }}
                       </p>
 
-                      <span v-if="isAuth">
-                        <span
-                          v-if="
-                            getPvpInfo(item).value >=
-                              getPvpTransferInfo(item).value
-                          "
-                        >
-                          <price-component :price="getPvpTransferInfo(item)" />
-                          <price-component :price="getPvpInfo(item)" />
-                        </span>
-                        <span v-else>
-                          <price-component :price="getPvpInfo(item)" />
-                          <price-component :price="getPvpTransferInfo(item)" />
-                        </span>
-                      </span>
-                      <span v-else>
-                        <price-component :price="getPvpInfo(item)" />
-                      </span>
+                      <div class="mt-5">
+                        <price-component 
+                          v-if="item.store.display_full_prices"
+                          :price="getPvpTransferInfo(item)" 
+                          :dataProduct="item"
+                          :isAuth="isAuth"
+                        />
+                        <price-component 
+                          :price="getPvpInfo(item)" 
+                          :dataProduct="item"
+                        />
+                        <availability-list :dataProduct="item" />
+                      </div>
 
                       <cp-information
                         style="color: #0000"
@@ -246,15 +260,15 @@
 </template>
 
 <script>
-import NavegationComponent from "@/components/Utils/navegation_component";
 import ProductGridViewPrice from "./utils/products/ProductGridViewPrice";
 import informationCP from "@/components/Utils/informationCP";
+import AvailabilityList from "./utils/products/AvailabilityList.vue";
 
 export default {
   components: {
-    "navegation-component": NavegationComponent,
     "price-component": ProductGridViewPrice,
-    "cp-information": informationCP
+    "cp-information": informationCP,
+    "availability-list": AvailabilityList
   },
   data() {
     return {
@@ -286,11 +300,6 @@ export default {
       loading: false,
       page: 1,
       selectedItem: "",
-      items: [
-        { text: "Real-Time", icon: "mdi-clock" },
-        { text: "Audience", icon: "mdi-account" },
-        { text: "Conversions", icon: "mdi-flag" }
-      ],
       dataProducts: [],
       dataCategories: [],
       productsCategories: [],
@@ -459,7 +468,6 @@ export default {
 
         // COLOCAR SUBCATEGORIA TRUE
         const categories = response.data.categories;
-        let arrayName = [];
         for (const category of categories) {
           for (const sub_cat of category.sub_category) {
             if (this.categoriesArray.includes(sub_cat.id.toString())) {
@@ -554,7 +562,6 @@ export default {
 
         // COLOCAR SUBCATEGORIA TRUE
         const categories = response.data.categories;
-        let arrayName = [];
         for (const category of categories) {
           for (const sub_cat of category.sub_category) {
             if (this.categoriesArray.includes(sub_cat.id.toString())) {
@@ -719,4 +726,66 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.banner-box {
+  position: absolute;
+  padding: 0;
+  bottom: -16px;
+  right: 10px;
+  padding: 0px 30px !important;
+}
+.banner-container {
+  background-color: rgb(0, 160, 233);;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 20px;
+  position: relative;
+  height: 38px;
+}
+.banner-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  margin-right: 8px;
+}
+.banner-btn {
+  position: absolute;
+  right: 12px;
+}
+@media only screen and (max-width: 800px) {
+  .banner-container {
+    justify-content: start;
+  }
+  .banner-text {
+    font-size: 14px;
+    margin-right: 0px;
+  }
+  .banner-container {
+    height: 34px;
+  }
+  .banner-box {
+    right: 0px;
+    padding: 0px 10px !important;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .banner-box {
+    bottom: -26px;
+  }
+  .banner-container {
+    height: auto;
+    flex-direction: column;
+  }
+  .banner-text {
+    font-size: 12px;
+    text-align: center;
+  }
+  .banner-btn {
+    position: relative;
+    margin-top: 2px;
+  }
+}
+</style>

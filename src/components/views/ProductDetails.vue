@@ -79,8 +79,14 @@
               </div>
             </div>
             <div class="mt-auto">
-              <price-details :prices="dataProduct.price" :isAuth="isAuth"/>
-
+              <price-details 
+                :prices="dataProduct.price" 
+                :isAuth="isAuth"
+                :show_full_prices = "dataProduct.store.display_full_prices"
+              />
+              <div class="details-box">
+                <availability-list :dataProduct="dataProduct" />
+              </div>
               <div class="d-flex justify-space-between mt-10">
                 <cp-information
                   v-if="dataProduct"
@@ -278,13 +284,15 @@ import informationCP from "@/components/Utils/informationCP";
 import ImageBackground from "./utils/ImageBackground";
 import ProductDetailsPrices from "./utils/products/ProductDetailsPrices"
 import { isValidUmbral } from "@/utils/validateUmbral.js";
+import AvailabilityList from "./utils/products/AvailabilityList.vue";
 
 export default {
   components: {
     "suscribe-component": SuscribeComponent,
     "cp-information": informationCP,
     "image-background": ImageBackground,
-    "price-details": ProductDetailsPrices
+    "price-details": ProductDetailsPrices,
+    "availability-list": AvailabilityList
   },
 
   data() {
@@ -846,5 +854,12 @@ export default {
 
 .weight-medium {
   font-weight: 400;
+}
+.details-box .availableBox {
+  margin-top: 6px !important;
+  margin-bottom: -20px !important;
+  display: flex;
+  align-items: start;
+  justify-content: start;
 }
 </style>

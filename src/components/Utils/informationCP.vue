@@ -1,10 +1,10 @@
 <template>
   <div>
     <div
-      v-if="isAuth && !dataProduct.out_stock && validateUmbral()"
+      v-if="isAuth && inStock()"
       class="mb-0"
     >
-      <div v-if="authUser.zipcode == '2000' || authUser.zipcode == '5000'">
+      <div>
         <p
           class="mb-0 text-uppercase"
           style="color: #3f3c35; font-size: 1.2em; cursor: pointer"
@@ -24,19 +24,9 @@
               HandlerReturnWarehouse(
                 authUser.zipcode,
                 dataProduct.product.product_warehouse,
-                dataProduct
               ) != 'AVISAME'
             "
           >
-            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
-            {{
-              HandlerReturnWarehouse(
-                authUser.zipcode,
-                dataProduct.product.product_warehouse,
-                dataProduct
-              )
-            }}
-            <br />
             <v-btn
               v-if="$route.name != 'product_details' && $route.name != 'cart'"
               @click="HandlerShowProduct(dataProduct)"
@@ -60,96 +50,9 @@
           </span>
         </p>
       </div>
-      <div v-else>
-        <p
-          class="mb-0 text-uppercase"
-          style="color: #3f3c35; font-size: 1.2em"
-          v-if="
-            dataProduct.product != null &&
-            dataProduct.product.product_warehouse.length > 0
-          "
-          @click="
-            ModalProductUser(
-              authUser.zipcode,
-              dataProduct.product.product_warehouse
-            )
-          "
-        >
-          <span
-            v-if="
-              HandlerReturnWarehouse(
-                authUser.zipcode,
-                dataProduct.product.product_warehouse,
-                dataProduct
-              ) != 'AVISAME'
-            "
-          >
-            <v-icon color="#3F3C35" class="mr-0">mdi-truck-outline</v-icon>
-            {{
-              HandlerReturnWarehouse(
-                authUser.zipcode,
-                dataProduct.product.product_warehouse,
-                dataProduct
-              )
-            }}
-            <br />
-            <v-btn
-              class="mt-3"
-              v-if="$route.name != 'product_details' && $route.name != 'cart'"
-              @click="HandlerShowProduct(dataProduct)"
-              outlined
-              rounded
-              color="#00A0E9"
-            >
-              Comprar
-            </v-btn>
-          </span>
-          <span v-else>
-            <div
-              v-if="dataProduct.user_product_notification != null"
-              class="pt-0"
-            ></div>
-            <v-btn
-              :class="
-                dataProduct.user_product_notification == null ? 'mt-5' : 'mt-0'
-              "
-              outlined
-              rounded
-              color="#00A0E9"
-              v-if="dataProduct.user_product_notification == null"
-            >
-              AVISAME
-            </v-btn>
-            <span
-              v-if="dataProduct.user_product_notification != null"
-              class="black--text d-flex justify-center mb-3"
-              style="cursor: default"
-            >
-              INGRESA EN {{ getMonth() }}
-            </span>
-          </span>
-        </p>
-      </div>
     </div>
 
-    <div v-else-if="isAuth && !dataProduct.out_stock && !validateUmbral()">
-      <p style="font-size: 1.2em" class="mb-0 pt-1">
-        <span
-          v-if="
-            (dataProduct.user_product_notification == null &&
-              $route.name == 'products') ||
-            $route.name == 'home'
-          "
-          :class="
-            $route.name != 'home'
-              ? 'black--text d-flex justify-center mt-n1 mb-4 text-uppercase'
-              : 'black--text d-flex justify-start mt-n1 mb-4 text-uppercase'
-          "
-          style="cursor: default"
-        >
-          INGRESA EN {{ getMonth() }}
-        </span>
-      </p>
+    <div v-else-if="isAuth && !inStock()">
       <v-btn
         v-if="dataProduct.user_product_notification == null"
         @click="HandlerModalAvisame()"
@@ -174,61 +77,29 @@
         </span>
         <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
       </p>
-    </div>
+    </div> 
 
-    <div v-else-if="isAuth && dataProduct.out_stock && validateUmbral()">
-      <p style="font-size: 1.2em" class="mb-0 pt-1">
-        <span
-          v-if="
-            (dataProduct.user_product_notification == null &&
-              $route.name == 'products') ||
-            $route.name == 'home'
-          "
-          :class="
-            $route.name != 'home'
-              ? 'black--text d-flex justify-center mt-n1 mb-4 text-uppercase'
-              : 'black--text d-flex justify-start mt-n1 mb-4 text-uppercase'
-          "
-          style="cursor: default"
-        >
-          INGRESA EN {{ getMonth() }}
-        </span>
-      </p>
+    <div class="mb-5" v-else-if="!isAuth">
       <v-btn
-        v-if="dataProduct.user_product_notification == null"
-        @click="HandlerModalAvisame()"
-        class="mt-0"
+        v-if="!inStock()"
+        @click="showModalReserve = true"
+        class="mt-0 white--text"
         rounded
-        outlined
         color="#00A0E9"
       >
         AVISAME
       </v-btn>
-      <p
-        class="mb-0 text-uppercase"
-        style="font-size: 1.2em"
-        v-else-if="dataProduct.user_product_notification != null"
+      <v-btn
+        v-else-if="
+          $route.name != 'product_details' && $route.name != 'cart' && inStock()
+        "
+        @click="HandlerShowProduct(dataProduct)"
+        class="mt-0 white--text"
+        rounded
+        color="#00A0E9"
       >
-        <span
-          class="black--text d-flex justify-center mt-n1 mb-6"
-          style="cursor: default"
-          v-if="$route.name == 'products'"
-        >
-          LO ELEGISTE
-        </span>
-        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
-      </p>
-    </div>
-
-    <div v-else-if="isAuth == false" class="mb-5">
-      <p
-        class="mb-0 text-uppercase"
-        style="cursor: pointer; color: #3f3c35"
-        @click="$router.push({ name: 'login' })"
-      >
-        <v-icon color="#3F3C35" class="mr-1">mdi-truck-outline</v-icon>
-        Conocé el tiempo de entrega
-      </p>
+        COMPRAR
+      </v-btn>
     </div>
 
     <ValidationObserver ref="obs" v-slot="{ passes }">
@@ -248,7 +119,6 @@
               v-slot="{ errors }"
             >
               <v-text-field
-                @keyup="passes(HandlerNotification)"
                 filled
                 rounded
                 v-model="authUserData.buyer.first_name"
@@ -262,7 +132,6 @@
               v-slot="{ errors }"
             >
               <v-text-field
-                @keyup="passes(HandlerNotification)"
                 filled
                 rounded
                 label="Email"
@@ -276,7 +145,6 @@
               v-slot="{ errors }"
             >
               <v-text-field
-                @keyup="passes(HandlerNotification)"
                 filled
                 rounded
                 label="Teléfono"
@@ -291,7 +159,7 @@
             <v-btn
               rounded
               :loading="loading"
-              color="#AC2632"
+              color="#00A0E9"
               class="white--text"
               @click="passes(HandlerNotification)"
               >Continuar
@@ -336,6 +204,7 @@ export default {
       activeNotificacion: false,
       textNotification: "",
       colorNotification: "black",
+      warehouseValue: 0
     };
   },
 
@@ -359,12 +228,12 @@ export default {
   },
 
   methods: {
-    HandlerReturnWarehouse(cp, warehouse, dataProduct) {
+    HandlerReturnWarehouse(cp, warehouse) {
       switch (parseInt(cp)) {
         case 2000:
-          return this.getDeposit(warehouse, 10, 5, dataProduct);
+          return this.getDeposit(warehouse, 10, 5);
         case 5000:
-          return this.getDeposit(warehouse, 3, 5, dataProduct);
+          return this.getDeposit(warehouse, 3, 5);
         default:
           return this.getDepostCentral(warehouse, cp, 5);
       }
@@ -390,43 +259,45 @@ export default {
       }
     },
 
-    getDeposit(warehouse, regId, cenId, dataProduct) {
+    getDeposit(warehouse, regId, cenId) {
       const getWarehouseReg = warehouse.find(
-        (value) => value.warehouse_id == regId
+        value => value.warehouse_id == regId
       );
 
       const getWarehouseFwl01 = warehouse.find(
-        (value) => value.warehouse_id == cenId
+        value => value.warehouse_id == cenId
       );
 
-      if (
-        getWarehouseReg?.current_stock > dataProduct.threshold &&
-        getWarehouseFwl01?.current_stock > 0
-      ) {
-        // if (this.warehouseValue === 5) {
-        let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-        return `${text} dentro de las 24Hs HÁBILES `;
-        // } else {
-        //   let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-        //   return `${text} en 4-6 días hábiles`;
-        // }
-      } else if (
-        getWarehouseReg.current_stock < dataProduct.threshold &&
-        getWarehouseFwl01.current_stock > 0
-      ) {
-        let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-        return `${text} en 4-6 días hábiles`;
-      } else if (
-        getWarehouseReg.current_stock > 0 &&
-        getWarehouseFwl01.current_stock == 0
-      ) {
-        let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
-        return `${text} dentro de las 24Hs HÁBILES `;
-      } else if (
-        getWarehouseReg.current_stock == 0 &&
-        getWarehouseFwl01.current_stock == 0
-      ) {
-        return "AVISAME";
+      if (getWarehouseReg != undefined && getWarehouseFwl01 != undefined) {
+        if (
+          getWarehouseReg.current_stock > 0 &&
+          getWarehouseFwl01.current_stock > 0
+        ) {
+          // if (this.warehouseValue === 5) {
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 24Hs HÁBILES `;
+          // } else {
+          //   let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          //   return `${text} en 4-6 días hábiles`;
+          // }
+        } else if (
+          getWarehouseReg.current_stock === 0 &&
+          getWarehouseFwl01.current_stock > 0
+        ) {
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} en 4-6 días hábiles`;
+        } else if (
+          getWarehouseReg.current_stock > 0 &&
+          getWarehouseFwl01.current_stock == 0
+        ) {
+          let text = this.$route.name == "cart" ? "Llega" : "RECIBILO";
+          return `${text} dentro de las 24Hs HÁBILES `;
+        } else if (
+          getWarehouseReg.current_stock == 0 &&
+          getWarehouseFwl01.current_stock == 0
+        ) {
+          return "AVISAME";
+        }
       } else if (
         getWarehouseReg == undefined &&
         getWarehouseFwl01 != undefined
@@ -523,6 +394,13 @@ export default {
         this.$router.push({ name: "login" });
       }
     },
+    inStock() {
+      return (
+        this.dataProduct.product.product_warehouse.some(
+          ele => ele.current_stock !== 0
+        ) && !this.dataProduct.store.out_stock
+      );
+    }
   },
 };
 </script>

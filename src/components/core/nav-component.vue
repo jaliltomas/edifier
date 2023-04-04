@@ -118,17 +118,6 @@
           <v-icon class="mr-1">mdi-account</v-icon>
         </v-btn>
 
-        <v-btn
-          v-if="isMobile && isAuth == true"
-          @click="HandlerLogout()"
-          class="ml-0 mr-0"
-          color="black"
-          text
-          icon
-        >
-          <v-icon>mdi-exit-to-app </v-icon>
-        </v-btn>
-
         <v-menu
           open-on-hover
           v-model="menu"
@@ -210,7 +199,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-icon
-              v-if="isMobile == false && isAuth == true"
+              v-if="isAuth == true"
               class="ml-3"
               v-bind="attrs"
               v-on="on"

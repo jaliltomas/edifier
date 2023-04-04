@@ -6,7 +6,7 @@
     >
       <div v-if="getPvpInfo(prices).value >= getPvpTransferInfo(prices).value">
         <price-display
-          v-if="isAuth"
+          v-if="this.show_full_prices"
           :price="getPvpTransferInfo(prices)"
           :isAuth="isAuth"
         />
@@ -15,7 +15,7 @@
       <div v-else>
         <price-display :price="getPvpInfo(prices)" :isAuth="isAuth" />
         <price-display
-          v-if="isAuth"
+          v-if="this.show_full_prices"
           :price="getPvpTransferInfo(prices)"
           :isAuth="isAuth"
         />
@@ -27,9 +27,7 @@
         </span>
         hasta 18 cuotas de $
         {{ (prices.pvp_18_installments / 18) | currencyPVP }}
-      </div>
-
-      
+      </div>   
     </div>
     <br />
     <div class="mt-4">
@@ -52,7 +50,12 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    }
+    },
+    show_full_prices: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
   },
 
   components: {

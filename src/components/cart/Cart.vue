@@ -232,20 +232,29 @@
                 ></v-radio>
               </v-radio-group>
               <div v-if="radioGroup == 0">
-                <div v-if="canBuyWarehouse == null" class="title">
+                <!-- <div v-if="canBuyWarehouse == null" class="title">
                   No disponible para este modelo.
-                </div>
-                <div v-else>
-                  Puedes retirar los productos en el siguiente almacen:
+                </div> -->
+                <div>
+                  Puedes retirar los productos en uno de los siguientes
+                  almacenes:
                   <br />
                   <div class="d-flex">
-                    <v-icon>mdi-warehouse</v-icon>
-                    <span
+                    <!-- <v-icon>mdi-warehouse</v-icon> -->
+                    <v-radio-group v-model="selectedWharehouse" mandatory>
+                      <v-radio
+                        v-for="n in availableWharehouses"
+                        :key="n.id"
+                        :label="`${depositElements[n.name]}`"
+                        :value="`${n.warehouse_id}`"
+                      ></v-radio>
+                    </v-radio-group>
+                    <!-- <span
                       v-if="canBuyWarehouse != null"
                       class="ml-1 font-weight-bold align-self-end"
                     >
                       {{ canBuyWarehouse.name }}
-                    </span>
+                    </span> -->
                   </div>
                 </div>
               </div>
@@ -306,13 +315,35 @@
                 </div>
               </div>
             </v-card-text>
+            <div
+              v-if="errorGetQuoute"
+              style="display: flex; justify-content: center"
+            >
+              <span style="color: red; font-weight: 700; padding: 0 35px"
+                >No hemos podido cotizar de forma automática el costo de envio,
+                por favor verifica que la dirección proporcionada es correcta y
+                si el problema persiste contactar a soporte.</span
+              >
+            </div>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn @click="HandlerClose" text black>Cancelar</v-btn>
+              <v-btn @click="HandlerClose" text black rounded>Cancelar</v-btn>
               <v-btn
                 rounded
                 :loading="loadingCheckout"
-                :disabled="disableCheckoutButton()"
+                :disabled="
+                  radioGroup == null || !statusQuote
+                    ? true
+                    : canBuyWarehouse == null && radioGroup == 0
+                    ? true
+                    : radioGroup == 0
+                    ? false
+                    : idAddress === null
+                    ? true
+                    : errorGetQuoute
+                    ? true
+                    : false
+                "
                 @click="HandlerConfirmItems()"
                 color="#14A7EB"
                 class="white--text"
@@ -348,6 +379,7 @@
               <v-spacer></v-spacer>
               <v-btn
                 text
+                rounded
                 class="text-capitalize"
                 @click="showAlertPerfil = !showAlertPerfil"
                 >Cancelar</v-btn
@@ -357,6 +389,7 @@
                 color="#00a0e9"
                 dark
                 class="text-capitalize"
+                rounded
               >
                 Ir
                 <span class="text-lowercase mx-1">al</span>
@@ -414,7 +447,11 @@ export default {
       loadingCheckout: false,
       showSelectDelivery: false,
       showAddressChange: false,
-      depositElements: ["CABA", "Rosario", "Córdoba Capital"],
+      depositElements: {
+        FWL01: "CABA",
+        ROS01: "Rosario",
+        CBA01: "Córdoba Capital"
+      },
       selectDeposit: "",
       dues: false,
       credit: false,
@@ -424,6 +461,8 @@ export default {
       radioGroupTransfer: null,
       payments_type: "",
       default_installments: "",
+      availableWharehouses: [],
+      selectedWharehouse: "",
 
       showModalTransfer: false,
 
@@ -472,22 +511,11 @@ export default {
   },
 
   methods: {
-    disableCheckoutButton() {
-      const condition1 = this.radioGroup == null || !this.statusQuote;
-      const condition2 = this.canBuyWarehouse == null && this.radioGroup == 0;
-      const condition3 = this.radioGroup == 0;
-      const condition4 = this.idAddress === null;
-
-      const disabled =
-        condition1 ||
-        condition2 ||
-        (!condition3 && (condition4 || this.errorGetQuoute));
-
-      return disabled;
-    },
 
     async HandlerShippingQuote() {
       try {
+        this.errorGetQuoute = false;
+        this.loadingCheckout = true;
         this.statusQuote = false;
 
         if (this.radioGroup == 0) {
@@ -506,10 +534,12 @@ export default {
         this.quote = response.data.data;
         this.total_order = this.totalAmount + this.quote;
       } catch (error) {
-        console.log(error);
-        this.errorGetQuoute = true;
+        if (this.userAddress.length > 0) {
+          this.errorGetQuoute = true;
+        }
       } finally {
         this.statusQuote = true;
+        this.loadingCheckout = false;
       }
     },
 
@@ -673,7 +703,7 @@ export default {
                 ? this.idAddress
                 : this.idAddress.id
               : "",
-          warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
+          warehouse_id: this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
           store_id: 3,
           payment_type: this.payments_type,
           default_installments: this.default_installments,
@@ -705,6 +735,7 @@ export default {
 
     async ValidateProductWarehouse() {
       try {
+        this.loadingCheckout = true;
         const publication_ids = this.originalItems.shopping_cart_items.map(
           item => {
             return [item.publication_id];
@@ -721,12 +752,20 @@ export default {
           request
         );
 
-        if (response.data.data.store_pickup == false)
-          this.alertNotificationBuy = true;
-        if (response.data.data.store_pickup == true)
-          this.canBuyWarehouse = response.data.data.warehouse;
+        this.availableWharehouses = response.data.data.same_warehouse_summary.filter(
+          w => w.count > 0
+        );
+
+        this.canBuyWarehouse = true;
+
+        //if (response.data.data.store_pickup == false)
+        //  this.alertNotificationBuy = true;
+        //if (response.data.data.store_pickup == true)
+        //  this.canBuyWarehouse = response.data.data.warehouse;
       } catch (error) {
         console.log(error);
+      } finally {
+        this.loadingCheckout = false;
       }
     },
 
@@ -760,6 +799,7 @@ export default {
     },
 
     canCheckout() {
+      this.errorGetQuoute = false;
       if (this.radioGroupDues === 0) {
         this.showSelectDelivery = true;
         this.payments_type = "installments";
@@ -796,7 +836,7 @@ export default {
           store_pickup: this.radioGroup == 0 ? true : false,
           shopping_cart_id: cart.id,
           addresse_id: id,
-          warehouse_id: this.radioGroup == 0 ? this.canBuyWarehouse.id : "",
+          warehouse_id: this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
           quote: this.quote
         };
 
