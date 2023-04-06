@@ -121,7 +121,7 @@
               <v-text-field
                 filled
                 rounded
-                v-model="authUserData.buyer.first_name"
+                v-model="inputName"
                 label="Nombre"
                 :error-messages="errors"
               ></v-text-field>
@@ -135,7 +135,7 @@
                 filled
                 rounded
                 label="Email"
-                v-model="authUserData.buyer.email"
+                v-model="inputEmail"
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
@@ -148,7 +148,7 @@
                 filled
                 rounded
                 label="Teléfono"
-                v-model="authUserData.buyer.phone"
+                v-model="inputPhone"
                 :error-messages="errors"
               ></v-text-field>
             </ValidationProvider>
@@ -225,6 +225,47 @@ export default {
     authUserData() {
       return this.$store.getters["auth/GET_PROFILE"];
     },
+
+    inputName: {
+      get() {
+        return this.isAuth
+          ? this.authUserData.buyer.first_name
+          : this.customName;
+      },
+      set(value) {
+        if (this.isAuth) {
+          this.authUserData.buyer.first_name = value;
+        } else {
+          this.customName = value;
+        }
+      }
+    },
+
+    inputEmail: {
+      get() {
+        return this.isAuth ? this.authUserData.buyer.email : this.customEmail;
+      },
+      set(value) {
+        if (this.isAuth) {
+          this.authUserData.buyer.email = value;
+        } else {
+          this.customEmail = value;
+        }
+      }
+    },
+
+    inputPhone: {
+      get() {
+        return this.isAuth ? this.authUserData.buyer.phone : this.customPhone;
+      },
+      set(value) {
+        if (this.isAuth) {
+          this.authUserData.buyer.phone = value;
+        } else {
+          this.customPhone = value;
+        }
+      }
+    }
   },
 
   methods: {
