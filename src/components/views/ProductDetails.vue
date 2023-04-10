@@ -79,10 +79,10 @@
               </div>
             </div>
             <div class="mt-auto">
-              <price-details 
-                :prices="dataProduct.price" 
+              <price-details
+                :prices="dataProduct.price"
                 :isAuth="isAuth"
-                :show_full_prices = "dataProduct.store.display_full_prices"
+                :show_full_prices="dataProduct.store.display_full_prices"
               />
               <div class="details-box">
                 <availability-list :dataProduct="dataProduct" />
@@ -114,11 +114,7 @@
               </div> -->
 
               <div
-                v-if="
-                  validateStock() &&
-                    validateUmbral() &&
-                    dataProduct.out_stock == false
-                "
+                v-if="validateStock()"
                 class="d-flex align-center justify-start py-1"
               >
                 <span class="mx-0 text-uppercase" style="font-weight: 500">
@@ -154,11 +150,7 @@
               <div
                 class="d-md-flex justify-space-between mt-5"
                 style="width: 80%"
-                v-if="
-                  validateStock() &&
-                    validateUmbral() &&
-                    dataProduct.out_stock == false
-                "
+                v-if="validateStock()"
               >
                 <v-btn
                   style="border-width: medium"
@@ -282,7 +274,7 @@ import moment from "moment";
 import SuscribeComponent from "@/components/Utils/suscribe_component";
 import informationCP from "@/components/Utils/informationCP";
 import ImageBackground from "./utils/ImageBackground";
-import ProductDetailsPrices from "./utils/products/ProductDetailsPrices"
+import ProductDetailsPrices from "./utils/products/ProductDetailsPrices";
 import { isValidUmbral } from "@/utils/validateUmbral.js";
 import AvailabilityList from "./utils/products/AvailabilityList.vue";
 
@@ -323,7 +315,7 @@ export default {
       showModalReserve: false,
       email: "",
       name: "",
-      phone: "",
+      phone: ""
     };
   },
 
@@ -359,7 +351,7 @@ export default {
 
     breakpoint() {
       return this.$vuetify.breakpoint.name;
-    },
+    }
   },
 
   filters: {
@@ -369,7 +361,7 @@ export default {
           // currency: "ARS",
           // style: "currency",
           maximumFractionDigits: 0,
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 0
         }).format(value);
         return AMOUNT_FORMAT;
       } else {
@@ -388,13 +380,13 @@ export default {
           // currency: "USD",
           // style: "currency",
           maximumFractionDigits: 2,
-          minimumFractionDigits: 2,
+          minimumFractionDigits: 2
         }).format(value);
         return AMOUNT_FORMAT;
       } else {
         return " ";
       }
-    },
+    }
   },
 
   methods: {
@@ -426,7 +418,7 @@ export default {
           keywords:
             this.$route.query.product == undefined
               ? ""
-              : this.$route.query.product,
+              : this.$route.query.product
         };
 
         const response = await this.$store.dispatch(
@@ -458,7 +450,7 @@ export default {
           keywords:
             this.$route.query.product == undefined
               ? ""
-              : this.$route.query.product,
+              : this.$route.query.product
         };
 
         const response = await this.$store.dispatch(
@@ -510,7 +502,7 @@ export default {
           publication_id: item.id,
           page: 1,
           per_page: 1,
-          paginate: false,
+          paginate: false
         };
 
         const response = await this.$store.dispatch(
@@ -554,7 +546,7 @@ export default {
           const cart = this.productCartState;
 
           const existingProduct = cart.shopping_cart_items.find(
-            (p) => this.dataProduct.id === p.publication_id
+            p => this.dataProduct.id === p.publication_id
           );
 
           if (existingProduct) {
@@ -562,36 +554,36 @@ export default {
               existingProduct.original_quantity + this.quantity;
 
             const indexUpdate = cart.shopping_cart_items.findIndex(
-              (p) => this.dataProduct.id === p.publication_id
+              p => this.dataProduct.id === p.publication_id
             );
 
             cart.shopping_cart_items[indexUpdate] = { ...existingProduct };
 
-            const request = cart.shopping_cart_items.map((prod) => {
+            const request = cart.shopping_cart_items.map(prod => {
               return {
                 publication_id: prod.publication_id,
-                quantity: prod.original_quantity,
+                quantity: prod.original_quantity
               };
             });
             await this.$store.dispatch("cart/CREATE_CART", {
-              items: [...request],
+              items: [...request]
             });
           } else {
-            const oldItem = cart.shopping_cart_items.map((prod) => {
+            const oldItem = cart.shopping_cart_items.map(prod => {
               return {
                 publication_id: prod.publication_id,
-                quantity: prod.original_quantity,
+                quantity: prod.original_quantity
               };
             });
             const newitem = [
               ...oldItem,
               {
                 publication_id: this.dataProduct.id,
-                quantity: this.quantity,
-              },
+                quantity: this.quantity
+              }
             ];
 
-            const itemFilter = newitem.filter((value) => {
+            const itemFilter = newitem.filter(value => {
               if (value.publication_id != undefined) {
                 return value;
               }
@@ -599,11 +591,11 @@ export default {
 
             this.$store.commit("cart/ADD_ITEM", {
               ...this.dataProduct,
-              original_quantity: this.quantity,
+              original_quantity: this.quantity
             });
 
             await this.$store.dispatch("cart/CREATE_CART", {
-              items: [...itemFilter],
+              items: [...itemFilter]
             });
 
             await this.$store.dispatch("cart/GET_CURRENT_CART");
@@ -628,7 +620,7 @@ export default {
           return;
         }
         const request = {
-          update_items: true,
+          update_items: true
         };
 
         const response = await this.$store.dispatch(
@@ -638,14 +630,13 @@ export default {
 
         const productId = this.dataProduct.product_id;
         // AGREGAR PRODUCTO AL CARRITO E IR A COMPRAR
-        const searchProduct =
-          response.data.data.shopping_cart.shopping_cart_items.find(
-            (product) => {
-              if (product.publication.product_id == productId) {
-                return product;
-              }
+        const searchProduct = response.data.data.shopping_cart.shopping_cart_items.find(
+          product => {
+            if (product.publication.product_id == productId) {
+              return product;
             }
-          );
+          }
+        );
         // MANDAR AL CHECKOUT PARA PAGAR
         if (searchProduct != undefined) {
           this.$router.push({ name: "cart" });
@@ -673,23 +664,11 @@ export default {
     },
 
     validateStock() {
-      if (
-        this.dataProduct.product != null &&
-        this.dataProduct.product.product_warehouse != null
-      ) {
-        const stock = this.dataProduct.product.product_warehouse.filter(
-          (st) => {
-            if (st.current_stock > 0) {
-              return st;
-            }
-          }
-        );
-
-        if (stock.length > 0) return true;
-        else return false;
-      } else {
-        return false;
-      }
+      return (
+        this.dataProduct.product.product_warehouse.some(
+          ele => ele.current_stock !== 0
+        ) && !this.dataProduct.store.out_stock
+      );
     },
 
     validateUmbral() {
@@ -715,7 +694,7 @@ export default {
           publication_id: this.dataProduct.id,
           email: this.authUser.buyer.email,
           name: this.authUser.buyer.first_name,
-          phone: this.authUser.buyer.phone,
+          phone: this.authUser.buyer.phone
         };
 
         await this.$store.dispatch(
@@ -784,7 +763,9 @@ export default {
            */
           // console.log('segundo', date)
 
-          const add30Min = moment(time).add(30, "m").format("HH:mm");
+          const add30Min = moment(time)
+            .add(30, "m")
+            .format("HH:mm");
           return `${add30Min} ${moment(dateParse).format("YYYY/MM/DD")}`;
         } else {
           const currentDay = moment(dateParse).format("YYYY/MM/DD");
@@ -809,8 +790,8 @@ export default {
 
     closeImageBackground() {
       this.showImageBackground = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

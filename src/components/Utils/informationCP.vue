@@ -1,16 +1,13 @@
 <template>
   <div>
-    <div
-      v-if="isAuth && inStock()"
-      class="mb-0"
-    >
+    <div v-if="isAuth && inStock()" class="mb-0">
       <div>
         <p
           class="mb-0 text-uppercase"
           style="color: #3f3c35; font-size: 1.2em; cursor: pointer"
           v-if="
             dataProduct.product != null &&
-            dataProduct.product.product_warehouse.length > 0
+              dataProduct.product.product_warehouse.length > 0
           "
           @click="
             ModalProductUser(
@@ -23,7 +20,7 @@
             v-if="
               HandlerReturnWarehouse(
                 authUser.zipcode,
-                dataProduct.product.product_warehouse,
+                dataProduct.product.product_warehouse
               ) != 'AVISAME'
             "
           >
@@ -77,7 +74,7 @@
         </span>
         <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
       </p>
-    </div> 
+    </div>
 
     <div class="mb-5" v-else-if="!isAuth">
       <v-btn
@@ -180,13 +177,13 @@ export default {
     dataProduct: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => {}
     },
     authUser: {
       type: Object,
       required: true,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
 
   data() {
@@ -282,7 +279,7 @@ export default {
 
     getDepostCentral(warehouse, cp, cenId) {
       const getWarehouseFwl01 = warehouse.find(
-        (value) => value.warehouse_id == cenId
+        value => value.warehouse_id == cenId
       );
       if (getWarehouseFwl01?.current_stock > 0) {
         if (cp >= 1000 && cp < 1441) {
@@ -379,7 +376,7 @@ export default {
           publication_id: this.dataProduct.id,
           email: this.authUserData.buyer.email,
           name: this.authUserData.buyer.first_name,
-          phone: this.authUserData.buyer.phone,
+          phone: this.authUserData.buyer.phone
         };
 
         await this.$store.dispatch(
@@ -397,7 +394,10 @@ export default {
     },
 
     getMonth() {
-      return moment().add(1, "month").locale("es").format("MMMM");
+      return moment()
+        .add(1, "month")
+        .locale("es")
+        .format("MMMM");
       // const currentDay = moment().format("DD");
       // const currentMonth = moment().format("MM") - 1;
       // if (currentDay < 15) {
@@ -424,7 +424,7 @@ export default {
       ).toString();
       this.$router.push({
         name: "product_details",
-        query: { data: encryptedID },
+        query: { data: encryptedID }
       });
     },
 
@@ -442,9 +442,8 @@ export default {
         ) && !this.dataProduct.store.out_stock
       );
     }
-  },
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>
