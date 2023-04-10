@@ -153,130 +153,14 @@
       <v-responsive>
         <!-- <img src='../../../public/favicon-32x32.png' /> -->
         <v-sheet color="#EBF1F7" class="mt-15">
-          <div class="d-flex justify-center pt-15">
-            <span class="text-uppercase text-center mb-0 featured-title-home">
-              Modelos Destacados
-            </span>
-          </div>
-          <div class="d-flex justify-center mt-0">
-            <span
-              class="text-uppercase text-center mt-n1 featured-subtitle-home"
-            >
-              Nuestros recomendados para vos
-            </span>
-          </div>
           <v-container :fluid="breakpoint > 900">
             <v-row justify="center">
               <v-col
-                cols="11"
-                :sm="breakpoint < 795 ? '12' : '10'"
-                :md="breakpoint < 1200 ? '9' : '12'"
-                :lg="breakpoint <= 1400 ? '11' : '10'"
-                xl="8"
+                cols="12"
+                md="12"
+                class="d-flex justify-center "
+                style="padding: 60px 0"
               >
-                <carousel
-                  :navigationEnabled="true"
-                  :navigation-next-label="nextLabel"
-                  :navigation-prev-label="prevLabel"
-                  :perPage="
-                    breakpoint < 650
-                      ? 1
-                      : breakpoint > 650 && breakpoint <= 1000
-                      ? 2
-                      : 3
-                  "
-                  :paginationEnabled="
-                    $vuetify.breakpoint.name == 'xs' ? false : true
-                  "
-                  paginationColor="#14A7EB"
-                  class="mt-10"
-                >
-                  <slide
-                    v-for="(item, index) in featuredProductsFirst"
-                    :key="index"
-                    class="d-flex justify-center"
-                  >
-                    <v-card
-                      :width="breakpoint < 1210 ? '18em' : '25em'"
-                      height="auto"
-                    >
-                      <v-hover v-slot="{ hover }">
-                        <v-img
-                          @click="HandlerProductDetails(item)"
-                          style="cursor: pointer"
-                          contain
-                          :class="
-                            hover ? 'animate__animated animate__pulse' : ''
-                          "
-                          class="mx-7 my-7"
-                          width="auto"
-                          height="300px"
-                          :src="
-                            item.images === null
-                              ? '../../assets/img/no_image.jpg'
-                              : item.images[0]
-                          "
-                        >
-                        </v-img>
-                      </v-hover>
-                      <v-card-text class="mx-3">
-                        <v-row style="height: auto">
-                          <v-col cols="12" class="mt-n5">
-                            <span
-                              @click="HandlerProductDetails(item)"
-                              class="
-                                black--text
-                                text-uppercase
-                                featured-title-product-home
-                              "
-                            >
-                              {{ item.keywords }}
-                            </span>
-                          </v-col>
-                          <v-col cols="12">
-                            <div class="mr-3 mt-n5" v-html="item.resume"></div>
-                          </v-col>
-                          <v-col cols="12" class="align-self-end">
-                            <span v-if="isAuth">
-                              <span
-                                v-if="
-                                  (getPvpTransferInfo(item).value > 0) &&
-                                  (getPvpInfo(item).value >=
-                                    getPvpTransferInfo(item).value)
-                                "
-                              >
-                                <featured-products-price
-                                  :price="getPvpTransferInfo(item)"
-                                />
-                              </span>
-                              <span v-else>
-                                <featured-products-price
-                                  :price="getPvpInfo(item)"
-                                />
-                              </span>
-                            </span>
-                            <span v-else>
-                              <featured-products-price
-                                :price="getPvpInfo(item)"
-                              />
-                            </span>
-                          </v-col>
-
-                          <v-col>
-                            <information-cp
-                              style="color: #0000"
-                              class="text-start"
-                              :dataProduct="item"
-                              :authUser="authUser"
-                            />
-                          </v-col>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-                  </slide>
-                </carousel>
-              </v-col>
-              <v-col cols="12" md="12" class="d-flex justify-center mb-15">
                 <v-btn
                   dark
                   @click="$router.push({ name: 'products' })"
@@ -347,10 +231,10 @@ export default {
     const remaze = window._support || { ui: {}, user: {} };
     remaze["account"] = "edifier";
     remaze["contact_custom_fields"] = remaze["contact_custom_fields"] || {};
-    
+
     remaze["contact_custom_fields"]["rmz_form_id_27495"] = {};
     this.$refs.remaze = remaze;
-    window.fbq("trackCustom", "HomeView")
+    window.fbq("trackCustom", "HomeView");
   },
 
   watch: {
