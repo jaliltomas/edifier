@@ -1,84 +1,8 @@
 <template>
   <div>
-    <div v-if="isAuth && inStock()" class="mb-0">
-      <div>
-        <p
-          class="mb-0 text-uppercase"
-          style="color: #3f3c35; font-size: 1.2em; cursor: pointer"
-          v-if="
-            dataProduct.product != null &&
-              dataProduct.product.product_warehouse.length > 0
-          "
-          @click="
-            ModalProductUser(
-              authUser.zipcode,
-              dataProduct.product.product_warehouse
-            )
-          "
-        >
-          <span
-            v-if="
-              HandlerReturnWarehouse(
-                authUser.zipcode,
-                dataProduct.product.product_warehouse
-              ) != 'AVISAME'
-            "
-          >
-            <v-btn
-              v-if="$route.name != 'product_details' && $route.name != 'cart'"
-              @click="HandlerShowProduct(dataProduct)"
-              rounded
-              outlined
-              color="#00A0E9"
-              class="mt-3"
-            >
-              Comprar
-            </v-btn>
-          </span>
-          <span v-else>
-            <v-btn
-              @click="HandlerModalAvisame()"
-              outlined
-              rounded
-              color="#15A7EB"
-            >
-              AVISAME
-            </v-btn>
-          </span>
-        </p>
-      </div>
-    </div>
-
-    <div v-else-if="isAuth && !inStock()">
+    <div class="mb-5">
       <v-btn
-        v-if="dataProduct.user_product_notification == null"
-        @click="HandlerModalAvisame()"
-        class="mt-0"
-        rounded
-        outlined
-        color="#00A0E9"
-      >
-        AVISAME
-      </v-btn>
-      <p
-        class="mb-0 text-uppercase"
-        style="font-size: 1.2em"
-        v-else-if="dataProduct.user_product_notification != null"
-      >
-        <span
-          class="black--text d-flex justify-center mt-n1 mb-6"
-          style="cursor: default"
-          v-if="$route.name == 'products'"
-        >
-          LO ELEGISTE
-        </span>
-        <span style="color: #00a0e9"> TE AVISAMOS CUANDO ESTÉ </span>
-      </p>
-    </div>
-
-    <div class="mb-5" v-else-if="!isAuth">
-      <v-btn
-        v-if="!inStock()"
+        v-if="!inStock() || !validateUmbral()"
         @click="showModalReserve = true"
         class="mt-0 white--text"
         rounded

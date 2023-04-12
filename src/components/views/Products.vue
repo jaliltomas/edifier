@@ -48,24 +48,24 @@
         </v-container> -->
       </v-img>
       <v-col v-if="!isAuth" cols="12" md="9" class="banner-box">
-      <div class="banner-container">
-        <div class="banner-text">
-          Regístrate para acceder a beneficios y promociones
+        <div class="banner-container">
+          <div class="banner-text">
+            Regístrate para acceder a beneficios y promociones
+          </div>
+          <div class="banner-btn">
+            <v-btn
+              block
+              color="black"
+              class="white--text "
+              rounded
+              style="height: 28px; text-transform: none;"
+              @click="HandlerRouter('login', { propsShow: false })"
+            >
+              Regístrate aquí
+            </v-btn>
+          </div>
         </div>
-        <div class="banner-btn">
-          <v-btn
-            block
-            color="black"
-            class="white--text "
-            rounded
-            style="height: 28px; text-transform: none;"
-            @click="HandlerRouter('login', { propsShow: false })"
-          >
-            Regístrate aquí
-          </v-btn>
-        </div>
-      </div>
-    </v-col>
+      </v-col>
     </v-sheet>
 
     <v-sheet color="#F1F1F1">
@@ -210,14 +210,14 @@
                       </p>
 
                       <div class="mt-5">
-                        <price-component 
+                        <price-component
                           v-if="item.store.display_full_prices"
-                          :price="getPvpTransferInfo(item)" 
+                          :price="getPvpTransferInfo(item)"
                           :dataProduct="item"
                           :isAuth="isAuth"
                         />
-                        <price-component 
-                          :price="getPvpInfo(item)" 
+                        <price-component
+                          :price="getPvpInfo(item)"
                           :dataProduct="item"
                         />
                         <availability-list :dataProduct="item" />
@@ -735,7 +735,7 @@ export default {
   padding: 0px 30px !important;
 }
 .banner-container {
-  background-color: rgb(0, 160, 233);;
+  background-color: rgb(0, 160, 233);
   border-radius: 50px;
   display: flex;
   flex-direction: row;

@@ -1,6 +1,9 @@
 <template>
   <div>
-    <p class="text-center" v-if="price != null && inStock()">
+    <p
+      class="text-center"
+      v-if="price != null && inStock() && validateUmbral()"
+    >
       <span v-if="price.discount === 0" class="product-price">
         {{ price.paymentType }}: ${{ price.value_no_discount | currencyPVP }}
       </span>
@@ -23,10 +26,10 @@
         </v-row>
       </span>
     </p>
-    <div style="display:flex; justify-content:center; margin-top:4px;">
+    <div style="display:flex; justify-content:center; margin-top:4px;" v-else>
       <p
         class="non-stock text-center"
-        v-if="inStock() != true && price.paymentType != 'Transferencia'"
+        v-if="price.paymentType != 'Transferencia'"
       >
         <strong
           >Sin stock, <br />
@@ -38,6 +41,7 @@
 </template>
 
 <script>
+import { isValidUmbral } from "@/utils/validateUmbral.js";
 export default {
   props: {
     price: {
@@ -77,13 +81,18 @@ export default {
       return this.dataProduct.product.product_warehouse.some(
         ele => ele.current_stock !== 0
       );
+    },
+
+    validateUmbral() {
+      const dataProductValue = { ...this.dataProduct };
+      const paylod = { dataProduct: dataProductValue };
+      return isValidUmbral(paylod) > 0 ? true : false;
     }
   },
 
   data() {
     return {};
   }
-  
 };
 </script>
 

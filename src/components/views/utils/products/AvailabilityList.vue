@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { isValidUmbral } from "@/utils/validateUmbral.js";
 export default {
   props: {
     dataProduct: {
@@ -42,7 +43,7 @@ export default {
       const available = this.dataProduct.product.product_warehouse.some(
         ele => ele.current_stock !== 0
       );
-      if (available) {
+      if (available && this.validateUmbral()) {
         return "Disponible";
       } else {
         return "No Disponible";
@@ -52,7 +53,7 @@ export default {
       const stock = this.dataProduct.product.product_warehouse.filter(
         ele => ele.warehouse_id === 5
       )[0].current_stock;
-      if (stock > 0) {
+      if (stock > 0 && this.validateUmbral()) {
         return "Disponible";
       } else {
         return "No Disponible";
@@ -62,7 +63,7 @@ export default {
       const stock = this.dataProduct.product.product_warehouse.filter(
         ele => ele.warehouse_id === 10
       )[0].current_stock;
-      if (stock > 0) {
+      if (stock > 0 && this.validateUmbral()) {
         return "Disponible";
       } else {
         return "No Disponible";
@@ -72,11 +73,17 @@ export default {
       const stock = this.dataProduct.product.product_warehouse.filter(
         ele => ele.warehouse_id === 3
       )[0].current_stock;
-      if (stock > 0) {
+      if (stock > 0 && this.validateUmbral()) {
         return "Disponible";
       } else {
         return "No Disponible";
       }
+    },
+    validateUmbral() {
+      const dataProductValue = { ...this.dataProduct };
+      const paylod = { dataProduct: dataProductValue };
+
+      return isValidUmbral(paylod) > 0 ? true : false;
     }
   }
 };
