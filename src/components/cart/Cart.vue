@@ -489,6 +489,7 @@ export default {
 
   watch: {
     radioGroup(val) {
+      console.log(val);
       if (val == 0) {
         this.getUserAddressPriority();
         this.ValidateProductWarehouse();
@@ -511,7 +512,6 @@ export default {
   },
 
   methods: {
-
     async HandlerShippingQuote() {
       try {
         this.errorGetQuoute = false;
@@ -703,11 +703,12 @@ export default {
                 ? this.idAddress
                 : this.idAddress.id
               : "",
-          warehouse_id: this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
+          warehouse_id:
+            this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
           store_id: 3,
           payment_type: this.payments_type,
           default_installments: this.default_installments,
-          quote: this.quote,
+          quote: this.radioGroup == 0 ? 0 : this.quote
         };
 
         const response = await this.$store.dispatch(
@@ -836,8 +837,9 @@ export default {
           store_pickup: this.radioGroup == 0 ? true : false,
           shopping_cart_id: cart.id,
           addresse_id: id,
-          warehouse_id: this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
-          quote: this.quote
+          warehouse_id:
+            this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
+          quote: this.radioGroup == 0 ? 0 : this.quote
         };
 
         const response = await this.$store.dispatch(
