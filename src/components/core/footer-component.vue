@@ -212,7 +212,7 @@ export default {
         { name: "." },
         { name: "." },
         { name: "." },
-        { name: "." },
+        { name: "." }
       ],
       company: [
         { name: "Nosotros" },
@@ -222,8 +222,8 @@ export default {
         { name: "." },
         { name: "." },
         { name: "." },
-        { name: "." },
-      ],
+        { name: "." }
+      ]
     };
   },
   created() {
@@ -247,7 +247,7 @@ export default {
           page: 1,
           per_page: 10,
           paginate: true,
-          everything: false,
+          everything: false
         };
         const response = await this.$store.dispatch(
           "products/GET_CATEGORIES",
@@ -262,7 +262,7 @@ export default {
       const category_id = JSON.parse(item.id);
       this.$router
         .push({ name: "products", query: { data: category_id } })
-        .catch((err) => err);
+        .catch(err => err);
     },
     goSection(item) {
       switch (item.name) {
@@ -270,7 +270,7 @@ export default {
           this.$router.push({ name: "app_dowload" });
           break;
         case "Soporte técnico":
-          window.open("http://www.edifierla.com/hola/");
+          window.open("https://soportecliente.com/");
           break;
         default:
           break;
@@ -288,10 +288,9 @@ export default {
         default:
           break;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

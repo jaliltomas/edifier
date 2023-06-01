@@ -3,7 +3,7 @@
     <span v-if="price.discount === 0">
       <span
         :style="
-          price.paymentType == 'con Débito / Crédito'
+          price.paymentType == 'con Débito / Crédito 1 Cuota'
             ? 'color: #5d7286'
             : 'color: #01d879'
         "
@@ -28,7 +28,7 @@
         <v-col>
           <span
             :style="
-              price.paymentType == 'con Débito / Crédito'
+              price.paymentType == 'con Débito / Crédito 1 Cuota'
                 ? 'color: #5d7286'
                 : 'color: #01d879'
             "

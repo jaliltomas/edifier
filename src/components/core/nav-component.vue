@@ -10,7 +10,7 @@
         <v-avatar
           size="120"
           tile
-          @click="$router.push({ name: 'home' }).catch((err) => err)"
+          @click="$router.push({ name: 'home' }).catch(err => err)"
         >
           <v-img
             class="cursor-pointer"
@@ -142,7 +142,7 @@
           <v-card
             v-if="
               productCartState.shopping_cart_items != null &&
-              productCartState.shopping_cart_items.length > 0
+                productCartState.shopping_cart_items.length > 0
             "
           >
             <div
@@ -254,9 +254,9 @@
               <div
                 v-if="
                   category.name != 'Línea S' &&
-                  category.name != 'Gaming' &&
-                  category.name != 'Todo' &&
-                  category.name != 'Portátiles'
+                    category.name != 'Gaming' &&
+                    category.name != 'Todo' &&
+                    category.name != 'Portátiles'
                 "
               >
                 <div
@@ -341,7 +341,7 @@ export default {
       hints: true,
 
       //Categories
-      categories: [],
+      categories: []
     };
   },
 
@@ -352,7 +352,7 @@ export default {
   watch: {
     isMobile(val) {
       if (!val) this.drawer = false;
-    },
+    }
   },
 
   computed: {
@@ -379,20 +379,20 @@ export default {
             text: "Productos",
             func: false,
             href: "products",
-            vlue: "products",
+            vlue: "products"
           },
           {
             text: "Carrito",
             func: false,
             href: "cart",
-            value: "cart",
+            value: "cart"
           },
           {
             text: "Favoritos",
             func: false,
             href: "product_favorite",
-            value: "product_favorite",
-          },
+            value: "product_favorite"
+          }
         ];
       } else {
         items = [
@@ -401,8 +401,8 @@ export default {
             text: "Productos",
             func: false,
             href: "products",
-            value: "products",
-          },
+            value: "products"
+          }
         ];
       }
       return items;
@@ -415,31 +415,31 @@ export default {
     products() {
       const cart = this.$store.getters["cart/CART_PRODUCTS"];
       return cart.length == 0 ? [] : cart.shopping_cart_items;
-    },
+    }
   },
 
   methods: {
     HandlerRouter(router) {
       if (router == "cart") {
         if (this.isAuth) {
-          this.$router.push({ name: router }).catch((err) => {});
+          this.$router.push({ name: router }).catch(err => {});
         } else {
-          this.$router.push({ name: "login" }).catch((err) => {});
+          this.$router.push({ name: "login" }).catch(err => {});
         }
       } else {
-        this.$router.push({ name: router }).catch((err) => {});
+        this.$router.push({ name: router }).catch(err => {});
       }
     },
 
     HandlerRoute(route, value) {
-      this.$router.push({ name: route }).catch((err) => {});
+      this.$router.push({ name: route }).catch(err => {});
     },
 
     async HandlerLogout() {
       try {
         this.$store.commit("auth/CLEAR_DATA_LOGOUT");
         this.$store.commit("cart/CLEAN_CART");
-        this.$router.push({ name: "home" }).catch((err) => err);
+        this.$router.push({ name: "home" }).catch(err => err);
       } catch (error) {
         console.log(error);
       }
@@ -452,7 +452,7 @@ export default {
           page: 1,
           per_page: 10,
           paginate: true,
-          everything: false,
+          everything: false
         };
         const response = await this.$store.dispatch(
           "products/GET_CATEGORIES",
@@ -469,15 +469,15 @@ export default {
         const category_id = JSON.parse(item.id);
         this.$router
           .push({ name: "products", query: { data: category_id } })
-          .catch((err) => err);
+          .catch(err => err);
       } else {
         const sub_category_id = JSON.parse(item.id);
         this.$router
           .push({
             name: "products",
-            query: { sub_data: sub_category_id },
+            query: { sub_data: sub_category_id }
           })
-          .catch((err) => err);
+          .catch(err => err);
       }
       this.megaMenu = false;
     },
@@ -487,16 +487,15 @@ export default {
     },
 
     goTo() {
-      window.open("http://www.edifierla.com/hola/");
+      window.open("https://soportecliente.com/");
     },
 
     goToContact() {
       const url = process.env.VUE_APP_CHECKOUT;
       location.href = `${url}/contact`;
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

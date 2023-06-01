@@ -27,7 +27,7 @@
         </span>
         hasta 18 cuotas de $
         {{ (prices.pvp_18_installments / 18) | currencyPVP }}
-      </div>   
+      </div>
     </div>
     <br />
     <div class="mt-4">
@@ -55,7 +55,7 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    },
+    }
   },
 
   components: {
@@ -65,7 +65,7 @@ export default {
   methods: {
     getPvpInfo(prices) {
       return {
-        paymentType: "con Débito / Crédito",
+        paymentType: "con Débito / Crédito 1 Cuota",
         value: prices.pvp,
         discount: Math.round(prices.discount),
         value_no_discount: prices.pvp_no_discount

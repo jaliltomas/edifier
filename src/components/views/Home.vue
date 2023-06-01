@@ -51,17 +51,6 @@
                 </div>
               </v-col>
               <v-col cols="12" md="12">
-                <v-btn
-                  :small="$vuetify.breakpoint.smAndDown ? true : false"
-                  color="#00A0E9"
-                  rounded
-                  @click="HandlerLocationCarrusel(item)"
-                  class="elevation-0 button-carrusel"
-                >
-                  conocelo en detalle
-                </v-btn>
-              </v-col>
-              <v-col cols="12" md="12">
                 <div class="d-flex mt-4">
                   <v-btn color="#495358" fab x-small>
                     <v-icon> mdi-share-variant </v-icon>
