@@ -41,6 +41,10 @@ const mutations = {
 };
 
 const actions = {
+  async SEND_RETURN_FORM({ commit }, paylaod) {
+    const response = await store.post("/api/store/regret-form", paylaod);
+    return response;
+  },
   async GET_PRODUCTS({ commit }, payload) {
     try {
       const response = await store.get(
