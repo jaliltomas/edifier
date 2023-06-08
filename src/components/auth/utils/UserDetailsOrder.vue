@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card tile flat>
-     <v-sheet color="#EBF1F7">
+      <v-sheet color="#EBF1F7">
         <div class="py-3"></div>
         <v-container>
           <v-row>
@@ -26,7 +26,11 @@
               </div>
               <div class="ml-5 mt-1">
                 <span class="font-title">Monto de envio:</span>
-                {{ orderData.total_amount_with_shipping - orderData.total_amount  | currencyTotal }}
+                {{
+                  (orderData.total_amount_with_shipping -
+                    orderData.total_amount)
+                    | currencyTotal
+                }}
               </div>
               <div class="ml-5 mt-1">
                 <span class="font-title">Monto total a transferir:</span>
@@ -352,7 +356,7 @@
                                 {{ orderData.shipping.meli_shippings_id }}
                               </span>
                             </template>
-                              <span>Copiar</span>
+                            <span>Copiar</span>
                           </v-tooltip>
                         </span>
                         <span v-else>
@@ -363,10 +367,16 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 @click="
-                                  handlerCoy(orderData.shipping.tracking_number)
+                                  handlerCoy(
+                                    tracking_number ||
+                                      orderData.shipping.tracking_number
+                                  )
                                 "
                               >
-                                {{ orderData.shipping.tracking_number }}
+                                {{
+                                  tracking_number ||
+                                    orderData.shipping.tracking_number
+                                }}
                               </span>
                             </template>
                             <span>Copiar</span>
@@ -402,7 +412,7 @@
                           @click="goToChat('zippin')"
                         >
                           <v-icon class="cursor-pointer" color="#393939">
-                            mdi-forum
+                            mdi-truck
                           </v-icon>
                         </v-avatar>
                         <v-avatar
@@ -494,8 +504,8 @@ export default {
     dataOrder: {
       type: Object,
       required: true,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
 
   data() {
@@ -509,12 +519,14 @@ export default {
       message: "",
       loadingUpload: false,
       dowloadTransfer: false,
+      tracking_number: "",
+      zippin_url: "",
 
       //Data
       orderData: {},
       canUploadFile: true,
       uploadTransfer: false,
-      colorStatus: "#2DA7E3",
+      colorStatus: "#2DA7E3"
     };
   },
 
@@ -525,21 +537,23 @@ export default {
 
   filters: {
     today(val) {
-      return moment(val).locale("es").format("DD/MM/YYYY");
+      return moment(val)
+        .locale("es")
+        .format("DD/MM/YYYY");
     },
 
     currencyTotal(value) {
       return new Intl.NumberFormat("es-AR", {
         currency: "ARS",
-        style: "currency",
+        style: "currency"
       }).format(value);
-    },
+    }
   },
 
   computed: {
     authUser() {
       return this.$store.getters["auth/GET_PROFILE"];
-    },
+    }
   },
 
   methods: {
@@ -558,13 +572,31 @@ export default {
     async HandlerGetData() {
       try {
         const request = {
-          id: this.dataOrder.id,
+          id: this.dataOrder.id
         };
         const response = await this.$store.dispatch(
           "products/ODERS_DETAILS",
           request
         );
         this.orderData = { ...response.data.data };
+
+        if (this.orderData.shipping.shipping_type == "zippin") {
+          const r = await fetch(
+            `https://api.zippin.com.ar/v2/shipments/${this.orderData.shipping.tracking_number}`,
+            {
+              headers: {
+                Authorization:
+                  "Basic " +
+                  Buffer.from(
+                    "jorge.petrich@grupoikono.com" + ":" + "zippin2020"
+                  ).toString("base64")
+              }
+            }
+          );
+          const tranckingNumberData = await r.json();
+          this.tracking_number = tranckingNumberData.carrier_tracking_id;
+          this.zippin_url = tranckingNumberData.tracking;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -573,10 +605,10 @@ export default {
     handlerCoy(item) {
       let that = this;
       navigator.clipboard.writeText(item).then(
-        function () {
+        function() {
           console.log("copye element");
         },
-        function (err) {
+        function(err) {
           console.error("Async: Could not copy text: ", err);
         }
       );
@@ -584,7 +616,7 @@ export default {
 
     getTotal(price) {
       const payment = this.orderData?.payment;
-      const typePayment = payment.map((pay) => {
+      const typePayment = payment.map(pay => {
         if (pay.payment_type_id === "credit_card") return price.pvp;
         if (pay.payment_type_id === "bank_transfer") return price.pvp_transfer;
         return price.pvp_18_installments;
@@ -628,9 +660,7 @@ export default {
           window.open("https://edifier.reamaze.com/chat-with-us/25266");
           break;
         case "zippin":
-          window.open(
-            "https://www.correoargentino.com.ar/formularios/e-commerce"
-          );
+          window.open(this.zippin_url);
           break;
         case "chazki":
           window.open("https://chazki.com/argentina");
@@ -649,7 +679,7 @@ export default {
       const payment = this.orderData?.payment;
 
       const type_payment = payment.find(
-        (pay) => pay.payment_type_id == "bank_transfer"
+        pay => pay.payment_type_id == "bank_transfer"
       );
 
       if (
@@ -717,7 +747,7 @@ export default {
         const name_array = invoice_path.split("/");
         const name = name_array[1];
         const request = {
-          path: invoice_path,
+          path: invoice_path
         };
         const response = await this.$store.dispatch(
           "products/PRINT_LABEL",
@@ -734,8 +764,8 @@ export default {
       } finally {
         this.loadingPrintBill = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
