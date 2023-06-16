@@ -605,11 +605,18 @@ export default {
           this.$router.push({ name: "login" });
         }
       } catch (error) {
-        console.log(error);
-        this.$snotify.error(
-          "Ha ocurrido un error con agregando el producto",
-          "Error"
-        );
+        const errorMessage = error?.response?.data?.errors[0]?.message
+        if(errorMessage === "range validation failed on quantity"){
+          this.$snotify.error(
+            "No se puede agregar más unidades de este producto al carrito.",
+            "Error"
+          );
+        } else {
+          this.$snotify.error(
+            "Ha ocurrido un error agregando el producto.",
+            "Error"
+          );
+        }
       }
     },
 
