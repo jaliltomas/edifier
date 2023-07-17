@@ -136,8 +136,7 @@
             elevation="0"
             dark
             color="#00A0E9"
-            width="250"
-            class="text-capitalize"
+            class="text-capitalize btn-update"
           >
             Actualizar
           </v-btn>
@@ -203,5 +202,13 @@ export default {
 <style>
 .theme--light.v-text-field > .v-input__control > .v-input__slot:before {
   border-color: #00a0e9 !important;
+}
+.btn-update{
+  width: 250px;
+}
+@media only screen and (max-width: 600px) {
+  .btn-update{
+    width: auto !important;
+  }
 }
 </style>

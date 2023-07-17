@@ -7,7 +7,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              sm="6"
               class="d-flex flex-column align-self-center"
             >
               <div
@@ -16,15 +16,15 @@
               >
                 DETALLE DE TU COMPRA
               </div>
-              <div class="ml-5 mb-1">
+              <div class="ml-md-5 mb-1">
                 <span class="font-title">Factura:</span>
                 {{ orderData.meli_id }}
               </div>
-              <div class="ml-5">
+              <div class="ml-md-5">
                 <span class="font-title">Comprado el:</span>
                 {{ orderData.created_at | today }}
               </div>
-              <div class="ml-5 mt-1">
+              <div class="ml-md-5 mt-1">
                 <span class="font-title">Monto de envio:</span>
                 {{
                   (orderData.total_amount_with_shipping -
@@ -32,14 +32,14 @@
                     | currencyTotal
                 }}
               </div>
-              <div class="ml-5 mt-1">
+              <div class="ml-md-5 mt-1">
                 <span class="font-title">Monto total a transferir:</span>
                 {{ orderData.total_amount_with_shipping | currencyTotal }}
               </div>
             </v-col>
             <v-col
               cols="12"
-              md="6"
+              sm="6"
               v-if="bankTransfer() && orderData.order_invoice.length == 0"
             >
               <div class="d-flex justify-end mr-md-5">
@@ -114,8 +114,8 @@
       </v-sheet>
       <v-sheet>
         <v-container>
-          <v-row class="mt-5 pl-md-5">
-            <v-col cols="12" sm="12" md="6">
+          <v-row class="pl-md-5">
+            <v-col cols="12" sm="6">
               <v-list-item three-line>
                 <v-list-item-content>
                   <v-list-item-title class="font-title"
@@ -142,7 +142,7 @@
                 </v-list-item-content>
               </v-list-item>
             </v-col>
-            <v-col cols="12" sm="12" md="6">
+            <v-col cols="12" sm="6">
               <v-list-item three-line>
                 <v-list-item-content v-if="orderData.address !== null">
                   <v-list-item-title class="font-title"
@@ -260,178 +260,145 @@
         <v-container>
           <v-divider></v-divider>
           <v-col cols="12" md="12">
-            <v-simple-table class="mt-5">
-              <template v-slot:default>
-                <thead style="background-color: #fafafa">
-                  <tr>
-                    <th
-                      style="font-size: 16px; font-weight: 800"
-                      class="text-start font-weight-bold black--text"
-                    >
-                      Producto
-                    </th>
-                    <th
-                      style="font-size: 16px; font-weight: 800"
-                      class="text-center font-weight-bold black--text"
-                    >
-                      Cantidad
-                    </th>
-                    <th
-                      style="font-size: 16px; font-weight: 800"
-                      class="text-center font-weight-bold black--text"
-                    >
-                      Precio
-                    </th>
-                    <th
-                      style="font-size: 16px; font-weight: 800"
-                      class="text-center font-weight-bold black--text"
-                    >
-                      Nº de Tracking
-                    </th>
-                    <th
-                      style="font-size: 16px; font-weight: 800"
-                      class="text-center font-weight-bold black--text"
-                    >
-                      Seguimiento
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(item, index) in orderData.order_item"
-                    :key="index"
+            <v-data-table
+              :headers="headers"
+              :items="orderData.order_item"
+              class="elevation-0"
+              :mobile-breakpoint="800"
+              width="100%"
+              hide-default-footer
+              disable-pagination
+              :page.sync="page"
+              @page-count="pageCount = $event"
+            >
+            <template v-slot:[`item.product`]="{ item }">
+                <div v-if="item.publication != null">
+                  <v-avatar tile v-if="item.publication.images == null">
+                    <img
+                      height="200"
+                      width="100%"
+                      contain
+                      src="@/assets/img/no_image.jpg"
+                      alt="noImage"
+                    />
+                  </v-avatar>
+                  <v-avatar tile v-else>
+                    <v-img
+                      contain
+                      :src="item.publication.images[0]"
+                      :lazy-src="item.publication.images[0]"
+                      alt="Product Image"
+                    ></v-img>
+                  </v-avatar>
+                  <span
+                    class="d-flex d-md-inline-flex ml-md-4 text-capitalize"
                   >
-                    <td v-if="item.publication != null">
-                      <v-avatar tile v-if="item.publication.images == null">
-                        <img
-                          height="200"
-                          width="100%"
-                          contain
-                          src="@/assets/img/no_image.jpg"
-                        />
-                      </v-avatar>
-                      <v-avatar tile v-else>
-                        <v-img
-                          contain
-                          :src="item.publication.images[0]"
-                          :lazy-src="item.publication.images[0]"
-                          alt="Product Image"
-                        ></v-img>
-                      </v-avatar>
-                      <span
-                        class="d-flex d-md-inline-flex ml-md-4 text-capitalize"
-                      >
-                        {{ item.publication.keywords }}
-                      </span>
-                    </td>
-                    <td v-if="item.publication != null">
-                      <span class="d-flex justify-center">
-                        {{ item.quantity }}
-                      </span>
-                    </td>
-                    <td v-if="item.publication != null">
-                      <span class="d-flex justify-center">
-                        <!-- {{ item.publication.price.pvp | currencyTotal }} -->
-                        {{ getTotal(item.publication.price) | currencyTotal }}
-                      </span>
-                    </td>
-                    <td>
-                      <span
-                        v-if="orderData.shipping != null"
-                        class="d-flex justify-center"
-                      >
-                        <span v-if="orderData.shipping.shipping_type == 'CABA'">
-                          <v-tooltip bottom>
-                            <template v-slot:activator="{ on, attrs }">
-                              <span
-                                style="cursor: pointer"
-                                v-bind="attrs"
-                                v-on="on"
-                                @click="
-                                  handlerCoy(
-                                    orderData.shipping.meli_shippings_id
-                                  )
-                                "
-                              >
-                                {{ orderData.shipping.meli_shippings_id }}
-                              </span>
-                            </template>
-                            <span>Copiar</span>
-                          </v-tooltip>
-                        </span>
-                        <span v-else>
-                          <v-tooltip bottom>
-                            <template v-slot:activator="{ on, attrs }">
-                              <span
-                                style="cursor: pointer"
-                                v-bind="attrs"
-                                v-on="on"
-                                @click="
-                                  handlerCoy(
-                                    tracking_number ||
-                                      orderData.shipping.tracking_number
-                                  )
-                                "
-                              >
-                                {{
-                                  tracking_number ||
-                                    orderData.shipping.tracking_number
-                                }}
-                              </span>
-                            </template>
-                            <span>Copiar</span>
-                          </v-tooltip>
-                        </span>
-                      </span>
-                      <span v-else class="d-flex justify-center"> ...... </span>
-                    </td>
-                    <td>
-                      <span
-                        class="d-flex justify-center"
-                        v-if="orderData.shipping != null"
-                      >
-                        <v-avatar
-                          size="30"
-                          tile
-                          v-if="orderData.shipping.shipping_type == 'CABA'"
-                        >
-                          <v-img
-                            contain
-                            class="black--text cursor-pointer"
-                            src="@/assets/img/checkout/chat.svg"
-                            @click="goToChat('CABA')"
-                          >
-                          </v-img>
-                        </v-avatar>
-                        <v-avatar
-                          size="30"
-                          tile
-                          v-else-if="
-                            orderData.shipping.shipping_type == 'zippin'
-                          "
-                          @click="goToChat('zippin')"
-                        >
-                          <v-icon class="cursor-pointer" color="#393939">
-                            mdi-truck
-                          </v-icon>
-                        </v-avatar>
-                        <v-avatar
-                          size="30"
-                          tile
-                          v-else
-                          @click="goToChat('chazki')"
-                        >
-                          <v-icon class="cursor-pointer" color="#393939">
-                            mdi-forum
-                          </v-icon>
-                        </v-avatar>
-                      </span>
-                      <span v-else class="d-flex justify-center"> ...... </span>
-                    </td>
-                  </tr>
-                </tbody>
+                    {{ item.publication.keywords }}
+                  </span>
+                </div>
               </template>
-            </v-simple-table>
+              <template v-slot:[`item.price`]="{ item }">
+                <div v-if="item.publication != null">
+                  <span class="d-flex justify-center">
+                    {{ getTotal(item.publication.price) | currencyTotal }}
+                  </span>
+                </div>
+              </template>
+              <template v-slot:[`item.tracking_number`]>
+                <span
+                  v-if="orderData.shipping != null"
+                  class="d-flex justify-center"
+                >
+                  <span v-if="orderData.shipping.shipping_type == 'CABA'">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <span
+                          style="cursor: pointer"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="
+                            handlerCoy(
+                              orderData.shipping.meli_shippings_id
+                            )
+                          "
+                        >
+                          {{ orderData.shipping.meli_shippings_id }}
+                        </span>
+                      </template>
+                      <span>Copiar</span>
+                    </v-tooltip>
+                  </span>
+                  <span v-else>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <span
+                          style="cursor: pointer"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="
+                            handlerCoy(
+                              tracking_number ||
+                                orderData.shipping.tracking_number
+                            )
+                          "
+                        >
+                          {{
+                            tracking_number ||
+                              orderData.shipping.tracking_number
+                          }}
+                        </span>
+                      </template>
+                      <span>Copiar</span>
+                    </v-tooltip>
+                  </span>
+                </span>
+                <span v-else class="d-flex justify-center"> ...... </span>
+
+              </template>
+              <template v-slot:[`item.tracking`]>
+                <span
+                  class="d-flex justify-center"
+                  v-if="orderData.shipping != null"
+                >
+                  <v-avatar
+                    size="30"
+                    tile
+                    v-if="orderData.shipping.shipping_type == 'CABA'"
+                  >
+                    <v-img
+                      contain
+                      class="black--text cursor-pointer"
+                      src="@/assets/img/checkout/chat.svg"
+                      @click="goToChat('CABA')"
+                    >
+                    </v-img>
+                  </v-avatar>
+                  <v-avatar
+                    size="30"
+                    tile
+                    v-else-if="
+                      orderData.shipping.shipping_type == 'zippin'
+                    "
+                    @click="goToChat('zippin')"
+                  >
+                    <v-icon class="cursor-pointer" color="#393939">
+                      mdi-truck
+                    </v-icon>
+                  </v-avatar>
+                  <v-avatar
+                    size="30"
+                    tile
+                    v-else
+                    @click="goToChat('chazki')"
+                  >
+                    <v-icon class="cursor-pointer" color="#393939">
+                      mdi-forum
+                    </v-icon>
+                  </v-avatar>
+                </span>
+                <span v-else class="d-flex justify-center"> ...... </span>
+              </template>
+            </v-data-table>
           </v-col>
         </v-container>
       </v-sheet>
@@ -525,8 +492,14 @@ export default {
       //Data
       orderData: {},
       canUploadFile: true,
-      uploadTransfer: false,
-      colorStatus: "#2DA7E3"
+      colorStatus: "#2DA7E3",
+      headers: [
+        { text: "Producto", value: "product", class:"header-table-style", sortable: false},
+        { text: "Cantidad", value: "quantity", class:"header-table-style",  sortable: false, align: "center"},
+        { text: "Precio", value: "price", class:"header-table-style",  sortable: false, align: "center"},
+        { text: "N° de Tracking", value: "tracking_number", class:"header-table-style",  sortable: false, align: "center"},
+        { text: "Seguimiento", value: "tracking", class:"header-table-style",  sortable: false, align: "center"},
+      ],
     };
   },
 
@@ -717,29 +690,6 @@ export default {
       if (status === "default") return (this.colorStatus = "color: #2DA7E3");
     },
 
-    async handlerUploadFile() {
-      try {
-        this.loadingUpload = true;
-        const request = new FormData();
-        request.append("voucher", this.file);
-        request.append("transfer_id", this.transfer_id);
-        request.append("order_id", this.dataOrder.id);
-
-        const response = await this.$store.dispatch(
-          "checkout/UPLOAD_TRANSFER",
-          request
-        );
-
-        this.message = response.data.message;
-        this.dowloadTransfer = true;
-        this.canUploadFile = false;
-      } catch (error) {
-        this.message = error.response.data.error.details;
-      } finally {
-        this.loadingUpload = false;
-      }
-    },
-
     async HandlerPrintBill(order) {
       try {
         this.loadingPrintBill = true;
@@ -780,5 +730,19 @@ export default {
 }
 .font-title {
   font-weight: 500 !important;
+}
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+.header-table-style{
+  background-color: #fafafa;
+  color: black !important;
+  line-height: 1.5;
+  font-size: 16px !important;
+  padding: 0 16px !important;
+}
+.header-table-style span{
+  font-weight: 500;
 }
 </style>
