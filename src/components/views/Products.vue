@@ -109,27 +109,6 @@
                     <v-divider class="mt-5"></v-divider>
                   </div>
                   <div
-                    class="text-capitalize px-5 pt-5"
-                    style="font-size: 17px"
-                  >
-                    Caracteristicas
-                  </div>
-                  <div
-                    v-for="(feature, u) in productsFeature"
-                    :key="u + 'w'"
-                    class="px-5"
-                  >
-                    <div class="mb-n6">
-                      <v-checkbox
-                        :label="subCatName(feature.name)"
-                        color="#00A0E9"
-                        v-model="feature.value"
-                        @change="HandlerFilterFeatures(feature)"
-                      ></v-checkbox>
-                    </div>
-                  </div>
-                  <v-divider class="mx-5 mt-5"></v-divider>
-                  <div
                     @click="HandlerFilterCategory({}, 3)"
                     class="text-capitalize px-5 py-10"
                   >
