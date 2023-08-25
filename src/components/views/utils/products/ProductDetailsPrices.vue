@@ -25,8 +25,8 @@
           $
           {{ prices.pvp_18_installments | currencyPVP }}
         </span>
-        hasta 18 cuotas de $
-        {{ (prices.pvp_18_installments / 18) | currencyPVP }}
+        hasta 12 cuotas de $
+        {{ (prices.pvp_18_installments / 12) | currencyPVP }}
       </div>
     </div>
     <br />

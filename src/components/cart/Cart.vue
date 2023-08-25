@@ -50,13 +50,13 @@
                           width="100%"
                           class="d-flex justify-center pt-5"
                           contain
-                          src="@/assets/img/checkout/18cuotas.svg"
+                          src="@/assets/img/checkout/12cuotas.svg"
                         ></v-img>
                         <span
                           class="d-flex justify-center mt-n2"
                           style="font-size: 0.83em"
                         >
-                          18
+                          12
                         </span>
                         <span
                           class="d-flex justify-center mt-n2"
@@ -804,7 +804,7 @@ export default {
       if (this.radioGroupDues === 0) {
         this.showSelectDelivery = true;
         this.payments_type = "installments";
-        this.default_installments = 18;
+        this.default_installments = 12;
         this.totalPrice();
       }
 
@@ -866,6 +866,7 @@ export default {
     },
 
     totalPrice(cart_items) {
+      console.log(cart_items);
       let priceTotal = 0;
       if (cart_items != undefined) {
         priceTotal = cart_items.reduce((acc, arr) => {
