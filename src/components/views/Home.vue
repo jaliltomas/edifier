@@ -92,13 +92,14 @@
     </v-carousel>
 
     <v-container fluid>
-      <section id="categorias" class="mt-15">
-        <v-row :no-gutters="$vuetify.breakpoint.smAndDown ? true : false">
-          <v-col
-            cols="12"
-            sm="4"
-            md="4"
-            v-for="(item, index) in categoria"
+      <section id="categorias" class="mt-10">
+        <div class="featured-info">
+          <div class="featured-title">Productos destacados</div>
+          <div class="featured-text">Conoce nuestra selección de productos destacados y convertite en un #EDIFAN</div>
+        </div>
+        <div class="featured-row mt-3">
+          <div 
+            class="featured-item" v-for="(item, index) in categoria"
             :key="index"
           >
             <v-card
@@ -117,24 +118,16 @@
                       ? 'to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)'
                       : ''
                   "
-                  :class="hover ? 'hvr-grow' : ''"
+                  :class="hover ? 'hvr-grow featured-image' : 'featured-image'"
                   cover
-                  style="width: 100%; height: 350px"
                   :src="item.image_url"
                   @click="HandlerLocation(item, hover)"
                 >
-                  <v-row style="height: 22.5em">
-                    <v-col cols="12">
-                      <div class="title-categories-home">
-                        {{ item.text_title }}
-                      </div>
-                    </v-col>
-                  </v-row>
                 </v-img>
               </v-hover>
             </v-card>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </section>
     </v-container>
 
@@ -418,6 +411,110 @@ export default {
 </script>
 
 <style>
+.featured-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.featured-row .featured-item{
+  width: 28%;
+  height: 430px;
+  max-width: 430px;
+}
+.featured-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 3rem;
+}
+
+.featured-info .featured-title{
+  color: #262626;
+  font-size: 1.6em;
+  font-weight: 600;
+  line-height: 1.6em;
+  text-align: center;
+}
+
+.featured-info .featured-text{
+  color: #262626;
+  font-size: 1.4em;
+  font-weight: 400;
+  padding: 0 0 1rem 0;
+  text-align: center;
+}
+
+.featured-image{
+  width: 100%; 
+  height: 430px;
+  max-width: 430px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .featured-row .featured-item{
+    width: 30%;
+    height: 420px;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .featured-row{
+    padding: 0 1rem;
+  }
+  .featured-row .featured-item{
+    width: 32%;
+    height: 380px;
+  }
+  .featured-image{
+    width: 100%; 
+    height: 380px
+  }
+}
+
+@media only screen and (max-width: 780px) {
+  .featured-row{
+    padding: 0;
+  }
+  .featured-row .featured-item{
+    width: 33%;
+    height: 320px;
+  }
+  .featured-image{
+    width: 100%; 
+    height: 320px
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .featured-info{
+    padding: 0 1.5rem;
+  }
+  .featured-row{
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1.5rem;
+  }
+  .featured-row .featured-item{
+    width: 100%;
+    height: 386px;
+    margin-bottom: 1.5rem;
+  }
+  .featured-image{
+    width: 100%; 
+    height: 386px
+  }
+  .featured-info .featured-title{
+    font-size: 1.2em;
+  }
+
+  .featured-info .featured-text{
+    font-size: 1em;
+  }
+}
+
 .title-des {
   font-size: 1.3vmax;
   color: #000;
