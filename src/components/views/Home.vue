@@ -138,6 +138,17 @@
       </section>
     </v-container>
 
+    <div class="news-banners mt-12">
+      <v-img 
+        :src="backgroundShipmentImage" 
+        class="news-image"
+      />
+      <v-img 
+        :src="backgroundDiscountImage" 
+        class="news-image mt-6"
+      />
+    </div>
+
     <section id="destacados">
       <v-responsive>
         <!-- <img src='../../../public/favicon-32x32.png' /> -->
@@ -207,14 +218,18 @@ export default {
       item: 0,
 
       //Carrusel
-      perPage: 3
+      perPage: 3,
+      windowWidth: 0,
     };
   },
 
   created() {
     this.HandlerGetProductFeatured();
     this.HandlerGetListPromotions();
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   },
+  
 
   mounted() {
     const remaze = window._support || { ui: {}, user: {} };
@@ -251,7 +266,26 @@ export default {
 
     prevLabel() {
       return "<img src='../../../flacha-izquierda.png' >";
+    },
+    backgroundShipmentImage() {
+      if(this.windowWidth > 780){
+        return require('../../assets/img/shipment-image-desktop.png')
+      } else {
+        return require('../../assets/img/shipment-image-mobile.png')
+      }
+    },
+    backgroundDiscountImage() {
+      if(this.windowWidth > 780){
+        return require('../../assets/img/discount-desktop.png')
+      } else {
+        return require('../../assets/img/discount-mobile.png')
+      }
     }
+      
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
   },
 
   filters: {
@@ -412,12 +446,39 @@ export default {
         discount: Math.round(item.price.transfer_discount),
         value_no_discount: item.price.pvp_transfer_no_discount
       };
+    },
+
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+      this.$forceUpdate();
     }
   }
 };
 </script>
 
 <style>
+.news-banners{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3rem;
+}
+.news-banners .news-image{
+  width: 100%;
+}
+
+@media only screen and (max-width: 960px) {
+  .news-banners{
+    padding: 0 2rem;
+  }
+}
+@media only screen and (max-width: 780px) {
+  .news-banners{
+    padding: 0;
+  }
+}
+
 .title-des {
   font-size: 1.3vmax;
   color: #000;
