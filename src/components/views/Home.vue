@@ -23,10 +23,10 @@
         </v-carousel-item>
       </v-carousel>
       <v-btn @click="handlerActiveCycle" class="simple-play-btn" :style="{ left: `calc(50% + ${playBtnLeft}px + 10px)` }">
-        <v-icon color="black" class="ml-n1" v-if="!activeCycle">
+        <v-icon color="black" v-if="!activeCycle">
           mdi-play
         </v-icon>
-        <v-icon color="black" class="ml-n1" v-else>
+        <v-icon color="black" v-else>
           mdi-pause
         </v-icon>
       </v-btn>
@@ -425,7 +425,7 @@ export default {
   height: fit-content !important;
   width: fit-content !important;
   min-width: auto !important;
-  z-index: 10;
+  z-index: 1;
 }
 .v-carousel--hide-delimiter-background .v-carousel__controls {
   position: relative !important;
@@ -433,10 +433,6 @@ export default {
   align-items: center !important;
   justify-content: center !important;
   height: 38px;
-
-  .mdi:before, .mdi-set {
-    font: inherit;
-  }
 }
 .v-carousel--hide-delimiter-background .v-carousel__controls .mdi:before, .mdi-set { 
     font: inherit !important;
@@ -455,6 +451,11 @@ button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon
   top: auto !important;
   width: 16px !important;
   height: 16px !important;
+}
+
+.v-btn--fab.v-size--default .v-icon, .v-btn--fab.v-size--small .v-icon, .v-btn--icon.v-size--default .v-icon, .v-btn--icon.v-size--small .v-icon {
+    height: 16px !important;
+    width: 16px !important;
 }
 
 /* .VueCarousel-navigation-next::before {
