@@ -138,14 +138,25 @@
       </section>
     </v-container>
 
-    <div class="news-banners mt-12">
+    <div class="news-banners mt-12" :style="isDesktopDisplay ? 'display:flex':'display:none'">
       <v-img 
-        :src="backgroundShipmentImage" 
+        :src="require('../../assets/img/shipment-image-desktop.png')" 
         class="news-image"
       />
       <v-img 
-        :src="backgroundDiscountImage" 
+        :src="require('../../assets/img/discount-desktop.png')" 
         class="news-image mt-6"
+      />
+    </div>
+
+    <div class="news-banners-mobile mt-12" :style="!isDesktopDisplay ? 'display:flex':'display:none'">
+      <v-img 
+        :src="require('../../assets/img/shipment-image-mobile.png')" 
+        class="news-image-mobile"
+      />
+      <v-img 
+        :src="require('../../assets/img/discount-mobile.png')" 
+        class="news-image-mobile mt-4"
       />
     </div>
 
@@ -220,6 +231,7 @@ export default {
       //Carrusel
       perPage: 3,
       windowWidth: 0,
+      isDesktopDisplay: true,
     };
   },
 
@@ -244,6 +256,13 @@ export default {
   watch: {
     isVisible(val) {
       if (val) this.$refs.slideGroup.setWidths();
+    },
+    windowWidth(){
+      if(this.windowWidth > 780){
+        this.isDesktopDisplay = true;
+      } else {
+        this.isDesktopDisplay = false;
+      }
     }
   },
 
@@ -267,21 +286,6 @@ export default {
     prevLabel() {
       return "<img src='../../../flacha-izquierda.png' >";
     },
-    backgroundShipmentImage() {
-      if(this.windowWidth > 780){
-        return require('../../assets/img/shipment-image-desktop.png')
-      } else {
-        return require('../../assets/img/shipment-image-mobile.png')
-      }
-    },
-    backgroundDiscountImage() {
-      if(this.windowWidth > 780){
-        return require('../../assets/img/discount-desktop.png')
-      } else {
-        return require('../../assets/img/discount-mobile.png')
-      }
-    }
-      
   },
 
   destroyed() {
@@ -450,8 +454,7 @@ export default {
 
     handleResize() {
       this.windowWidth = window.innerWidth;
-      this.$forceUpdate();
-    }
+    },
   }
 };
 </script>
@@ -464,7 +467,20 @@ export default {
   justify-content: center;
   padding: 0 3rem;
 }
+
+.news-banners-mobile{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
 .news-banners .news-image{
+  width: 100%;
+}
+
+.news-banners-mobile .news-image-mobile{
   width: 100%;
 }
 
