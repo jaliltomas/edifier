@@ -99,7 +99,7 @@
         </div>
         <div class="featured-row mt-3">
           <div 
-            class="featured-item" v-for="(item, index) in categoria"
+            class="featured-item" v-for="(item, index) in dummyCategory"
             :key="index"
           >
             <v-card
@@ -115,13 +115,12 @@
                 <v-img
                   :gradient="
                     !hover
-                      ? 'to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)'
+                      ? 'to top, rgba(40, 41, 40, .15), rgba(24, 28, 31,.2)'
                       : ''
                   "
                   :class="hover ? 'hvr-grow featured-image' : 'featured-image'"
                   cover
                   :src="item.image_url"
-                  @click="HandlerLocation(item, hover)"
                 >
                 </v-img>
               </v-hover>
@@ -200,7 +199,12 @@ export default {
       item: 0,
 
       //Carrusel
-      perPage: 3
+      perPage: 3,
+      dummyCategory: [
+        {image_url: require('../../assets/img/headphones.png')},
+        {image_url: require('../../assets/img/bugles.png')},
+        {image_url: require('../../assets/img/w-headphones.png')},
+      ]
     };
   },
 
