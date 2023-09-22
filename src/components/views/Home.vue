@@ -71,6 +71,28 @@
       </section>
     </v-container>
 
+    <div class="news-banners mt-12" :style="isDesktopDisplay ? 'display:flex':'display:none'">
+      <v-img 
+        :src="require('../../assets/img/shipment-image-desktop.png')" 
+        class="news-image"
+      />
+      <v-img 
+        :src="require('../../assets/img/discount-desktop.png')" 
+        class="news-image mt-6"
+      />
+    </div>
+
+    <div class="news-banners-mobile mt-12" :style="!isDesktopDisplay ? 'display:flex':'display:none'">
+      <v-img 
+        :src="require('../../assets/img/shipment-image-mobile.png')" 
+        class="news-image-mobile"
+      />
+      <v-img 
+        :src="require('../../assets/img/discount-mobile.png')" 
+        class="news-image-mobile mt-4"
+      />
+    </div>
+
     <section id="destacados">
       <v-responsive>
         <!-- <img src='../../../public/favicon-32x32.png' /> -->
@@ -148,13 +170,18 @@ export default {
         {image_url: require('../../assets/img/bugles.png')},
         {image_url: require('../../assets/img/w-headphones.png')},
       ],
+      windowWidth: 0,
+      isDesktopDisplay: true,
     };
   },
 
   created() {
     this.HandlerGetProductFeatured();
     this.HandlerGetListPromotions();
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   },
+  
 
   mounted() {
     const remaze = window._support || { ui: {}, user: {} };
@@ -169,6 +196,13 @@ export default {
   watch: {
     isVisible(val) {
       if (val) this.$refs.slideGroup.setWidths();
+    },
+    windowWidth(){
+      if(this.windowWidth > 780){
+        this.isDesktopDisplay = true;
+      } else {
+        this.isDesktopDisplay = false;
+      }
     }
   },
 
@@ -191,7 +225,11 @@ export default {
 
     prevLabel() {
       return "<img src='../../../flacha-izquierda.png' >";
-    }
+    },
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
   },
 
   filters: {
@@ -368,6 +406,10 @@ export default {
         this.playBtnLeft = elemento.offsetWidth/2;
       }
     },
+    
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+    },
   }
 };
 </script>
@@ -474,6 +516,39 @@ export default {
 
   .featured-info .featured-text{
     font-size: 1em;
+  }
+.news-banners{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3rem;
+}
+
+.news-banners-mobile{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.news-banners .news-image{
+  width: 100%;
+}
+
+.news-banners-mobile .news-image-mobile{
+  width: 100%;
+}
+
+@media only screen and (max-width: 960px) {
+  .news-banners{
+    padding: 0 2rem;
+  }
+}
+@media only screen and (max-width: 780px) {
+  .news-banners{
+    padding: 0;
   }
 }
 
