@@ -13,12 +13,14 @@
       >
         <v-carousel-item
           contain
-          v-for="(item, i) in carrusel"
+          v-for="(item, i) in promotions[isDesktopDisplay? 'desktop':'mobile'].carrusel"
           :key="i"
           reverse-transition="fade-transition"
           transition="fade-transition"
+          @click="redirectToUrl(item)"
+          style="cursor: pointer;"
         >
-          <v-img :src="item.image_url" style="height: 37vmax">
+          <v-img :src="urlImage(item.image_url)" style="height: 37vmax">
           </v-img>
         </v-carousel-item>
       </v-carousel>
@@ -33,14 +35,15 @@
     </div>
 
     <v-container fluid>
-      <section id="categorias" class="mt-10">
+      <section id="categorias" class="my-4">
         <div class="featured-info">
           <div class="featured-title">Productos destacados</div>
           <div class="featured-text">Conoce nuestra selección de productos destacados y convertite en un #EDIFAN</div>
         </div>
         <div class="featured-row mt-3">
           <div 
-            class="featured-item" v-for="(item, index) in dummyCategory"
+            class="featured-item" 
+            v-for="(item, index) in promotions[isDesktopDisplay? 'desktop':'mobile'].destacados"
             :key="index"
           >
             <v-card
@@ -51,6 +54,7 @@
                   ? 'my-1'
                   : ''
               "
+              @click="redirectToUrl(item)"
             >
               <v-hover v-slot="{ hover }">
                 <v-img
@@ -61,7 +65,7 @@
                   "
                   :class="hover ? 'hvr-grow featured-image' : 'featured-image'"
                   cover
-                  :src="item.image_url"
+                  :src="urlImage(item.image_url)"
                 >
                 </v-img>
               </v-hover>
@@ -73,23 +77,19 @@
 
     <div class="news-banners mt-12" :style="isDesktopDisplay ? 'display:flex':'display:none'">
       <v-img 
-        :src="require('../../assets/img/shipment-image-desktop.png')" 
-        class="news-image"
-      />
-      <v-img 
-        :src="require('../../assets/img/discount-desktop.png')" 
-        class="news-image mt-6"
+        v-for="(item, index) in promotions.desktop.novedades"
+        :src="urlImage(item.image_url)" 
+        :class="index !== 0 ? 'news-image mt-8' : 'news-image'"
+        @click="redirectToUrl(item)"
       />
     </div>
 
     <div class="news-banners-mobile mt-12" :style="!isDesktopDisplay ? 'display:flex':'display:none'">
       <v-img 
-        :src="require('../../assets/img/shipment-image-mobile.png')" 
-        class="news-image-mobile"
-      />
-      <v-img 
-        :src="require('../../assets/img/discount-mobile.png')" 
-        class="news-image-mobile mt-4"
+        v-for="(item, index) in promotions.mobile.novedades"
+        :src="urlImage(item.image_url)" 
+        :class="index !== 0 ? 'news-image-mobile mt-4' : 'news-image-mobile'"
+        @click="redirectToUrl(item)"
       />
     </div>
 
@@ -153,9 +153,18 @@ export default {
       },
 
       // IMAGES
-      carrusel: [],
-      destacados: [],
-      categoria: [],
+      promotions:{
+        desktop:{
+          carrusel:[],
+          destacados: [],
+          novedades: [],
+        }, 
+        mobile:{
+          carrusel:[],
+          destacados: [],
+          novedades: [],
+        },
+      },
 
       isVisible: true,
 
@@ -198,7 +207,7 @@ export default {
       if (val) this.$refs.slideGroup.setWidths();
     },
     windowWidth(){
-      if(this.windowWidth > 780){
+      if(this.windowWidth > 600){
         this.isDesktopDisplay = true;
       } else {
         this.isDesktopDisplay = false;
@@ -321,14 +330,26 @@ export default {
       }
     },
 
+    urlImage(url){
+      const newUrl = url.replace('0.0.0.0:', 'localhost:');
+      return newUrl
+    },
+
+    redirectToUrl(item) {
+      if (item.url) {
+        console.log(item.url);
+        if (!item.url.startsWith('http://') && !item.url.startsWith('https://')) {
+          item.url = 'http://' + item.url;
+        }
+        window.location.href = item.url;
+      }
+    },
+
     async HandlerGetListPromotions() {
       try {
         const request = {
           store_id: 3,
           type: "",
-          page: 1,
-          per_page: 12,
-          paginate: true
         };
 
         const response = await this.$store.dispatch(
@@ -340,19 +361,29 @@ export default {
           this.getElementWidth();
         }, 50);
 
-        for (const iterator of response.data.data.data) {
-          if (iterator.active) {
-            switch (iterator.type) {
-              case "carrusel":
-                this.carrusel.push(iterator);
-                break;
-              case "destacados":
-                this.destacados.push(iterator);
-                break;
-              case "categorias":
-                this.categoria.push(iterator);
-                break;
-            }
+        for (const iterator of response.data.data) {
+          switch (iterator.type) {
+            case "banners_principales":
+              if(iterator.display_device == "Desktop"){
+                this.promotions.desktop.carrusel.push(iterator);
+              } else{
+                this.promotions.mobile.carrusel.push(iterator);
+              }
+              break;
+            case "productos_destacados":
+              if(iterator.display_device == "Desktop"){
+                this.promotions.desktop.destacados.push(iterator);
+              } else{
+                this.promotions.mobile.destacados.push(iterator);
+              }
+              break;
+            case "novedades":
+              if(iterator.display_device == "Desktop"){
+                this.promotions.desktop.novedades.push(iterator);
+              } else{
+                this.promotions.mobile.novedades.push(iterator);
+              }
+              break;
           }
         }
       } catch (error) {
@@ -517,6 +548,8 @@ export default {
   .featured-info .featured-text{
     font-size: 1em;
   }
+}
+
 .news-banners{
   display: flex;
   flex-direction: column;
@@ -535,10 +568,12 @@ export default {
 
 .news-banners .news-image{
   width: 100%;
+  cursor: pointer;
 }
 
 .news-banners-mobile .news-image-mobile{
   width: 100%;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 960px) {
@@ -546,7 +581,7 @@ export default {
     padding: 0 2rem;
   }
 }
-@media only screen and (max-width: 780px) {
+@media only screen and (max-width: 600px) {
   .news-banners{
     padding: 0;
   }
@@ -632,6 +667,9 @@ button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon
 .v-btn--fab.v-size--default .v-icon, .v-btn--fab.v-size--small .v-icon, .v-btn--icon.v-size--default .v-icon, .v-btn--icon.v-size--small .v-icon {
     height: 16px !important;
     width: 16px !important;
+}
+.theme--dark.v-btn.v-btn--icon {
+    color: transparent !important;
 }
 
 /* .VueCarousel-navigation-next::before {

@@ -213,7 +213,7 @@ const actions = {
   async LIST_PROMOTIONS(_, payload) {
     try {
       const response = await store.get(
-        `api/promotions/?store_id=${payload.store_id}&type=${payload.type}&page=${payload.page}&per_page=${payload.per_page}&paginate=${payload.paginate}`
+        `api/promotions/?store_id=${payload.store_id}&type=${payload.type}`
       );
       return response;
     } catch (error) {
