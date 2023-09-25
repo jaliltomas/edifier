@@ -1,104 +1,49 @@
 <template>
   <div>
-    <v-carousel
-      v-model="item"
-      hide-delimiters
-      height="100%"
-      :interval="24000"
-      :hide-delimiter-background="false"
-      :show-arrows-on-hover="false"
-      :show-arrows="false"
-      cycle
-      next-icon="mdi-chevron-right"
-    >
-      <v-carousel-item
-        contain
-        v-for="(item, i) in carrusel"
-        :key="i"
-        reverse-transition="fade-transition"
-        transition="fade-transition"
+    <div style="position: relative;">
+      <v-carousel
+        v-model="item"
+        height="100%"
+        :interval="5000"
+        :hide-delimiter-background="true"
+        :show-arrows-on-hover="false"
+        :show-arrows="false"
+        :cycle="activeCycle"
+        next-icon="mdi-chevron-right"
       >
-        <v-img :src="item.image_url" style="height: 37vmax">
-          <v-container fill-height>
-            <v-row justify="start" no-gutters>
-              <div class="d-flex">
-                <v-icon :color="item.color" @click="HandlerLeft" class="ml-n1">
-                  mdi-chevron-left
-                </v-icon>
-                <v-icon :color="item.color" @click="HandlerRight">
-                  mdi-chevron-right
-                </v-icon>
-              </div>
-              <v-col cols="12" md="12">
-                <div
-                  class="font-weight-bold title-carrusel"
-                  :style="`color: ${item.color}`"
-                >
-                  {{ item.text_title }}
-                </div>
-              </v-col>
-              <v-col cols="12" md="12">
-                <div
-                  class="mb-0 price-carrusel"
-                  :style="`color: ${item.color}`"
-                >
-                  <div v-if="item.price == ' ' || item.price == null">
-                    <div class="space-price-null"></div>
-                  </div>
-                  <div>
-                    {{ item.price }}
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="12" md="12">
-                <div class="d-flex mt-4">
-                  <v-btn color="#495358" fab x-small>
-                    <v-icon> mdi-share-variant </v-icon>
-                  </v-btn>
-                  <span :style="`color: ${item.color}`" class="share_carrusel">
-                    compartir
-                  </span>
-                </div>
-              </v-col>
-            </v-row>
-            <v-row
-              class="hidden-sm-and-down"
-              justify="center"
-              :no-gutters="false"
-            >
-              <v-col
-                v-for="(val, index) in item.features"
-                :key="index"
-                style="background-color: rgb(255 255 255 / 60%)"
-                class="mr-1"
-                :md="item.features.length == 4 ? '' : 3"
-              >
-                <p
-                  class="
-                    black--text
-                    mr-1
-                    text-uppercase text-center
-                    mb-0
-                    features-carrusel
-                  "
-                >
-                  {{ val }}
-                </p>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-img>
-      </v-carousel-item>
-    </v-carousel>
+        <v-carousel-item
+          contain
+          v-for="(item, i) in promotions[isDesktopDisplay? 'desktop':'mobile'].carrusel"
+          :key="i"
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+          @click="redirectToUrl(item)"
+          style="cursor: pointer;"
+        >
+          <v-img :src="urlImage(item.image_url)" style="height: 37vmax">
+          </v-img>
+        </v-carousel-item>
+      </v-carousel>
+      <v-btn @click="handlerActiveCycle" class="simple-play-btn" :style="{ left: `calc(50% + ${playBtnLeft}px + 10px)` }">
+        <v-icon color="black" v-if="!activeCycle">
+          mdi-play
+        </v-icon>
+        <v-icon color="black" v-else>
+          mdi-pause
+        </v-icon>
+      </v-btn>
+    </div>
 
     <v-container fluid>
-      <section id="categorias" class="mt-15">
-        <v-row :no-gutters="$vuetify.breakpoint.smAndDown ? true : false">
-          <v-col
-            cols="12"
-            sm="4"
-            md="4"
-            v-for="(item, index) in categoria"
+      <section id="categorias" class="my-4">
+        <div class="featured-info">
+          <div class="featured-title">Productos destacados</div>
+          <div class="featured-text">Conoce nuestra selección de productos destacados y convertite en un #EDIFAN</div>
+        </div>
+        <div class="featured-row mt-3">
+          <div 
+            class="featured-item" 
+            v-for="(item, index) in promotions[isDesktopDisplay? 'desktop':'mobile'].destacados"
             :key="index"
           >
             <v-card
@@ -109,34 +54,44 @@
                   ? 'my-1'
                   : ''
               "
+              @click="redirectToUrl(item)"
             >
               <v-hover v-slot="{ hover }">
                 <v-img
                   :gradient="
                     !hover
-                      ? 'to top, rgba(40, 41, 40, .5), rgba(24, 28, 31,.7)'
+                      ? 'to top, rgba(40, 41, 40, .15), rgba(24, 28, 31,.2)'
                       : ''
                   "
-                  :class="hover ? 'hvr-grow' : ''"
+                  :class="hover ? 'hvr-grow featured-image' : 'featured-image'"
                   cover
-                  style="width: 100%; height: 350px"
-                  :src="item.image_url"
-                  @click="HandlerLocation(item, hover)"
+                  :src="urlImage(item.image_url)"
                 >
-                  <v-row style="height: 22.5em">
-                    <v-col cols="12">
-                      <div class="title-categories-home">
-                        {{ item.text_title }}
-                      </div>
-                    </v-col>
-                  </v-row>
                 </v-img>
               </v-hover>
             </v-card>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </section>
     </v-container>
+
+    <div class="news-banners mt-12" :style="isDesktopDisplay ? 'display:flex':'display:none'">
+      <v-img 
+        v-for="(item, index) in promotions.desktop.novedades"
+        :src="urlImage(item.image_url)" 
+        :class="index !== 0 ? 'news-image mt-8' : 'news-image'"
+        @click="redirectToUrl(item)"
+      />
+    </div>
+
+    <div class="news-banners-mobile mt-12" :style="!isDesktopDisplay ? 'display:flex':'display:none'">
+      <v-img 
+        v-for="(item, index) in promotions.mobile.novedades"
+        :src="urlImage(item.image_url)" 
+        :class="index !== 0 ? 'news-image-mobile mt-4' : 'news-image-mobile'"
+        @click="redirectToUrl(item)"
+      />
+    </div>
 
     <section id="destacados">
       <v-responsive>
@@ -198,23 +153,44 @@ export default {
       },
 
       // IMAGES
-      carrusel: [],
-      destacados: [],
-      categoria: [],
+      promotions:{
+        desktop:{
+          carrusel:[],
+          destacados: [],
+          novedades: [],
+        }, 
+        mobile:{
+          carrusel:[],
+          destacados: [],
+          novedades: [],
+        },
+      },
 
       isVisible: true,
 
       item: 0,
 
       //Carrusel
-      perPage: 3
+      perPage: 3,
+      activeCycle: true,
+      playBtnLeft: 0,
+      dummyCategory: [
+        {image_url: require('../../assets/img/headphones.png')},
+        {image_url: require('../../assets/img/bugles.png')},
+        {image_url: require('../../assets/img/w-headphones.png')},
+      ],
+      windowWidth: 0,
+      isDesktopDisplay: true,
     };
   },
 
   created() {
     this.HandlerGetProductFeatured();
     this.HandlerGetListPromotions();
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
   },
+  
 
   mounted() {
     const remaze = window._support || { ui: {}, user: {} };
@@ -229,6 +205,13 @@ export default {
   watch: {
     isVisible(val) {
       if (val) this.$refs.slideGroup.setWidths();
+    },
+    windowWidth(){
+      if(this.windowWidth > 600){
+        this.isDesktopDisplay = true;
+      } else {
+        this.isDesktopDisplay = false;
+      }
     }
   },
 
@@ -251,7 +234,11 @@ export default {
 
     prevLabel() {
       return "<img src='../../../flacha-izquierda.png' >";
-    }
+    },
+  },
+
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
   },
 
   filters: {
@@ -343,14 +330,26 @@ export default {
       }
     },
 
+    urlImage(url){
+      const newUrl = url.replace('0.0.0.0:', 'localhost:');
+      return newUrl
+    },
+
+    redirectToUrl(item) {
+      if (item.url) {
+        console.log(item.url);
+        if (!item.url.startsWith('http://') && !item.url.startsWith('https://')) {
+          item.url = 'http://' + item.url;
+        }
+        window.location.href = item.url;
+      }
+    },
+
     async HandlerGetListPromotions() {
       try {
         const request = {
           store_id: 3,
           type: "",
-          page: 1,
-          per_page: 12,
-          paginate: true
         };
 
         const response = await this.$store.dispatch(
@@ -358,19 +357,33 @@ export default {
           request
         );
 
-        for (const iterator of response.data.data.data) {
-          if (iterator.active) {
-            switch (iterator.type) {
-              case "carrusel":
-                this.carrusel.push(iterator);
-                break;
-              case "destacados":
-                this.destacados.push(iterator);
-                break;
-              case "categorias":
-                this.categoria.push(iterator);
-                break;
-            }
+        setTimeout(() => {
+          this.getElementWidth();
+        }, 50);
+
+        for (const iterator of response.data.data) {
+          switch (iterator.type) {
+            case "banners_principales":
+              if(iterator.display_device == "Desktop"){
+                this.promotions.desktop.carrusel.push(iterator);
+              } else{
+                this.promotions.mobile.carrusel.push(iterator);
+              }
+              break;
+            case "productos_destacados":
+              if(iterator.display_device == "Desktop"){
+                this.promotions.desktop.destacados.push(iterator);
+              } else{
+                this.promotions.mobile.destacados.push(iterator);
+              }
+              break;
+            case "novedades":
+              if(iterator.display_device == "Desktop"){
+                this.promotions.desktop.novedades.push(iterator);
+              } else{
+                this.promotions.mobile.novedades.push(iterator);
+              }
+              break;
           }
         }
       } catch (error) {
@@ -412,12 +425,168 @@ export default {
         discount: Math.round(item.price.transfer_discount),
         value_no_discount: item.price.pvp_transfer_no_discount
       };
-    }
+    },
+
+    handlerActiveCycle() {
+      this.activeCycle = !this.activeCycle;
+    },
+
+    getElementWidth() {
+      const elemento = this.$el.querySelector('.v-carousel__controls>.v-item-group');
+      if (elemento) {
+        this.playBtnLeft = elemento.offsetWidth/2;
+      }
+    },
+    
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+    },
   }
 };
 </script>
 
 <style>
+.featured-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.featured-row .featured-item{
+  width: 28%;
+  height: 430px;
+  max-width: 430px;
+}
+.featured-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 3rem;
+}
+
+.featured-info .featured-title{
+  color: #262626;
+  font-size: 1.6em;
+  font-weight: 600;
+  line-height: 1.6em;
+  text-align: center;
+}
+
+.featured-info .featured-text{
+  color: #262626;
+  font-size: 1.4em;
+  font-weight: 400;
+  padding: 0 0 1rem 0;
+  text-align: center;
+}
+
+.featured-image{
+  width: 100%; 
+  height: 430px;
+  max-width: 430px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .featured-row .featured-item{
+    width: 30%;
+    height: 420px;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .featured-row{
+    padding: 0 1rem;
+  }
+  .featured-row .featured-item{
+    width: 32%;
+    height: 380px;
+  }
+  .featured-image{
+    width: 100%; 
+    height: 380px
+  }
+}
+
+@media only screen and (max-width: 780px) {
+  .featured-row{
+    padding: 0;
+  }
+  .featured-row .featured-item{
+    width: 33%;
+    height: 320px;
+  }
+  .featured-image{
+    width: 100%; 
+    height: 320px
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .featured-info{
+    padding: 0 1.5rem;
+  }
+  .featured-row{
+    flex-direction: column;
+    align-items: center;
+    padding: 0 1.5rem;
+  }
+  .featured-row .featured-item{
+    width: 100%;
+    height: 386px;
+    margin-bottom: 1.5rem;
+  }
+  .featured-image{
+    width: 100%; 
+    height: 386px
+  }
+  .featured-info .featured-title{
+    font-size: 1.2em;
+  }
+
+  .featured-info .featured-text{
+    font-size: 1em;
+  }
+}
+
+.news-banners{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3rem;
+}
+
+.news-banners-mobile{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.news-banners .news-image{
+  width: 100%;
+  cursor: pointer;
+}
+
+.news-banners-mobile .news-image-mobile{
+  width: 100%;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 960px) {
+  .news-banners{
+    padding: 0 2rem;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .news-banners{
+    padding: 0;
+  }
+}
+
 .title-des {
   font-size: 1.3vmax;
   color: #000;
@@ -455,6 +624,52 @@ export default {
   transform: translateY(-50%) translateX(-100%);
   font-family: "system";
   color: #00a0e9;
+}
+.simple-play-btn{
+  left: 50%;
+  position: absolute;
+  bottom: 30px;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: fit-content !important;
+  width: fit-content !important;
+  min-width: auto !important;
+  z-index: 1;
+}
+.v-carousel--hide-delimiter-background .v-carousel__controls {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px;
+}
+.v-carousel--hide-delimiter-background .v-carousel__controls .mdi:before, .mdi-set { 
+    font: inherit !important;
+}
+.v-carousel__controls__item {
+    margin: 0 3px !important;
+    border: 2px solid rgba(0,0,0,.3) !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon.v-btn--round.theme--dark.v-size--small {
+    background-color: black;
+}
+.v-icon.v-icon:after {
+  left: auto !important;
+  top: auto !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.v-btn--fab.v-size--default .v-icon, .v-btn--fab.v-size--small .v-icon, .v-btn--icon.v-size--default .v-icon, .v-btn--icon.v-size--small .v-icon {
+    height: 16px !important;
+    width: 16px !important;
+}
+.theme--dark.v-btn.v-btn--icon {
+    color: transparent !important;
 }
 
 /* .VueCarousel-navigation-next::before {
