@@ -155,7 +155,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <div style="max-width: 423px; margin: auto">
+      <div class="btn-box">
         <v-btn
           block
           color="rgb(0, 160, 233)"
@@ -703,14 +703,38 @@ export default {
   display: none;
 }
 
+.btn-box{
+  margin: auto;
+  max-width: 423px;
+}
+
 @media only screen and (max-width: 800px) {
-  .repetance-btn1 {
-    display: none !important;
-  }
   .repetance-btn2 {
     display: flex;
     padding-top: 0px !important;
     padding-bottom: 0px !important;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .btn-box{
+    margin: auto;
+    max-width: 380px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .repetance-btn1{
+    .v-btn__content{
+      white-space: normal;
+      word-break: break-word;
+      width: 100%;
+      font-size: 13px;
+    }
+  }
+  .btn-box{
+    margin: auto;
+    max-width: none;
+    width: fit-content;
   }
 }
 

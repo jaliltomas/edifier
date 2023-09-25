@@ -1,19 +1,18 @@
 <template>
   <div>
-    <v-img contain src="@/assets/img/banners/profile.webp">
+    <v-img src="@/assets/img/banners/profile.webp">
       <v-container fill-height>
         <v-row justify="center">
           <v-col cols="12">
             <div
-              class="text-center white--text mt-10 mb-5 py-5"
+              class="title-header"
               style="font-size: 1.5em"
             >
               PERFIL DE USUARIO
             </div>
             <div class="d-flex justify-center">
               <v-img
-                width="75"
-                height="75"
+                class="img-header"
                 contain
                 src="@/assets/img/profileImage.svg"
               ></v-img>
@@ -32,6 +31,7 @@
               centered
               icons-and-text
               color="#00A0E9"
+              class="scroll-menu"
             >
               <v-tabs-slider></v-tabs-slider>
               <v-tab>
@@ -123,4 +123,36 @@ export default {
 </script>
 
 <style>
+  .title-header{
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px 0 20px 0;
+    margin-top: 20px;
+    color: white;
+  }
+  .img-header{
+    width: 75px;
+    height: 75px;
+  }
+  @media only screen and (max-width: 1200px) {
+    .title-header{
+      margin-bottom: 15px;
+      padding: 0px;
+      margin-top: 0px;
+    }
+  }
+  @media only screen and (max-width: 800px) {
+    .title-header{
+      font-size: 1em;
+      margin-bottom: 8px;
+    }
+    .img-header{
+      width: 45px;
+      height: 45px;
+    }
+    .scroll-menu .v-slide-group__prev{
+      display: none !important;
+    }
+  }
 </style>
