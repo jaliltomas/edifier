@@ -1,95 +1,36 @@
 <template>
   <div>
-    <v-carousel
-      v-model="item"
-      hide-delimiters
-      height="100%"
-      :interval="24000"
-      :hide-delimiter-background="false"
-      :show-arrows-on-hover="false"
-      :show-arrows="false"
-      cycle
-      next-icon="mdi-chevron-right"
-    >
-      <v-carousel-item
-        contain
-        v-for="(item, i) in carrusel"
-        :key="i"
-        reverse-transition="fade-transition"
-        transition="fade-transition"
+    <div style="position: relative;">
+      <v-carousel
+        v-model="item"
+        height="100%"
+        :interval="5000"
+        :hide-delimiter-background="true"
+        :show-arrows-on-hover="false"
+        :show-arrows="false"
+        :cycle="activeCycle"
+        next-icon="mdi-chevron-right"
       >
-        <v-img :src="item.image_url" style="height: 37vmax">
-          <v-container fill-height>
-            <v-row justify="start" no-gutters>
-              <div class="d-flex">
-                <v-icon :color="item.color" @click="HandlerLeft" class="ml-n1">
-                  mdi-chevron-left
-                </v-icon>
-                <v-icon :color="item.color" @click="HandlerRight">
-                  mdi-chevron-right
-                </v-icon>
-              </div>
-              <v-col cols="12" md="12">
-                <div
-                  class="font-weight-bold title-carrusel"
-                  :style="`color: ${item.color}`"
-                >
-                  {{ item.text_title }}
-                </div>
-              </v-col>
-              <v-col cols="12" md="12">
-                <div
-                  class="mb-0 price-carrusel"
-                  :style="`color: ${item.color}`"
-                >
-                  <div v-if="item.price == ' ' || item.price == null">
-                    <div class="space-price-null"></div>
-                  </div>
-                  <div>
-                    {{ item.price }}
-                  </div>
-                </div>
-              </v-col>
-              <v-col cols="12" md="12">
-                <div class="d-flex mt-4">
-                  <v-btn color="#495358" fab x-small>
-                    <v-icon> mdi-share-variant </v-icon>
-                  </v-btn>
-                  <span :style="`color: ${item.color}`" class="share_carrusel">
-                    compartir
-                  </span>
-                </div>
-              </v-col>
-            </v-row>
-            <v-row
-              class="hidden-sm-and-down"
-              justify="center"
-              :no-gutters="false"
-            >
-              <v-col
-                v-for="(val, index) in item.features"
-                :key="index"
-                style="background-color: rgb(255 255 255 / 60%)"
-                class="mr-1"
-                :md="item.features.length == 4 ? '' : 3"
-              >
-                <p
-                  class="
-                    black--text
-                    mr-1
-                    text-uppercase text-center
-                    mb-0
-                    features-carrusel
-                  "
-                >
-                  {{ val }}
-                </p>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-img>
-      </v-carousel-item>
-    </v-carousel>
+        <v-carousel-item
+          contain
+          v-for="(item, i) in carrusel"
+          :key="i"
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+        >
+          <v-img :src="item.image_url" style="height: 37vmax">
+          </v-img>
+        </v-carousel-item>
+      </v-carousel>
+      <v-btn @click="handlerActiveCycle" class="simple-play-btn" :style="{ left: `calc(50% + ${playBtnLeft}px + 10px)` }">
+        <v-icon color="black" v-if="!activeCycle">
+          mdi-play
+        </v-icon>
+        <v-icon color="black" v-else>
+          mdi-pause
+        </v-icon>
+      </v-btn>
+    </div>
 
     <v-container fluid>
       <section id="categorias" class="mt-15">
@@ -207,7 +148,9 @@ export default {
       item: 0,
 
       //Carrusel
-      perPage: 3
+      perPage: 3,
+      activeCycle: true,
+      playBtnLeft: 0,
     };
   },
 
@@ -358,6 +301,10 @@ export default {
           request
         );
 
+        setTimeout(() => {
+          this.getElementWidth();
+        }, 50);
+
         for (const iterator of response.data.data.data) {
           if (iterator.active) {
             switch (iterator.type) {
@@ -412,7 +359,18 @@ export default {
         discount: Math.round(item.price.transfer_discount),
         value_no_discount: item.price.pvp_transfer_no_discount
       };
-    }
+    },
+
+    handlerActiveCycle() {
+      this.activeCycle = !this.activeCycle;
+    },
+
+    getElementWidth() {
+      const elemento = this.$el.querySelector('.v-carousel__controls>.v-item-group');
+      if (elemento) {
+        this.playBtnLeft = elemento.offsetWidth/2;
+      }
+    },
   }
 };
 </script>
@@ -455,6 +413,49 @@ export default {
   transform: translateY(-50%) translateX(-100%);
   font-family: "system";
   color: #00a0e9;
+}
+.simple-play-btn{
+  left: 50%;
+  position: absolute;
+  bottom: 30px;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: fit-content !important;
+  width: fit-content !important;
+  min-width: auto !important;
+  z-index: 1;
+}
+.v-carousel--hide-delimiter-background .v-carousel__controls {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 38px;
+}
+.v-carousel--hide-delimiter-background .v-carousel__controls .mdi:before, .mdi-set { 
+    font: inherit !important;
+}
+.v-carousel__controls__item {
+    margin: 0 3px !important;
+    border: 2px solid rgba(0,0,0,.3) !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon.v-btn--round.theme--dark.v-size--small {
+    background-color: black;
+}
+.v-icon.v-icon:after {
+  left: auto !important;
+  top: auto !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.v-btn--fab.v-size--default .v-icon, .v-btn--fab.v-size--small .v-icon, .v-btn--icon.v-size--default .v-icon, .v-btn--icon.v-size--small .v-icon {
+    height: 16px !important;
+    width: 16px !important;
 }
 
 /* .VueCarousel-navigation-next::before {
