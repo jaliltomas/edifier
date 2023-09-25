@@ -13,7 +13,9 @@
       >
         <v-carousel-item
           contain
-          v-for="(item, i) in promotions[isDesktopDisplay? 'desktop':'mobile'].carrusel"
+          v-for="(item, i) in promotions[
+            isDesktopDisplay ? 'desktop' : 'mobile'
+          ].carrusel"
           :key="i"
           reverse-transition="fade-transition"
           transition="fade-transition"
@@ -24,7 +26,11 @@
           </v-img>
         </v-carousel-item>
       </v-carousel>
-      <v-btn @click="handlerActiveCycle" class="simple-play-btn" :style="{ left: `calc(50% + ${playBtnLeft}px + 10px)` }">
+      <v-btn
+        @click="handlerActiveCycle"
+        class="simple-play-btn"
+        :style="{ left: `calc(50% + ${playBtnLeft}px + 10px)` }"
+      >
         <v-icon color="black" v-if="!activeCycle">
           mdi-play
         </v-icon>
@@ -34,16 +40,21 @@
       </v-btn>
     </div>
 
-    <v-container fluid>
+    <v-container fluid style="padding: 0">
       <section id="categorias" class="my-4">
         <div class="featured-info">
           <div class="featured-title">Productos destacados</div>
-          <div class="featured-text">Conoce nuestra selección de productos destacados y convertite en un #EDIFAN</div>
+          <div class="featured-text">
+            Conoce nuestra selección de productos destacados y convertite en un
+            #EDIFAN
+          </div>
         </div>
         <div class="featured-row mt-3">
-          <div 
-            class="featured-item" 
-            v-for="(item, index) in promotions[isDesktopDisplay? 'desktop':'mobile'].destacados"
+          <div
+            class="featured-item"
+            v-for="(item, index) in promotions[
+              isDesktopDisplay ? 'desktop' : 'mobile'
+            ].destacados"
             :key="index"
           >
             <v-card
@@ -75,19 +86,25 @@
       </section>
     </v-container>
 
-    <div class="news-banners mt-12" :style="isDesktopDisplay ? 'display:flex':'display:none'">
-      <v-img 
+    <div
+      class="news-banners mt-12"
+      :style="isDesktopDisplay ? 'display:flex' : 'display:none'"
+    >
+      <v-img
         v-for="(item, index) in promotions.desktop.novedades"
-        :src="urlImage(item.image_url)" 
+        :src="urlImage(item.image_url)"
         :class="index !== 0 ? 'news-image mt-8' : 'news-image'"
         @click="redirectToUrl(item)"
       />
     </div>
 
-    <div class="news-banners-mobile mt-12" :style="!isDesktopDisplay ? 'display:flex':'display:none'">
-      <v-img 
+    <div
+      class="news-banners-mobile mt-12"
+      :style="!isDesktopDisplay ? 'display:flex' : 'display:none'"
+    >
+      <v-img
         v-for="(item, index) in promotions.mobile.novedades"
-        :src="urlImage(item.image_url)" 
+        :src="urlImage(item.image_url)"
         :class="index !== 0 ? 'news-image-mobile mt-4' : 'news-image-mobile'"
         @click="redirectToUrl(item)"
       />
@@ -153,17 +170,17 @@ export default {
       },
 
       // IMAGES
-      promotions:{
-        desktop:{
-          carrusel:[],
+      promotions: {
+        desktop: {
+          carrusel: [],
           destacados: [],
-          novedades: [],
-        }, 
-        mobile:{
-          carrusel:[],
-          destacados: [],
-          novedades: [],
+          novedades: []
         },
+        mobile: {
+          carrusel: [],
+          destacados: [],
+          novedades: []
+        }
       },
 
       isVisible: true,
@@ -175,22 +192,21 @@ export default {
       activeCycle: true,
       playBtnLeft: 0,
       dummyCategory: [
-        {image_url: require('../../assets/img/headphones.png')},
-        {image_url: require('../../assets/img/bugles.png')},
-        {image_url: require('../../assets/img/w-headphones.png')},
+        { image_url: require("../../assets/img/headphones.png") },
+        { image_url: require("../../assets/img/bugles.png") },
+        { image_url: require("../../assets/img/w-headphones.png") }
       ],
       windowWidth: 0,
-      isDesktopDisplay: true,
+      isDesktopDisplay: true
     };
   },
 
   created() {
     this.HandlerGetProductFeatured();
     this.HandlerGetListPromotions();
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
     this.handleResize();
   },
-  
 
   mounted() {
     const remaze = window._support || { ui: {}, user: {} };
@@ -206,8 +222,8 @@ export default {
     isVisible(val) {
       if (val) this.$refs.slideGroup.setWidths();
     },
-    windowWidth(){
-      if(this.windowWidth > 600){
+    windowWidth() {
+      if (this.windowWidth > 600) {
         this.isDesktopDisplay = true;
       } else {
         this.isDesktopDisplay = false;
@@ -234,11 +250,11 @@ export default {
 
     prevLabel() {
       return "<img src='../../../flacha-izquierda.png' >";
-    },
+    }
   },
 
   destroyed() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
   },
 
   filters: {
@@ -330,16 +346,19 @@ export default {
       }
     },
 
-    urlImage(url){
-      const newUrl = url.replace('0.0.0.0:', 'localhost:');
-      return newUrl
+    urlImage(url) {
+      const newUrl = url.replace("0.0.0.0:", "localhost:");
+      return newUrl;
     },
 
     redirectToUrl(item) {
       if (item.url) {
         console.log(item.url);
-        if (!item.url.startsWith('http://') && !item.url.startsWith('https://')) {
-          item.url = 'http://' + item.url;
+        if (
+          !item.url.startsWith("http://") &&
+          !item.url.startsWith("https://")
+        ) {
+          item.url = "http://" + item.url;
         }
         window.location.href = item.url;
       }
@@ -349,7 +368,7 @@ export default {
       try {
         const request = {
           store_id: 3,
-          type: "",
+          type: ""
         };
 
         const response = await this.$store.dispatch(
@@ -364,23 +383,23 @@ export default {
         for (const iterator of response.data.data) {
           switch (iterator.type) {
             case "banners_principales":
-              if(iterator.display_device == "Desktop"){
+              if (iterator.display_device == "Desktop") {
                 this.promotions.desktop.carrusel.push(iterator);
-              } else{
+              } else {
                 this.promotions.mobile.carrusel.push(iterator);
               }
               break;
             case "productos_destacados":
-              if(iterator.display_device == "Desktop"){
+              if (iterator.display_device == "Desktop") {
                 this.promotions.desktop.destacados.push(iterator);
-              } else{
+              } else {
                 this.promotions.mobile.destacados.push(iterator);
               }
               break;
             case "novedades":
-              if(iterator.display_device == "Desktop"){
+              if (iterator.display_device == "Desktop") {
                 this.promotions.desktop.novedades.push(iterator);
-              } else{
+              } else {
                 this.promotions.mobile.novedades.push(iterator);
               }
               break;
@@ -432,41 +451,47 @@ export default {
     },
 
     getElementWidth() {
-      const elemento = this.$el.querySelector('.v-carousel__controls>.v-item-group');
+      const elemento = this.$el.querySelector(
+        ".v-carousel__controls>.v-item-group"
+      );
       if (elemento) {
-        this.playBtnLeft = elemento.offsetWidth/2;
+        this.playBtnLeft = elemento.offsetWidth / 2;
       }
     },
-    
+
     handleResize() {
       this.windowWidth = window.innerWidth;
-    },
+    }
   }
 };
 </script>
 
 <style>
-.featured-row{
+.featured-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+}
+
+#categorias {
+  max-width: 2000px;
+  margin: auto;
   padding: 0 2rem;
 }
 
-.featured-row .featured-item{
+.featured-row .featured-item {
   width: 28%;
-  height: 430px;
   max-width: 430px;
 }
-.featured-info{
+.featured-info {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 0 3rem;
 }
 
-.featured-info .featured-title{
+.featured-info .featured-title {
   color: #262626;
   font-size: 1.6em;
   font-weight: 600;
@@ -474,7 +499,7 @@ export default {
   text-align: center;
 }
 
-.featured-info .featured-text{
+.featured-info .featured-text {
   color: #262626;
   font-size: 1.4em;
   font-weight: 400;
@@ -482,83 +507,85 @@ export default {
   text-align: center;
 }
 
-.featured-image{
-  width: 100%; 
-  height: 430px;
+.featured-image {
+  width: 100%;
   max-width: 430px;
 }
 
 @media only screen and (max-width: 1280px) {
-  .featured-row .featured-item{
+  .featured-row .featured-item {
     width: 30%;
     height: 420px;
   }
 }
 
 @media only screen and (max-width: 960px) {
-  .featured-row{
+  .featured-row {
     padding: 0 1rem;
   }
-  .featured-row .featured-item{
+  .featured-row .featured-item {
     width: 32%;
     height: 380px;
   }
-  .featured-image{
-    width: 100%; 
-    height: 380px
+  .featured-image {
+    width: 100%;
+    height: 380px;
   }
 }
 
 @media only screen and (max-width: 780px) {
-  .featured-row{
+  .featured-row {
     padding: 0;
   }
-  .featured-row .featured-item{
+  .featured-row .featured-item {
     width: 33%;
     height: 320px;
   }
-  .featured-image{
-    width: 100%; 
-    height: 320px
+  .featured-image {
+    width: 100%;
+    height: 320px;
   }
 }
 
 @media only screen and (max-width: 600px) {
-  .featured-info{
+  .featured-info {
     padding: 0 1.5rem;
   }
-  .featured-row{
+  .featured-row {
     flex-direction: column;
     align-items: center;
     padding: 0 1.5rem;
   }
-  .featured-row .featured-item{
+  .featured-row .featured-item {
     width: 100%;
     height: 386px;
     margin-bottom: 1.5rem;
   }
-  .featured-image{
-    width: 100%; 
-    height: 386px
+  .featured-image {
+    width: 100%;
+    height: 386px;
   }
-  .featured-info .featured-title{
+  .featured-info .featured-title {
     font-size: 1.2em;
   }
 
-  .featured-info .featured-text{
+  .featured-info .featured-text {
     font-size: 1em;
   }
 }
 
-.news-banners{
+.news-banners {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 3rem;
+  max-width: 2000px;
+  margin: auto;
+  padding: 0 2rem;
+  margin-top: 2rem;
 }
 
-.news-banners-mobile{
+.news-banners-mobile {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -566,23 +593,23 @@ export default {
   padding: 0;
 }
 
-.news-banners .news-image{
+.news-banners .news-image {
   width: 100%;
   cursor: pointer;
 }
 
-.news-banners-mobile .news-image-mobile{
+.news-banners-mobile .news-image-mobile {
   width: 100%;
   cursor: pointer;
 }
 
 @media only screen and (max-width: 960px) {
-  .news-banners{
+  .news-banners {
     padding: 0 2rem;
   }
 }
 @media only screen and (max-width: 600px) {
-  .news-banners{
+  .news-banners {
     padding: 0;
   }
 }
@@ -625,7 +652,7 @@ export default {
   font-family: "system";
   color: #00a0e9;
 }
-.simple-play-btn{
+.simple-play-btn {
   left: 50%;
   position: absolute;
   bottom: 30px;
@@ -645,17 +672,22 @@ export default {
   justify-content: center !important;
   height: 38px;
 }
-.v-carousel--hide-delimiter-background .v-carousel__controls .mdi:before, .mdi-set { 
-    font: inherit !important;
+
+.mdi-circle:before {
+  content: unset;
+}
+.v-carousel--hide-delimiter-background .v-carousel__controls .mdi:before,
+.mdi-set {
+  font: inherit !important;
 }
 .v-carousel__controls__item {
-    margin: 0 3px !important;
-    border: 2px solid rgba(0,0,0,.3) !important;
-    width: 16px !important;
-    height: 16px !important;
+  margin: 0 3px !important;
+  border: 2px solid rgba(0, 0, 0, 0.3) !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon.v-btn--round.theme--dark.v-size--small {
-    background-color: black;
+  background-color: black;
 }
 .v-icon.v-icon:after {
   left: auto !important;
@@ -664,12 +696,15 @@ button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon
   height: 16px !important;
 }
 
-.v-btn--fab.v-size--default .v-icon, .v-btn--fab.v-size--small .v-icon, .v-btn--icon.v-size--default .v-icon, .v-btn--icon.v-size--small .v-icon {
-    height: 16px !important;
-    width: 16px !important;
+.v-btn--fab.v-size--default .v-icon,
+.v-btn--fab.v-size--small .v-icon,
+.v-btn--icon.v-size--default .v-icon,
+.v-btn--icon.v-size--small .v-icon {
+  height: 16px !important;
+  width: 16px !important;
 }
 .theme--dark.v-btn.v-btn--icon {
-    color: transparent !important;
+  color: transparent !important;
 }
 
 /* .VueCarousel-navigation-next::before {
