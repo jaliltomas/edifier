@@ -713,7 +713,7 @@ button.v-carousel__controls__item.v-btn.v-item--active.v-btn--active.v-btn--icon
   width: 16px !important;
 }
 .theme--dark.v-btn.v-btn--icon {
-  color: transparent !important;
+  /* color: transparent !important; */
 }
 
 /* .VueCarousel-navigation-next::before {
