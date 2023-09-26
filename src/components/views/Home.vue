@@ -22,7 +22,11 @@
           @click="redirectToUrl(item)"
           style="cursor: pointer;"
         >
-          <v-img :src="urlImage(item.image_url)" style="height: 37vmax">
+          <v-img
+            :src="urlImage(item.image_url)"
+            style="height: 37vmax"
+            class="carousel-img"
+          >
           </v-img>
         </v-carousel-item>
       </v-carousel>
@@ -558,12 +562,12 @@ export default {
   }
   .featured-row .featured-item {
     width: 100%;
-    height: 386px;
+    height: auto;
     margin-bottom: 1.5rem;
   }
   .featured-image {
     width: 100%;
-    height: 386px;
+    height: 100%;
   }
   .featured-info .featured-title {
     font-size: 1.2em;
@@ -571,6 +575,11 @@ export default {
 
   .featured-info .featured-text {
     font-size: 1em;
+  }
+
+  .carousel-img {
+    height: 100% !important;
+    width: 100%;
   }
 }
 
@@ -655,7 +664,7 @@ export default {
 .simple-play-btn {
   left: 50%;
   position: absolute;
-  bottom: 30px;
+  bottom: 6px;
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
