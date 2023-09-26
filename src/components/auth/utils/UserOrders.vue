@@ -51,6 +51,7 @@
                   dark
                   v-bind="attrs"
                   v-on="on"
+                  style="color: #1976d2 !important"
                 >
                   <v-icon>mdi-eye</v-icon>
                 </v-btn>
@@ -91,7 +92,7 @@ import moment from "moment";
 import UserDetailsOrder from "../utils/UserDetailsOrder.vue";
 export default {
   components: {
-    "details-component": UserDetailsOrder,
+    "details-component": UserDetailsOrder
   },
   data() {
     return {
@@ -109,19 +110,23 @@ export default {
           align: "start",
           sortable: false,
           value: "date_created",
-          class: "header-text",
+          class: "header-text"
         },
         { text: "#ID", value: "meli_id", class: "header-text" },
         { text: "Productos", value: "order_item", class: "header-text" },
         { text: "Estado", value: "order", class: "header-text" },
-        { text: "Total", value: "total_amount_with_shipping", class: "header-text" },
-        { text: "Acción", value: "action", class: "header-text" },
+        {
+          text: "Total",
+          value: "total_amount_with_shipping",
+          class: "header-text"
+        },
+        { text: "Acción", value: "action", class: "header-text" }
       ],
 
       //Details Orders
       showDetailsOrder: false,
       dataOrder: {},
-      paginate: {},
+      paginate: {}
     };
   },
   created() {
@@ -129,12 +134,14 @@ export default {
   },
   filters: {
     date(val) {
-      return moment(val).locale("es").format("DD-MM-YYYY HH:mm");
+      return moment(val)
+        .locale("es")
+        .format("DD-MM-YYYY HH:mm");
     },
     currencyTotal(value) {
       return new Intl.NumberFormat("es-AR", {
         currency: "ARS",
-        style: "currency",
+        style: "currency"
       }).format(value);
     },
     statusPay(val) {
@@ -153,12 +160,12 @@ export default {
           return "cancelado";
       }
       return val;
-    },
+    }
   },
   watch: {
     page(val) {
       this.HandlerGetOrders(val);
-    },
+    }
   },
   methods: {
     async HandlerGetOrders() {
@@ -167,7 +174,7 @@ export default {
           page: this.page,
           per_page: this.per_page,
           date_from: this.date_from,
-          date_to: this.date_to,
+          date_to: this.date_to
         };
         const response = await this.$store.dispatch(
           "products/GET_ORDERS_USER",
@@ -178,7 +185,7 @@ export default {
           lastPage: response.data.data.lastPage,
           page: response.data.data.page,
           perPage: response.data.data.perPage,
-          total: response.data.data.total,
+          total: response.data.data.total
         };
       } catch (error) {
         console.log(error);
@@ -187,8 +194,8 @@ export default {
     HandlerMoreData(item) {
       this.dataOrder = { ...item };
       this.showDetailsOrder = true;
-    },
-  },
+    }
+  }
 };
 </script>
 
