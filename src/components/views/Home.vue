@@ -519,7 +519,7 @@ export default {
 @media only screen and (max-width: 1280px) {
   .featured-row .featured-item {
     width: 30%;
-    height: 420px;
+    height: auto;
   }
 }
 
@@ -663,8 +663,8 @@ export default {
 }
 .simple-play-btn {
   left: 50%;
-  position: absolute;
-  bottom: 6px;
+  position: absolute !important;
+  bottom: 6px !important;
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;

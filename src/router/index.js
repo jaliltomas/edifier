@@ -14,6 +14,7 @@ import CheckoutNotification from '../components/views/CheckoutNotification.vue'
 import OrderDetails from '../components/auth/utils/UserDetailsOrder.vue'
 import ContactAccount from '../components/views/ContactAccount'
 import AppDowload from '../components/views/AppDowload'
+import AboutUs from '../components/views/AboutUs'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -60,6 +61,11 @@ const routes = [
         path: '/app_dowload',
         component: AppDowload,
         name: 'app_dowload'
+    },
+    {
+        path: '/about_us',
+        component: AboutUs,
+        name: 'aboutUs'
     },
     {
         path: '*',

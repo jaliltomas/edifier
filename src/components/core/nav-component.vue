@@ -8,7 +8,8 @@
         ></v-app-bar-nav-icon>
 
         <v-avatar
-          size="120"
+          width="120"
+          heigth="75"
           tile
           @click="$router.push({ name: 'home' }).catch(err => err)"
         >
@@ -27,38 +28,112 @@
         >
           .
         </div>
-        <div v-if="!isMobile">
+        <div v-if="!isMobile" class="nav-row">
+          <span style="position: relative;">
+            <v-hover v-slot="{ hover }">
+              <span
+                @mouseover="headphonesMenu = true; speakersMenu = false"
+                :class="hover ? 'nav-item-hover text-capitalize mx-4 py-4':'nav-item text-capitalize mx-4 py-4'"
+                :style="
+                  (currentURL.toLowerCase().includes('auriculares') || headphonesMenu) ? 'font-weight: 600;' : ''
+                "
+              >
+                Auriculares
+              </span>
+            </v-hover>
+            <div
+              v-if="headphonesMenu"
+              @mouseleave="headphonesMenu = false"
+              class="menu-dropdown mega_menu animate__animated animate__fadeIn animate__faster"
+              style="background-color: #f8f8f8"
+            > 
+              <div 
+                v-for="(item, index) in headphonesOptions" 
+                :key="index"
+                class="row-menu"
+                @click="()=>goToMenu(item.url)"
+              >
+                <img
+                  v-if="item.icon"
+                  height="24"
+                  width="24"
+                  :src="item.icon"
+                  style="margin-right: 8px;"
+                />
+                <div class="row-menu-title" >{{ item.title }}</div>
+              </div>
+              <div 
+                class="see-all-text"
+                @click="()=>goToMenu('Auriculares')"
+              >
+                Ver todos
+              </div>
+            </div>
+          </span>
+          <span style="position: relative;">
+            <v-hover v-slot="{ hover }">
+              <span
+                @mouseover="speakersMenu = true; headphonesMenu = false"
+                :class="hover ? 'nav-item-hover text-capitalize mx-4 py-4':'nav-item text-capitalize mx-4 py-4'"
+                :style="
+                   (currentURL.toLowerCase().includes('parlantes') || speakersMenu) ? 'font-weight: 600;' : ''
+                "
+              >
+                Parlantes
+              </span>
+            </v-hover>
+            <div
+              v-if="speakersMenu"
+              @mouseleave="speakersMenu = false"
+              class="menu-dropdown mega_menu animate__animated animate__fadeIn animate__faster"
+              style="background-color: #f8f8f8"
+            > 
+              <div 
+                v-for="(item, index) in spekersOptions" 
+                :key="index"
+                class="row-menu"
+                @click="()=>goToMenu(item.url)"
+              >
+                <img
+                  v-if="item.icon"
+                  height="24"
+                  width="24"
+                  :src="item.icon"
+                  style="margin-right: 8px;"
+                />
+                <div class="row-menu-title" >{{ item.title }}</div>
+              </div>
+              <div 
+                class="see-all-text"
+                @click="()=>goToMenu('Parlantes')"
+              >
+                Ver todos
+              </div>
+            </div>
+          </span>
+
           <v-hover v-slot="{ hover }">
             <span
-              @mouseover="megaMenu = true"
+              @click="goToMenu('about_us')"
+              @mouseover="closeMenu()"
+              :class="hover ? 'nav-item-hover text-capitalize mx-4 py-4':'nav-item text-capitalize mx-4 py-4'"
               :style="
-                hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
+                currentURL.toLowerCase().includes('about_us') ? 'font-weight: 600;' : ''
               "
             >
-              Nuestros modelos
+              Nosotros
             </span>
           </v-hover>
           <v-hover v-slot="{ hover }">
             <span
-              @mouseover="megaMenu = false"
-              @click="goToContact"
-              class="text-capitalize px-10"
+              @mouseover="closeMenu()"
+              @click="goToMenu('contact')"
+              :class="hover ? 'nav-item-hover text-capitalize mx-4 py-4':'nav-item text-capitalize mx-4 py-4'"
               :style="
-                hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
+                currentURL.toLowerCase().includes('contact') ? 'font-weight: 600;' : ''
               "
             >
               Contacto
-            </span>
-          </v-hover>
-          <v-hover v-slot="{ hover }">
-            <span
-              @click="goTo()"
-              @mouseover="megaMenu = false"
-              :style="
-                hover ? 'cursor: pointer; color: #00A0E9' : 'cursor: pointer;'
-              "
-            >
-              Soporte técnico
             </span>
           </v-hover>
         </div>
@@ -280,40 +355,55 @@
 
     <v-navigation-drawer
       v-model="drawer"
-      bottom
       color="transparent"
       fixed
       height="auto"
       overlay-color="secondary"
-      overlay-opacity=".6"
+      overlay-opacity="0"
       temporary
       v-bind="$attrs"
       v-on="$listeners"
+      style="top:70px; width: 280px;"
     >
-      <v-list color="white" shaped>
+      <v-list class="list-menu" shaped>
         <v-list-item-group color="primary">
-          <v-list-item v-for="(item, i) in drawerItems" :key="i">
-            <v-list-item-content>
-              <v-btn
-                v-if="item.func == true"
-                color="#2696A6"
-                text
-                class="font-medium text-capitalize"
-                @click="HandlerRoute(item.href, item.value)"
-              >
-                {{ item.text }}
-              </v-btn>
-              <v-btn
-                v-if="item.func == false"
-                color="#2696A6"
-                text
-                @click="HandlerRoute(item.href, item.value)"
-                class="font-medium text-capitalize"
-              >
-                {{ item.text }}
-              </v-btn>
-            </v-list-item-content>
-          </v-list-item>
+          <v-expansion-panels accordion >
+            <v-list-item v-for="(item, i) in drawerItems" :key="i">
+              <v-list-item-content>
+                <v-btn
+                  color="black"
+                  text
+                  class="menu-btn"
+                  @click="goToMenu(item.url)"
+                  v-if="!item.isDropdown"
+                >
+                  {{ item.title }}
+                </v-btn>
+                <v-expansion-panel  v-else>
+                  <v-expansion-panel-header>
+                    {{ item.title }}
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <div 
+                      v-for="(itm, index) in spekersOptions" 
+                      :key="index"
+                      class="row-menu"
+                      @click="()=>goToMenu(itm.url)"
+                    >
+                      <img
+                        v-if="itm.icon"
+                        height="24"
+                        width="24"
+                        :src="itm.icon"
+                        style="margin-right: 8px;"
+                      />
+                      <div class="row-menu-title" >{{ itm.title }}</div>
+                    </div>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-list-item-content>
+            </v-list-item>
+          </v-expansion-panels>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -325,6 +415,8 @@ export default {
     return {
       drawer: false,
       megaMenu: false,
+      headphonesMenu: false,
+      speakersMenu: false,
       group: null,
       showModalContact: false,
 
@@ -341,12 +433,30 @@ export default {
       hints: true,
 
       //Categories
-      categories: []
+      categories: [],
+      headphonesOptions: [
+        {title: "Auriculares In-Ear", icon: require("../../assets/img/headphones-in-ear.png"), url: "Auriculares-in-ear"},
+        {title: "Auriculares Over-Ear", icon: require("../../assets/img/headphones-over-ear.png"), url: "Auriculares-on-over-ear"},
+        {title: "Auriculares Gamer/PC", icon: require("../../assets/img/headphones-gamer-pc.png"), url: "Auriculares-gamer-pc"},
+      ],
+      spekersOptions: [
+        {title: "2.0 / Estudio", icon: require("../../assets/img/speakers-estudio.png"), url: "Estudio20"},
+        {title: "2.1 / Multimedia", icon: require("../../assets/img/speakers-multimedia.png"), url: "Multimedia21"},
+        {title: "SubWoofer", icon: require("../../assets/img/speakers-portatil.png"), url: "Subwoofer"},
+        {title: "Portátiles", icon: require("../../assets/img/speakers-portatil.png"), url: "Portables"},
+        {title: "Línea Signature", url: "Linea-signature"},
+        {title: "Estilo", url: "Estilo"},
+      ],
+      currentURL: '',
     };
   },
 
   created() {
     this.GetCategories();
+  },
+
+  mounted() {
+    this.currentURL = window.location.href;
   },
 
   watch: {
@@ -357,7 +467,7 @@ export default {
 
   computed: {
     isMobile() {
-      return this.$vuetify.breakpoint.mobile;
+      return this.$vuetify.breakpoint.sm ||  this.$vuetify.breakpoint.xs;
     },
 
     isAuth() {
@@ -369,42 +479,28 @@ export default {
     },
 
     drawerItems() {
-      const isAuth = this.$store.getters["auth/AUTHENTICATED"];
-      let items;
-      if (isAuth) {
-        items = [
-          { text: "Inicio", func: true, href: "home", value: "home" },
-          { text: "Perfil", func: false, href: "profile", value: "profile" },
-          {
-            text: "Productos",
-            func: false,
-            href: "products",
-            vlue: "products"
-          },
-          {
-            text: "Carrito",
-            func: false,
-            href: "cart",
-            value: "cart"
-          },
-          {
-            text: "Favoritos",
-            func: false,
-            href: "product_favorite",
-            value: "product_favorite"
-          }
-        ];
-      } else {
-        items = [
-          { text: "Inicio", func: false, href: "home", value: "home" },
-          {
-            text: "Productos",
-            func: false,
-            href: "products",
-            value: "products"
-          }
-        ];
-      }
+      const items = [
+        {
+          title: "Auriculares", 
+          url: "",
+          isDropdown: true,
+          items: [
+            ...this.headphonesOptions,
+            {title: "Ver todos", url: "Auriculares"},
+          ],
+        },
+        {
+          title: "Parlantes", 
+          url: "",
+          isDropdown: true,
+          items: [
+            ...this.spekersOptions,
+            {title: "Ver todos", url: "Parlantes"},
+          ]
+        },
+        {title: "Nosotros", url: "about_us"},
+        {title: "Contacto", url: "contact"},
+      ]
       return items;
     },
 
@@ -493,9 +589,114 @@ export default {
     goToContact() {
       const url = process.env.VUE_APP_CHECKOUT;
       location.href = `${url}/contact`;
-    }
+    },
+
+    goToMenu(url){
+      if(url == "showRoom"){
+        this.$router.push({ name: "showRoom" });
+      } else {
+        location.href = url;
+      }
+    },
+
+    closeMenu(){
+      this.headphonesMenu = false;
+      this. speakersMenu = false;
+    },
   }
 };
 </script>
 
-<style></style>
+<style>
+  .nav-row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .menu-dropdown{
+    left: 16px !important;
+    top: 32px;
+    background-color: white !important;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    width: 240px !important;
+  }
+  .row-menu{
+    display: flex;
+    flex-direction: row;
+    padding: 8px 14px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .row-menu:hover{
+    background-color: rgba(0, 160, 233, 0.25);
+  }
+  .row-menu-title{
+    color: black;
+    font-size: 16px;
+  }
+  .see-all-text{
+    color: black;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  .see-all-text:hover{
+    background-color: rgba(0, 160, 233, 0.25);
+  }
+  .menu-btn .v-btn__content{
+    justify-content: flex-start;
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .menu-btn{
+    text-transform: capitalize !important;
+    background-color: transparent !important;
+  }
+  .menu-btn:hover{
+    background-color: transparent !important;
+  }
+  .v-btn:before{
+    background-color: transparent !important;
+  }
+  .v-list-item{
+    background-color: transparent !important;
+  }
+  .v-list-item--link:before {
+    background-color: transparent !important;
+  }
+  .v-list-item__content {
+      padding: 0 !important;
+  }
+  .list-menu{
+    background-color:rgba(256,256,256,0.95) !important;
+    min-height: 370px !important;
+  }
+  .v-expansion-panel:before {
+    box-shadow: none !important;
+  }
+  .v-application--is-ltr .v-expansion-panel-header {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 16px !important;
+    color: black !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+  }
+  .v-application--is-ltr .v-expansion-panel-header__icon {
+    display: none !important;
+  }
+  .v-expansion-panel-content__wrap {
+    padding: 0 !important;
+  }
+  .nav-item-hover{
+    cursor: pointer; 
+    font-weight: 600;
+  }
+  .nav-item{
+    cursor: pointer; 
+  }
+</style>
