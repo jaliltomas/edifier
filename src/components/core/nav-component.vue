@@ -51,7 +51,7 @@
                 v-for="(item, index) in headphonesOptions" 
                 :key="index"
                 class="row-menu"
-                @click="()=>goToMenu(item.url)"
+                @click="()=>HandlerGoToCategory(item.id, item.type, item.title)"
               >
                 <img
                   v-if="item.icon"
@@ -64,7 +64,7 @@
               </div>
               <div 
                 class="see-all-text"
-                @click="()=>goToMenu('Auriculares')"
+                @click="()=>HandlerGoToCategory(8, 1,'Auriculares')"
               >
                 Ver todos
               </div>
@@ -92,7 +92,7 @@
                 v-for="(item, index) in spekersOptions" 
                 :key="index"
                 class="row-menu"
-                @click="()=>goToMenu(item.url)"
+                @click="()=>HandlerGoToCategory(item.id, item.type, item.title)"
               >
                 <img
                   v-if="item.icon"
@@ -105,7 +105,7 @@
               </div>
               <div 
                 class="see-all-text"
-                @click="()=>goToMenu('Parlantes')"
+                @click="()=>HandlerGoToCategory(7, 1,'Parlantes')"
               >
                 Ver todos
               </div>
@@ -388,7 +388,7 @@
                       v-for="(itm, index) in spekersOptions" 
                       :key="index"
                       class="row-menu"
-                      @click="()=>goToMenu(itm.url)"
+                      @click="()=>HandlerGoToCategory(itm.id, itm.type, item.title)"
                     >
                       <img
                         v-if="itm.icon"
@@ -435,17 +435,17 @@ export default {
       //Categories
       categories: [],
       headphonesOptions: [
-        {title: "Auriculares In-Ear", icon: require("../../assets/img/headphones-in-ear.png"), url: "Auriculares-in-ear"},
-        {title: "Auriculares Over-Ear", icon: require("../../assets/img/headphones-over-ear.png"), url: "Auriculares-on-over-ear"},
-        {title: "Auriculares Gamer/PC", icon: require("../../assets/img/headphones-gamer-pc.png"), url: "Auriculares-gamer-pc"},
+        {title: "Auriculares In-Ear", icon: require("../../assets/img/headphones-in-ear.png"), id: 53, type:2},
+        {title: "Auriculares Over-Ear", icon: require("../../assets/img/headphones-over-ear.png"), id: 54, type:2},
+        {title: "Auriculares Gamer/PC", icon: require("../../assets/img/headphones-gamer-pc.png"), id: 54, type:2},
       ],
       spekersOptions: [
-        {title: "2.0 / Estudio", icon: require("../../assets/img/speakers-estudio.png"), url: "Estudio20"},
-        {title: "2.1 / Multimedia", icon: require("../../assets/img/speakers-multimedia.png"), url: "Multimedia21"},
-        {title: "SubWoofer", icon: require("../../assets/img/speakers-portatil.png"), url: "Subwoofer"},
-        {title: "Portátiles", icon: require("../../assets/img/speakers-portatil.png"), url: "Portables"},
-        {title: "Línea Signature", url: "Linea-signature"},
-        {title: "Estilo", url: "Estilo"},
+        {title: "2.0 / Estudio", icon: require("../../assets/img/speakers-estudio.png"), id: 38, type:2},
+        {title: "2.1 / Multimedia", icon: require("../../assets/img/speakers-multimedia.png"), id: 39, type:2},
+        {title: "SubWoofer", icon: require("../../assets/img/speakers-portatil.png"), id: 45, type:2},
+        {title: "Portátiles", icon: require("../../assets/img/speakers-portatil.png"), id: 13, type:1},
+        {title: "Línea Signature", id: 9, type:1},
+        {title: "Estilo", id: 46, type:2},
       ],
       currentURL: '',
     };
@@ -462,6 +462,9 @@ export default {
   watch: {
     isMobile(val) {
       if (!val) this.drawer = false;
+    },
+    '$route'(to, from) {
+      this.currentURL = window.location.href;
     }
   },
 
@@ -486,7 +489,7 @@ export default {
           isDropdown: true,
           items: [
             ...this.headphonesOptions,
-            {title: "Ver todos", url: "Auriculares"},
+            {title: "Ver todos", id: 8, type: 1},
           ],
         },
         {
@@ -495,7 +498,7 @@ export default {
           isDropdown: true,
           items: [
             ...this.spekersOptions,
-            {title: "Ver todos", url: "Parlantes"},
+            {title: "Ver todos", id: 7, type: 1},
           ]
         },
         {title: "Nosotros", url: "about_us"},
@@ -576,6 +579,21 @@ export default {
           .catch(err => err);
       }
       this.megaMenu = false;
+    },
+
+    async HandlerGoToCategory(id, value, name) {
+      if (value == 1) {
+        this.$router
+          .push({ name: "products", query: { data: id, category_name: name } })
+          .catch(err => err);
+      } else {
+        this.$router
+          .push({
+            name: "products",
+            query: { sub_data: id, category_name: name }
+          })
+          .catch(err => err);
+      }
     },
 
     activeSearch() {
@@ -695,8 +713,14 @@ export default {
   .nav-item-hover{
     cursor: pointer; 
     font-weight: 600;
+    display: flex;
+    width: 76px;
+    justify-content: center;
   }
   .nav-item{
     cursor: pointer; 
+    display: flex;
+    width: 76px;
+    justify-content: center;
   }
 </style>
