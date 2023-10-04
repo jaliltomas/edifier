@@ -385,7 +385,7 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <div 
-                      v-for="(itm, index) in spekersOptions" 
+                      v-for="(itm, index) in item.items" 
                       :key="index"
                       class="row-menu"
                       @click="()=>HandlerGoToCategory(itm.id, itm.type, item.title)"
@@ -722,5 +722,9 @@ export default {
     display: flex;
     width: 76px;
     justify-content: center;
+  }
+  .theme--light.v-expansion-panels .v-expansion-panel {
+    background-color: transparent !important;
+    color: black !important;
   }
 </style>

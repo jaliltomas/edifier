@@ -20,7 +20,7 @@
             conectar a las personas y el equipo de audio es crucial para esa tarea. Compartimos la pasión 
             por el sonido. Te invitamos a ser parte.
         </div>
-        <div class="about-banner">Descubre la experiencia Edifier</div>
+        <div @click="$router.push({ name: 'products' })" class="about-banner">Descubre la experiencia Edifier</div>
     </div>
 </template>
 
@@ -65,6 +65,7 @@ export default {
     color: white;
     font-size: 26px;
     font-weight: 400;
+    cursor: pointer;
   }
   .about-content{
     display: flex;
