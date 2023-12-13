@@ -584,13 +584,13 @@ export default {
     },
 
     HandlerShowProduct(publication) {
-      const encryptedID = this.CryptoJS.AES.encrypt(
-        publication.product.id.toString(),
-        "MyS3c3rtIdPr0Duct"
-      ).toString();
+      const { product, keywords } = publication;
       this.$router.push({
-        name: "product_details",
-        query: { data: encryptedID }
+        path:
+          "/product-details/" +
+          product?.brand.name +
+          "/" +
+          keywords.replaceAll(" ", "-")
       });
     },
 

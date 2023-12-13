@@ -321,10 +321,6 @@ export default {
 
   async created() {
     window.fbq("trackCustom", "ProductDetailsView");
-    const id = this.$route.query.data;
-    this.id = this.CryptoJS.AES.decrypt(id, "MyS3c3rtIdPr0Duct").toString(
-      this.CryptoJS.enc.Utf8
-    );
     this.HandlerGetProducts(this.id);
 
     if (this.isAuth) {
@@ -405,28 +401,20 @@ export default {
       if (this.isAuth) this.HandlerGetAuthProducts(id);
     },
 
-    async HandlerGetProductsNoAuth(id) {
+    async HandlerGetProductsNoAuth() {
       try {
         this.loadingResponse = true;
-        const request = {
-          store: 3,
-          page: 1,
-          per_page: 1,
-          paginate: false,
-          product_id: parseInt(id),
-          warehouse_id: "",
-          keywords:
-            this.$route.query.product == undefined
-              ? ""
-              : this.$route.query.product
-        };
+        const { brand, keywords } = this.$route.params;
 
         const response = await this.$store.dispatch(
-          "products/GET_PRODUCTS",
-          request
+          "products/GET_PUBLICATION_DETAILS",
+          {
+            product_brand: brand,
+            publication_title: keywords.replaceAll("-", " ")
+          }
         );
 
-        this.dataProduct = response.data.data[0];
+        this.dataProduct = response.data.data;
       } catch (error) {
         console.log(error);
       } finally {
@@ -434,32 +422,20 @@ export default {
       }
     },
 
-    async HandlerGetAuthProducts(id) {
+    async HandlerGetAuthProducts() {
       try {
         this.loadingResponse = true;
-        const request = {
-          store: 3,
-          page: 1,
-          per_page: 1,
-          paginate: false,
-          product_id: parseInt(id) || this.id,
-          warehouse_id:
-            parseInt(sessionStorage.getItem("region")) == null
-              ? 1
-              : parseInt(sessionStorage.getItem("region")),
-          keywords:
-            this.$route.query.product == undefined
-              ? ""
-              : this.$route.query.product
-        };
+        const { brand, keywords } = this.$route.params;
 
         const response = await this.$store.dispatch(
-          "products/GET_AUTH_PRODUCTS",
-          request
+          "products/GET_PUBLICATION_DETAILS",
+          {
+            product_brand: brand,
+            publication_title: keywords.replaceAll("-", " ")
+          }
         );
 
-        this.dataProduct = response.data.data[0];
-        this.HandlerShowFavoriteIcon(this.dataProduct.product_favorite);
+        this.dataProduct = response.data.data;
       } catch (error) {
         console.log(error);
       } finally {
@@ -605,8 +581,8 @@ export default {
           this.$router.push({ name: "login" });
         }
       } catch (error) {
-        const errorMessage = error?.response?.data?.errors[0]?.message
-        if(errorMessage === "range validation failed on quantity"){
+        const errorMessage = error?.response?.data?.errors[0]?.message;
+        if (errorMessage === "range validation failed on quantity") {
           this.$snotify.error(
             "No se puede agregar más unidades de este producto al carrito.",
             "Error"

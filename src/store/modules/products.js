@@ -97,6 +97,18 @@ const actions = {
     }
   },
 
+  async GET_PUBLICATION_DETAILS(_, payload) {
+    try {
+      const { product_brand, publication_title } = payload;
+      const response = await store.get(
+        `api/publication/details/${product_brand}/${publication_title}?store_id=3`
+      );
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+
   async GET_CATEGORIES({ commit }, payload) {
     try {
       const response = await store.get(
