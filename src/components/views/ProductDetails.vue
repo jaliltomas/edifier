@@ -650,7 +650,9 @@ export default {
       return (
         this.dataProduct.product.product_warehouse.some(
           ele => ele.current_stock !== 0
-        ) && !this.dataProduct.store.out_stock
+        ) &&
+        !this.dataProduct.store.out_stock &&
+        !this.dataProduct.out_stock
       );
     },
 

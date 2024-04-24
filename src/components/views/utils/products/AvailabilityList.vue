@@ -40,9 +40,12 @@ export default {
 
   methods: {
     inStock() {
-      const available = this.dataProduct.product.product_warehouse.some(
-        ele => ele.current_stock !== 0
-      );
+      const available =
+        this.dataProduct.product.product_warehouse.some(
+          ele => ele.current_stock !== 0
+        ) &&
+        !this.dataProduct.store.out_stock &&
+        !this.dataProduct.out_stock;
       if (available && this.validateUmbral()) {
         return "Disponible";
       } else {
@@ -53,7 +56,12 @@ export default {
       const stock = this.dataProduct.product.product_warehouse.filter(
         ele => ele.warehouse_id === 5
       )[0].current_stock;
-      if (stock > 0 && this.validateUmbral()) {
+      if (
+        stock > 0 &&
+        !this.dataProduct.store.out_stock &&
+        !this.dataProduct.out_stock &&
+        this.validateUmbral()
+      ) {
         return "Disponible";
       } else {
         return "No Disponible";

@@ -590,7 +590,7 @@ export default {
           "/product-details/" +
           product?.brand.name +
           "/" +
-          keywords.replaceAll(" ", "-")
+          keywords.replaceAll("-", "_").replaceAll(" ", "-")
       });
     },
 

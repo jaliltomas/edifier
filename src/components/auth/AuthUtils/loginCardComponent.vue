@@ -111,13 +111,13 @@ export default {
     emailUser: {
       type: String,
       default: "",
-      required: false,
+      required: false
     },
     passwordUser: {
       type: String,
       default: "",
-      required: false,
-    },
+      required: false
+    }
   },
 
   data() {
@@ -125,7 +125,7 @@ export default {
       //Login
       loading: false,
       email: "",
-      password: "",
+      password: ""
     };
   },
 
@@ -142,12 +142,11 @@ export default {
         const request = {
           email: this.email,
           password: this.password,
-          store: 3,
+          store: 3
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
-        // this.$router.push("/");
-        this.$router.back();
+        this.$router.push({ name: "home" });
       } catch (error) {
         console.log(error.response.data);
         if (error.response.status == 401) {
@@ -168,8 +167,8 @@ export default {
 
     emitRecovery() {
       this.$emit("recovery:change");
-    },
-  },
+    }
+  }
 };
 </script>
 

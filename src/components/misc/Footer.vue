@@ -1,46 +1,50 @@
 <template>
   <div id="footer">
-
     <div id="footer-main">
-
       <div id="categories-wrapper">
         <h3>STADIO</h3>
 
         <ul class="footer-category">
-          <li><font-awesome-icon :icon="['fab', 'instagram']"/></li>
-          <li><font-awesome-icon :icon="['fab', 'facebook']"/></li>
+          <li><font-awesome-icon :icon="['fab', 'instagram']" /></li>
+          <li><font-awesome-icon :icon="['fab', 'facebook']" /></li>
         </ul>
 
-        <div class="footer-category"><span>Politica de privacidad</span> - <span>Terminos de uso</span></div>
+        <div class="footer-category">
+          <span>Politica de privacidad</span> - <span>Terminos de uso</span>
+        </div>
 
-        <div class="footer-category">© STADIO 2021 Todos los derechos reservados.</div>
-
+        <div class="footer-category">
+          © STADIO 2021 Todos los derechos reservados.
+        </div>
       </div>
 
       <div id="autopro">
         <div class="the-end">
           Hecho con
-          <font-awesome-icon class="space" :icon="['fas', 'heart']" style="color: red;"/>
+          <font-awesome-icon
+            class="space"
+            :icon="['fas', 'heart']"
+            style="color: red;"
+          />
           por
-          <a class="space" href="http://autopro.com.ve" style="color: #fafafa">Autopro</a>
+          <a class="space" href="http://autopro.com.ve" style="color: #fafafa"
+            >Autopro</a
+          >
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 
 <style lang="scss" scoped>
-
 @import "@/assets/vars.scss";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap");
 
 #footer {
   width: auto;
   background-color: #202020;
   color: #dfdfdf;
-  font-size: .8em;
+  font-size: 0.8em;
   margin: 3em 0 0 0;
 
   @media only screen and (max-width: 700px) {
@@ -66,7 +70,7 @@
     color: rgb(172, 172, 172);
     font-weight: 300;
     font-size: 4em;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 }
 
@@ -96,7 +100,7 @@
 }
 
 .social-icon {
-  margin: 0 .5em 0 0;
+  margin: 0 0.5em 0 0;
 }
 
 #autopro {
@@ -108,7 +112,7 @@
 }
 
 .space {
-  margin: 0 .5em 0 .5em;
+  margin: 0 0.5em 0 0.5em;
 }
 
 #autopro {
@@ -119,5 +123,4 @@
 .the-end {
   justify-content: flex-end;
 }
-
 </style>
