@@ -9,14 +9,6 @@
         <div class="availableText">Retiro en CABA:</div>
         <div class="availableText">{{ inCaba() }}</div>
       </div>
-      <div class="rowText">
-        <div class="availableText">Retiro en Rosario:</div>
-        <div class="availableText">{{ inRosario() }}</div>
-      </div>
-      <div class="rowText">
-        <div class="availableText">Retiro en Córdoba:</div>
-        <div class="availableText">{{ inCordoba() }}</div>
-      </div>
     </div>
   </div>
 </template>
@@ -62,26 +54,6 @@ export default {
         !this.dataProduct.out_stock &&
         this.validateUmbral()
       ) {
-        return "Disponible";
-      } else {
-        return "No Disponible";
-      }
-    },
-    inRosario() {
-      const stock = this.dataProduct.product.product_warehouse.filter(
-        ele => ele.warehouse_id === 10
-      )[0].current_stock;
-      if (stock > 0 && this.validateUmbral()) {
-        return "Disponible";
-      } else {
-        return "No Disponible";
-      }
-    },
-    inCordoba() {
-      const stock = this.dataProduct.product.product_warehouse.filter(
-        ele => ele.warehouse_id === 3
-      )[0].current_stock;
-      if (stock > 0 && this.validateUmbral()) {
         return "Disponible";
       } else {
         return "No Disponible";
