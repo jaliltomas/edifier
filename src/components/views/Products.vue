@@ -73,7 +73,7 @@
         <v-row justify="center">
           <v-col cols="12" sm="12" md="11">
             <v-row justify="center">
-              <v-col cols="12" md="3" class="d-flex align-stretch my-5">
+              <v-col cols="12" md="3" class="products__filters  align-stretch ">
                 <v-sheet width="100%" height="100%">
                   <div
                     class="px-5 py-5"
@@ -127,58 +127,43 @@
                   </div>
                 </v-sheet>
               </v-col>
-              <v-col cols="12" md="9" class="align-stretch my-5">
-                <v-sheet color="white" class="mt-3">
-                  <v-row v-if="productsData.length > 0">
-                    <v-col
-                      v-for="(item, index) in productsData"
-                      :key="index"
-                      cols="12"
-                      sm="4"
-                      md="4"
-                    >
-                      <v-card
-                        v-if="item.product != null"
+              <v-col cols="12" md="9" class="align-stretch ">
+                <div v-if="productsData.length > 0" class="products__wrapper">
+                  <v-col
+                    v-for="(item, index) in productsData"
+                    :key="index"
+                    class="products__card"
+                    @click="HandlerShowProduct(item)"
+                  >
+                    <div v-if="item.product != null">
+                      <img
+                        v-if="item.images == null"
+                        :aspect-ratio="4 / 3"
                         height="200"
-                        class="elevation-0"
-                        flat
-                        @click="HandlerShowProduct(item)"
-                      >
-                        <img
-                          v-if="item.images == null"
-                          :aspect-ratio="4 / 3"
-                          height="200"
-                          width="100%"
-                          contain
-                          src="../../assets/img/no_image.jpg"
-                        />
-                        <div v-else>
-                          <v-img
-                            height="200"
-                            width="100%"
-                            contain
-                            :src="item.images[0]"
-                            :lazy-src="item.images[0]"
-                          >
-                            <template v-slot:placeholder>
-                              <v-row
-                                class="fill-height ma-0"
-                                align="center"
-                                justify="center"
-                              >
-                                <v-progress-circular
-                                  indeterminate
-                                  color="black lighten-5"
-                                ></v-progress-circular>
-                              </v-row>
-                            </template>
-                          </v-img>
-                        </div>
-                        <v-card-text></v-card-text>
-                      </v-card>
+                        width="100%"
+                        contain
+                        src="../../assets/img/no_image.jpg"
+                      />
+                      <div v-else class="products__card__img">
+                        <v-img :src="item.images[0]" :lazy-src="item.images[0]">
+                          <template v-slot:placeholder>
+                            <v-row
+                              class="fill-height ma-0"
+                              align="center"
+                              justify="center"
+                            >
+                              <v-progress-circular
+                                indeterminate
+                                color="black lighten-5"
+                              ></v-progress-circular>
+                            </v-row>
+                          </template>
+                        </v-img>
+                      </div>
+                    </div>
+                    <div class="products__card__description">
                       <p
                         class="
-                          text-center
                           mb-1
                           title
                           font-weight-bold
@@ -187,48 +172,55 @@
                       >
                         {{ item.keywords }}
                       </p>
-
-                      <div class="mt-5">
-                        <price-component
-                          v-if="item.store.display_full_prices"
-                          :price="getPvpTransferInfo(item)"
-                          :dataProduct="item"
-                          :isAuth="isAuth"
-                        />
-                        <price-component
-                          :price="getPvpInfo(item)"
-                          :dataProduct="item"
-                        />
-                        <availability-list :dataProduct="item" />
+                      <div class="products__card__description__details">
+                        <span
+                          style=" font-size: 13px"
+                          v-html="item.resume"
+                        ></span>
                       </div>
+                    </div>
 
+                    <div class="products__card__description">
+                      <price-component
+                        v-if="item.store.display_full_prices"
+                        :price="getPvpTransferInfo(item)"
+                        :dataProduct="item"
+                        :isAuth="isAuth"
+                      />
+                      <price-component
+                        :price="getPvpInfo(item)"
+                        :dataProduct="item"
+                      />
+                      <availability-list :dataProduct="item" />
+                    </div>
+                    <div class="products__card__description">
                       <cp-information
                         style="color: #0000"
                         class="text-center"
                         :dataProduct="item"
                         :authUser="authUser"
                       />
-                    </v-col>
-                  </v-row>
-                  <v-row v-else justify="center">
-                    <v-col cols="12" md="9" class="d-flex justify-center">
-                      <p class="text-center py-10 font-weight-medium">
-                        No hay resultados para su busqueda
-                      </p>
-                    </v-col>
-                  </v-row>
-                  <v-row justify="center" class="mb-0">
-                    <v-col v-if="paginationData.total > 0" cols="12" md="4">
-                      <div class="text-center">
-                        <v-pagination
-                          color="#00A0E9"
-                          v-model="page"
-                          :length="paginationData.lastPage"
-                        ></v-pagination>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-sheet>
+                    </div>
+                  </v-col>
+                </div>
+                <v-row v-else justify="center">
+                  <v-col cols="12" md="9" class="d-flex justify-center">
+                    <p class="text-center py-10 font-weight-medium">
+                      No hay resultados para su busqueda
+                    </p>
+                  </v-col>
+                </v-row>
+                <v-row justify="center" class="mb-0 mt-1">
+                  <v-col v-if="paginationData.total > 0" cols="12" md="4">
+                    <div class="text-center">
+                      <v-pagination
+                        color="#00A0E9"
+                        v-model="page"
+                        :length="paginationData.lastPage"
+                      ></v-pagination>
+                    </div>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-col>

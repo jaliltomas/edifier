@@ -9,7 +9,7 @@
       </span>
       <span v-else class="product-price">
         <v-row>
-          <v-col align-self="end" class="pb-0">
+          <v-col align-self="end" class="pb-0 products__price-info">
             {{ price.paymentType }}:
             <span class="pb-0 text-decoration-line-through text--secondary">
               ${{ price.value_no_discount | currencyPVP }}
@@ -17,7 +17,7 @@
           </v-col>
         </v-row>
         <v-row class="mt-0">
-          <v-col>
+          <v-col class="products__price-info">
             <span class="green--text text--darken-2 ml-3">
               {{ price.discount }}% OFF
             </span>
