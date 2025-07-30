@@ -1,18 +1,18 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
-import router from './router'
-import './plugins/font-awesome'
-import vuetify from './plugins/vuetify'
-import './plugins/vee-validate'
-import './plugins/snotify'
-import './plugins/crypto'
+import Vue from "vue";
+import App from "./App.vue";
+import store from "./store";
+import router from "./router";
+import "./plugins/font-awesome";
+import vuetify from "./plugins/vuetify";
+import "./plugins/vee-validate";
+import "./plugins/snotify";
+import "./plugins/crypto";
 
-import VueAnimated from '@codekraft-studio/vue-animated'
+import VueAnimated from "@codekraft-studio/vue-animated";
 
-Vue.use(VueAnimated)
+Vue.use(VueAnimated);
 
-import VueCarousel from 'vue-carousel';
+import VueCarousel from "vue-carousel";
 Vue.use(VueCarousel);
 
 // Font awesome end
@@ -20,13 +20,23 @@ Vue.use(VueCarousel);
 import filters from "./filters";
 Vue.use(filters);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-store.dispatch('auth/TRY_AUTO_LOGIN');
+store.dispatch("auth/TRY_AUTO_LOGIN");
 
 new Vue({
   store,
   router,
   vuetify,
   render: h => h(App)
-}).$mount('#app')
+}).$mount("#app");
+
+router.afterEach(to => {
+  if (window.dataLayer) {
+    window.dataLayer.push({
+      event: "page_view",
+      pagePath: to.fullPath, // La ruta completa de la nueva página (ej. /productos/detalles/123)
+      pageTitle: to.meta.title || to.name // Un título de página, puedes definirlo en las meta de tus rutas
+    });
+  }
+});
