@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function(w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-M8CNC3HJ");
+    </script>
+    <!-- End Google Tag Manager -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -56,21 +70,6 @@
       content="CUwfueum7pG70neWE4CAReLUHHeGxHcQY5PqACIHx8M"
     />
 
-    <!-- GOOGLE ANALITIC -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-NNHMW3PB7V"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-NNHMW3PB7V");
-    </script>
-
     <!-- Meta Pixel Code -->
     <script>
       !(function(f, b, e, v, n, t, s) {
@@ -113,6 +112,16 @@
   </head>
 
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-M8CNC3HJ"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <noscript>
       <strong
         >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
@@ -134,7 +143,7 @@
       _support["ui"]["contactMode"] = "mixed";
       _support["ui"]["enableKb"] = "true";
       _support["ui"]["styles"] = {
-        widgetColor: "rgb(0, 0, 0)",
+        widgetColor: "rgb(0, 0, 0)"
       };
       _support["ui"]["shoutboxFacesMode"] = "default";
       _support["ui"]["shoutboxHeaderLogo"] = true;
@@ -146,15 +155,15 @@
           text: "Si ten&#233;s alguna duda, &#161;hablanos!",
           mode: "prompt-3",
           delay: 5,
-          duration: 45,
+          duration: 45
         },
         position: "bottom-right",
-        mobilePosition: "bottom-right",
+        mobilePosition: "bottom-right"
       };
       _support["apps"] = {
         faq: { enabled: true },
         recentConversations: {},
-        orders: {},
+        orders: {}
       };
     </script>
   </body>
