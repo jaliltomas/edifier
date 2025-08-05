@@ -28,6 +28,12 @@
         hasta 12 cuotas de $
         {{ (prices.pvp_18_installments / 12) | currencyPVP }}
       </div>
+      <span style="color: #6a6a6a"
+        >Precio sin impuestos: ${{
+          getPriceWithoutIva(prices.pvp_18_installments, prices.iva)
+            | currencyPVP
+        }}</span
+      >
     </div>
     <br />
     <div class="mt-4">
@@ -70,6 +76,19 @@ export default {
         discount: Math.round(prices.discount),
         value_no_discount: prices.pvp_no_discount
       };
+    },
+    getPriceWithoutIva(precioConIVA, tasaIVA = 21) {
+      // Por ejemplo, 21 se convierte en 0.21
+      const ivaDecimal = tasaIVA / 100;
+
+      // Calculamos el divisor: 1 (precio base) + el IVA en decimal
+      const divisor = 1 + ivaDecimal;
+
+      // Realizamos la división para obtener el precio sin IVA
+      const precioSinIVA = precioConIVA / divisor;
+
+      // Devolvemos el resultado redondeado a dos decimales
+      return precioSinIVA;
     },
 
     getPvpTransferInfo(prices) {

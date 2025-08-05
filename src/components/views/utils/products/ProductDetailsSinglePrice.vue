@@ -42,6 +42,14 @@
         </v-col>
       </v-row>
     </span>
+    <span style="color: #6a6a6a"
+      >Precio sin impuestos: ${{
+        getPriceWithoutIva(
+          price.discount ? price.value : price.value_no_discount,
+          price.iva
+        ) | currencyPVP
+      }}</span
+    >
   </div>
 </template>
 
@@ -59,7 +67,21 @@ export default {
       default: false
     }
   },
+  methods: {
+    getPriceWithoutIva(precioConIVA, tasaIVA = 21) {
+      // Por ejemplo, 21 se convierte en 0.21
+      const ivaDecimal = tasaIVA / 100;
 
+      // Calculamos el divisor: 1 (precio base) + el IVA en decimal
+      const divisor = 1 + ivaDecimal;
+
+      // Realizamos la división para obtener el precio sin IVA
+      const precioSinIVA = precioConIVA / divisor;
+
+      // Devolvemos el resultado redondeado a dos decimales
+      return precioSinIVA;
+    }
+  },
   filters: {
     currencyPVP(value) {
       if (value) {
