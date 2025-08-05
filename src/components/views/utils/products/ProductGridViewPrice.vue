@@ -26,7 +26,7 @@
         </v-row>
       </span>
       <span style="color: #6a6a6a"
-        >Precio sin impuestos: ${{
+        >Precio s/ imp. nac. ${{
           getPriceWithoutIva(
             price.discount ? price.value : price.value_no_discount,
             price.iva

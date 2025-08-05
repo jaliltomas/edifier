@@ -28,8 +28,8 @@
         hasta 12 cuotas de $
         {{ (prices.pvp_18_installments / 12) | currencyPVP }}
       </div>
-      <span style="color: #6a6a6a"
-        >Precio sin impuestos: ${{
+      <span style="color: #6a6a6a" v-if="isAuth"
+        >Precio s/ imp. nac. ${{
           getPriceWithoutIva(prices.pvp_18_installments, prices.iva)
             | currencyPVP
         }}</span
