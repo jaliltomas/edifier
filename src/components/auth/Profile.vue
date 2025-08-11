@@ -4,10 +4,7 @@
       <v-container fill-height>
         <v-row justify="center">
           <v-col cols="12">
-            <div
-              class="title-header"
-              style="font-size: 1.5em"
-            >
+            <div class="title-header" style="font-size: 1.5em">
               PERFIL DE USUARIO
             </div>
             <div class="d-flex justify-center">
@@ -95,13 +92,13 @@ export default {
     Address,
     ChangePassword,
     UserOrders,
-    "suscribe-component": SuscribeComponent,
+    "suscribe-component": SuscribeComponent
   },
 
   data() {
     return {
       tab: null,
-      action: 0,
+      action: 0
     };
   },
 
@@ -115,44 +112,43 @@ export default {
 
   watch: {
     tab(val) {
-      console.log(val)
       this.action = val;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style>
-  .title-header{
-    font-size: 1.5em;
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 20px 0 20px 0;
-    margin-top: 20px;
-    color: white;
+.title-header {
+  font-size: 1.5em;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 20px 0 20px 0;
+  margin-top: 20px;
+  color: white;
+}
+.img-header {
+  width: 75px;
+  height: 75px;
+}
+@media only screen and (max-width: 1200px) {
+  .title-header {
+    margin-bottom: 15px;
+    padding: 0px;
+    margin-top: 0px;
   }
-  .img-header{
-    width: 75px;
-    height: 75px;
+}
+@media only screen and (max-width: 800px) {
+  .title-header {
+    font-size: 1em;
+    margin-bottom: 8px;
   }
-  @media only screen and (max-width: 1200px) {
-    .title-header{
-      margin-bottom: 15px;
-      padding: 0px;
-      margin-top: 0px;
-    }
+  .img-header {
+    width: 45px;
+    height: 45px;
   }
-  @media only screen and (max-width: 800px) {
-    .title-header{
-      font-size: 1em;
-      margin-bottom: 8px;
-    }
-    .img-header{
-      width: 45px;
-      height: 45px;
-    }
-    .scroll-menu .v-slide-group__prev{
-      display: none !important;
-    }
+  .scroll-menu .v-slide-group__prev {
+    display: none !important;
   }
+}
 </style>

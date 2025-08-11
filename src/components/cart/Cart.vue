@@ -231,7 +231,7 @@
                   v-model="retirementValue"
                 ></v-radio>
               </v-radio-group>
-              <div v-if="radioGroup == 0">
+              <div v-if="radioGroup == 0 && userAddress.length > 0">
                 <!-- <div v-if="canBuyWarehouse == null" class="title">
                   No disponible para este modelo.
                 </div> -->
@@ -258,10 +258,20 @@
                   </div>
                 </div>
               </div>
-              <div v-if="radioGroup == 1 && userAddress.length == 0">
-                <span class="red--text">
+              <div
+                v-if="
+                  (radioGroup == 1 || radioGroup == 0) &&
+                    userAddress.length == 0
+                "
+              >
+                <span class="red--text" v-if="radioGroup == 1">
                   Parece que no tienes ninguna direccion registrada, porfavor
                   registra una para poder continuar con el pago
+                </span>
+                <span class="red--text" v-else>
+                  Parece que no tienes ninguna direccion de facturación
+                  registrada, porfavor registra una para poder continuar con el
+                  pago
                 </span>
                 <br />
                 <v-btn
@@ -269,7 +279,12 @@
                   color="#00a0e9"
                   dark
                   rounded
-                  @click="$router.push({ name: 'profile' })"
+                  @click="
+                    $router.push({
+                      name: 'profile',
+                      query: { action: 1 }
+                    })
+                  "
                 >
                   Perfil
                 </v-btn>
@@ -332,7 +347,7 @@
                 rounded
                 :loading="loadingCheckout"
                 :disabled="
-                  radioGroup == null || !statusQuote
+                  radioGroup == null || !statusQuote || userAddress.length === 0
                     ? true
                     : canBuyWarehouse == null && radioGroup == 0
                     ? true
