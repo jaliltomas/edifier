@@ -25,8 +25,8 @@
           $
           {{ prices.pvp_18_installments | currencyPVP }}
         </span>
-        hasta 12 cuotas de $
-        {{ (prices.pvp_18_installments / 12) | currencyPVP }}
+         6 cuotas de $
+        {{ (prices.pvp_18_installments / 6) | currencyPVP }}
       </div>
       <span style="color: #6a6a6a" v-if="isAuth"
         >Precio s/ imp. nac. ${{
