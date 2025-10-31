@@ -309,7 +309,7 @@
                 <div>
                   Costo del envio:
                   <span class="font-weight-bold black--text"
-                    >${{ quote | currency }}</span
+                    >${{ quote || "0" | currency }}</span
                   >
                 </div>
                 <div>
@@ -492,7 +492,8 @@ export default {
       showAlertPerfil: false,
       alertPerfil: [],
 
-      loadingLocation: false
+      loadingLocation: false,
+      freeShipping: true
     };
   },
 
@@ -529,24 +530,28 @@ export default {
   methods: {
     async HandlerShippingQuote() {
       try {
-        this.errorGetQuoute = false;
-        this.loadingCheckout = true;
-        this.statusQuote = false;
+        let calculatedQuote = 0;
+        if (!this.freeShipping) {
+          this.errorGetQuoute = false;
+          this.loadingCheckout = true;
+          this.statusQuote = false;
 
-        if (this.radioGroup == 0) {
-          return;
+          if (this.radioGroup == 0) {
+            return;
+          }
+
+          const request = {
+            address_id: this.idAddress?.id || this.idAddress
+          };
+
+          const response = await this.$store.dispatch(
+            "cart/SHIPPING_QUOTE_ARG",
+            request
+          );
+
+          calculatedQuote = response.data.data;
         }
-
-        const request = {
-          address_id: this.idAddress?.id || this.idAddress
-        };
-
-        const response = await this.$store.dispatch(
-          "cart/SHIPPING_QUOTE_ARG",
-          request
-        );
-
-        this.quote = response.data.data;
+        this.quote = calculatedQuote;
         this.total_order = this.totalAmount + this.quote;
       } catch (error) {
         if (this.userAddress.length > 0) {
