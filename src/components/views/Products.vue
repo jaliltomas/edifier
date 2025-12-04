@@ -199,24 +199,8 @@
                         class="text-center"
                         :dataProduct="item"
                         :authUser="authUser"
+                        :showActions="true"
                       />
-                    </div>
-                    <div class="products__card__actions">
-                      <v-btn
-                        color="#00A0E9"
-                        class="white--text text-capitalize action-btn"
-                        @click.stop="handleBuyNow(item)"
-                      >
-                        Comprar ahora
-                      </v-btn>
-                      <v-btn
-                        outlined
-                        color="#00A0E9"
-                        class="text-capitalize action-btn"
-                        @click.stop="handleAddToCart(item)"
-                      >
-                        Agregar al carrito
-                      </v-btn>
                     </div>
                   </v-col>
                 </div>
@@ -606,71 +590,6 @@ export default {
           keywords.replaceAll("-", "_").replaceAll(" ", "-")
       });
     },
-
-    async handleAddToCart(publication, goToCart = false) {
-      try {
-        if (
-          !this.productCartState ||
-          !this.productCartState.shopping_cart_items
-        ) {
-          this.$store.commit("cart/SET_ITEM", { shopping_cart_items: [] });
-        }
-
-        const cartState = this.productCartState;
-        const existingProduct = cartState.shopping_cart_items.find(
-          item => item.publication_id === publication.id
-        );
-
-        if (existingProduct) {
-          this.$store.commit("cart/UPDATE_ITEM_QUANTITY", {
-            publication_id: publication.id,
-            quantity: existingProduct.original_quantity + 1
-          });
-        } else {
-          this.$store.commit("cart/ADD_ITEM", {
-            ...publication,
-            original_quantity: 1
-          });
-        }
-
-        const normalizedItems = cartState.shopping_cart_items
-          .filter(item => item.publication_id !== undefined)
-          .map(item => ({
-            publication_id: item.publication_id,
-            quantity: item.original_quantity
-          }));
-
-        if (this.isAuth) {
-          await this.$store.dispatch("cart/CREATE_CART", {
-            items: normalizedItems
-          });
-          await this.$store.dispatch("cart/GET_CURRENT_CART");
-        } else {
-          this.$store.commit("cart/TOTAL_AMOUNT", {
-            items: cartState.shopping_cart_items
-          });
-        }
-
-        if (goToCart) {
-          this.$router.push({ name: "cart" });
-        } else {
-          this.$snotify.success(
-            "Producto agregado al carrito",
-            "¡Listo!"
-          );
-        }
-      } catch (error) {
-        this.$snotify.error(
-          "No se pudo agregar el producto al carrito.",
-          "Error"
-        );
-      }
-    },
-
-    async handleBuyNow(publication) {
-      await this.handleAddToCart(publication, true);
-    },
-
     resetSearch() {
       this.HandlerGetProducts();
       this.$router.replace({ query: null });
