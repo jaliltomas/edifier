@@ -152,19 +152,30 @@
                 style="width: 80%"
                 v-if="validateStock()"
               >
-                <v-btn
-                  style="border-width: medium"
-                  rounded
-                  dark
-                  color="#00A0E9"
-                  @click="HandlerAddCart()"
-                  class="mt-1 mt-md-0 font-weight-bold"
-                  outlined
-                >
-                  Agregar a mi compra
-                </v-btn>
+                <div class="d-flex flex-column flex-sm-row flex-grow-1">
+                  <v-btn
+                    style="border-width: medium"
+                    rounded
+                    dark
+                    color="#00A0E9"
+                    @click="HandlerBuy()"
+                    class="mt-1 mt-sm-0 font-weight-bold mr-sm-2"
+                  >
+                    Comprar ahora
+                  </v-btn>
+                  <v-btn
+                    style="border-width: medium"
+                    rounded
+                    outlined
+                    color="#00A0E9"
+                    @click="HandlerAddCart()"
+                    class="mt-2 mt-sm-0 font-weight-bold ml-sm-2"
+                  >
+                    Agregar al carrito
+                  </v-btn>
+                </div>
 
-                <div class="d-flex mt-2 mt-md-0">
+                <div class="d-flex mt-2 mt-md-0 ml-md-4">
                   <v-btn
                     style="border-width: medium"
                     fab

@@ -85,10 +85,13 @@ export default {
           this.messageNotification =
             "<p>Enviamos un email con la factura y detalles de la operación</p><p style='margin-top:5px'>En 24hs hábiles vas a recibir un correo con los datos de envío.</p>";
           this.$store.commit("cart/CLEAN_CART");
+          this.notifyParent("approved");
         } else {
+          this.notifyParent(response.data.message);
           this.showMPError(response.data);
         }
       } catch (error) {
+        this.notifyParent("error");
         Swal.fire({
           width: 550,
           icon: "warning",
@@ -187,6 +190,22 @@ export default {
         showConfirmButton: true,
         confirmButtonColor: "#80c35d",
       });
+    },
+
+    notifyParent(status) {
+      try {
+        window.parent?.postMessage(
+          {
+            type: "mp-checkout-result",
+            status,
+            success: status === "approved",
+            query: this.$route.query
+          },
+          window.location.origin
+        );
+      } catch (error) {
+        console.log("mp-checkout-result-notify", error);
+      }
     },
   },
 };
