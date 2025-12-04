@@ -266,6 +266,52 @@
 
     <div v-html="dataProduct.text_html"></div>
     <suscribe-component />
+
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="4000"
+      top
+      right
+      color="white"
+      elevation="2"
+      class="mt-15 mr-5"
+      rounded="lg"
+      transition="slide-x-reverse-transition"
+    >
+      <div class="d-flex align-center pa-2">
+        <v-avatar size="48" class="mr-3 rounded-lg" color="grey lighten-5">
+           <v-img 
+             v-if="dataProduct.images && dataProduct.images.length > 0"
+             :src="dataProduct.images[0]" 
+             contain
+           ></v-img>
+        </v-avatar>
+        <div class="d-flex flex-column">
+           <span class="font-weight-bold grey--text text--darken-3 text-subtitle-2">¡Agregado al carrito!</span>
+           <span class="caption grey--text text--darken-1 text-truncate" style="max-width: 200px;">{{ dataProduct.keywords }}</span>
+        </div>
+        <v-btn
+          icon
+          small
+          color="grey lighten-1"
+          class="ml-auto align-self-start mt-n1 mr-n1"
+          @click="snackbar = false"
+        >
+          <v-icon small>mdi-close</v-icon>
+        </v-btn>
+      </div>
+      <div class="d-flex justify-end px-2 pb-2">
+         <v-btn 
+           text 
+           x-small 
+           color="#00A0E9" 
+           class="font-weight-bold"
+           @click="$router.push({ name: 'cart' })"
+         >
+           Ver Carrito
+         </v-btn>
+      </div>
+    </v-snackbar>
   </div>
 </template>
 
@@ -315,7 +361,8 @@ export default {
       showModalReserve: false,
       email: "",
       name: "",
-      phone: ""
+      phone: "",
+      snackbar: false
     };
   },
 
@@ -518,24 +565,28 @@ export default {
 
     async HandlerAddCart() {
       try {
-        if (this.isAuth) {
-          const cart = this.productCartState;
+        const cart = this.productCartState;
+        
+        // Ensure shopping_cart_items exists
+        if (!cart || !cart.shopping_cart_items) {
+            if (!cart) this.$store.commit("cart/SET_ITEM", { shopping_cart_items: [] });
+        }
+        const currentCart = this.productCartState; // Re-fetch to be sure
 
-          const existingProduct = cart.shopping_cart_items.find(
-            p => this.dataProduct.id === p.publication_id
-          );
+        const existingProduct = currentCart.shopping_cart_items.find(
+          p => this.dataProduct.id === p.publication_id
+        );
 
-          if (existingProduct) {
-            existingProduct.original_quantity =
-              existingProduct.original_quantity + this.quantity;
+        if (existingProduct) {
+          const newQuantity = existingProduct.original_quantity + this.quantity;
+          
+          this.$store.commit("cart/UPDATE_ITEM_QUANTITY", {
+              publication_id: this.dataProduct.id,
+              quantity: newQuantity
+          });
 
-            const indexUpdate = cart.shopping_cart_items.findIndex(
-              p => this.dataProduct.id === p.publication_id
-            );
-
-            cart.shopping_cart_items[indexUpdate] = { ...existingProduct };
-
-            const request = cart.shopping_cart_items.map(prod => {
+          if (this.isAuth) {
+            const request = currentCart.shopping_cart_items.map(prod => {
               return {
                 publication_id: prod.publication_id,
                 quantity: prod.original_quantity
@@ -544,30 +595,25 @@ export default {
             await this.$store.dispatch("cart/CREATE_CART", {
               items: [...request]
             });
-          } else {
-            const oldItem = cart.shopping_cart_items.map(prod => {
+          }
+        } else {
+          this.$store.commit("cart/ADD_ITEM", {
+            ...this.dataProduct,
+            original_quantity: this.quantity
+          });
+
+          if (this.isAuth) {
+            const request = currentCart.shopping_cart_items.map(prod => {
               return {
                 publication_id: prod.publication_id,
                 quantity: prod.original_quantity
               };
             });
-            const newitem = [
-              ...oldItem,
-              {
-                publication_id: this.dataProduct.id,
-                quantity: this.quantity
-              }
-            ];
 
-            const itemFilter = newitem.filter(value => {
+            const itemFilter = request.filter(value => {
               if (value.publication_id != undefined) {
                 return value;
               }
-            });
-
-            this.$store.commit("cart/ADD_ITEM", {
-              ...this.dataProduct,
-              original_quantity: this.quantity
             });
 
             await this.$store.dispatch("cart/CREATE_CART", {
@@ -576,11 +622,13 @@ export default {
 
             await this.$store.dispatch("cart/GET_CURRENT_CART");
           }
-          this.messageProductAdd = true;
-        } else {
-          this.$router.push({ name: "login" });
         }
+        
+        this.$store.commit("cart/TOTAL_AMOUNT", { items: currentCart.shopping_cart_items });
+        this.messageProductAdd = true;
+        this.snackbar = true;
       } catch (error) {
+        console.log(error);
         const errorMessage = error?.response?.data?.errors[0]?.message;
         if (errorMessage === "range validation failed on quantity") {
           this.$snotify.error(

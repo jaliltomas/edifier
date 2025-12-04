@@ -47,9 +47,54 @@
                       </div>
                     </div>
                   </div>
-                  <div class="ml-5" style="font-size: 1.1em">
-                    Por seguridad nuestros datos bancarios fueron enviados a tu
-                    casilla de e-mail
+                  <div class="ml-5 mt-4">
+                    <v-alert
+                      border="left"
+                      colored-border
+                      color="#00A0E9"
+                      elevation="1"
+                      class="mb-4 white"
+                    >
+                      <div class="subtitle-1 font-weight-bold mb-2 grey--text text--darken-3">Datos Bancarios:</div>
+                      <div class="body-2 grey--text text--darken-2">
+                        <div class="mb-1"><strong>Titular:</strong> G. IKONO SA</div>
+                        <div class="mb-1"><strong>Banco:</strong> Banco Francés</div>
+                        <div class="mb-1"><strong>Cuenta:</strong> 470-0003973/1</div>
+                        <div class="mb-1"><strong>CUIT:</strong> 30-70497382-5</div>
+                        <div class="d-flex align-center mt-2 pa-2 grey lighten-4 rounded">
+                          <strong class="mr-2">CBU:</strong> 
+                          <span class="text-truncate">0170470320000000397319</span>
+                          <v-btn icon small color="#00A0E9" @click="handlerCoy('0170470320000000397319')" class="ml-auto">
+                             <v-icon small>mdi-content-copy</v-icon>
+                          </v-btn>
+                        </div>
+                        <div v-if="isCopyCBU === 'CBU1'" class="caption green--text mt-1">¡CBU Copiado!</div>
+                      </div>
+                    </v-alert>
+
+                    <v-divider class="my-4"></v-divider>
+
+                    <div class="subtitle-1 font-weight-bold mb-2 grey--text text--darken-3">Pasos a seguir:</div>
+                    <p class="body-2 grey--text text--darken-2 mb-3">
+                      Le pedimos por favor que cuando realice la transferencia cargue el comprobante en la página.
+                    </p>
+                    
+                    <div class="pl-2">
+                        <div class="d-flex mb-3 align-start">
+                            <v-icon color="#00A0E9" small class="mt-1 mr-2">mdi-numeric-1-circle</v-icon>
+                            <span class="body-2 grey--text text--darken-2">Ir al <strong>Perfil</strong> > <strong>Compras</strong></span>
+                        </div>
+                        <div class="d-flex mb-3 align-start">
+                            <v-icon color="#00A0E9" small class="mt-1 mr-2">mdi-numeric-2-circle</v-icon>
+                            <span class="body-2 grey--text text--darken-2">Busca la compra y en acción selecciona <strong>ver más</strong>.</span>
+                        </div>
+                        <div class="d-flex mb-3 align-start">
+                            <v-icon color="#00A0E9" small class="mt-1 mr-2">mdi-numeric-3-circle</v-icon>
+                            <span class="body-2 grey--text text--darken-2">
+                                En el detalle, busque el cartel celeste en el margen superior derecho <strong>"envía tu comprobante de pago"</strong> y cárguelo allí.
+                            </span>
+                        </div>
+                    </div>
                   </div>
                   <div class="ml-5 mt-3" style="font-size: 0.9em">
                     Finalizá tu compra realizando una transferencia por la suma

@@ -1,7 +1,7 @@
 import { store } from '../../services'
 
 const state = {
-  productsInCart: [],
+  productsInCart: { shopping_cart_items: [] },
   cartSummary: [],
   totalAmount: 0,
 }
@@ -18,7 +18,14 @@ const mutations = {
   },
 
   ADD_ITEM: (state, payload) => {
-    state.productsInCart.shopping_cart_items.push({ publication: payload });
+    state.productsInCart.shopping_cart_items.push({
+      publication_id: payload.id,
+      original_quantity: payload.original_quantity,
+      publication: payload
+    });
+    if (!localStorage.getItem('token')) {
+      localStorage.setItem('guest_cart', JSON.stringify(state.productsInCart));
+    }
   },
 
   UPDATE_ITEM: (state, payload) => {
@@ -34,6 +41,21 @@ const mutations = {
         state.productsInCart.shopping_cart_items[indexUpdate].original_quantity--;
       }
     }
+    if (!localStorage.getItem('token')) {
+      localStorage.setItem('guest_cart', JSON.stringify(state.productsInCart));
+    }
+  },
+
+  UPDATE_ITEM_QUANTITY: (state, payload) => {
+    const index = state.productsInCart.shopping_cart_items.findIndex(
+      p => p.publication_id === payload.publication_id
+    );
+    if (index > -1) {
+      state.productsInCart.shopping_cart_items[index].original_quantity = payload.quantity;
+      if (!localStorage.getItem('token')) {
+          localStorage.setItem('guest_cart', JSON.stringify(state.productsInCart));
+      }
+    }
   },
 
   REMOVE_ITEM: (state, payload) => {
@@ -44,16 +66,21 @@ const mutations = {
     if (indexDelete > -1) {
       state.productsInCart.shopping_cart_items.splice(indexDelete, 1);
     }
+    if (!localStorage.getItem('token')) {
+      localStorage.setItem('guest_cart', JSON.stringify(state.productsInCart));
+    }
   },
 
   TOTAL_AMOUNT(state, payload) {
-    state.totalAmount = payload.items.reduce(
-      (acc, arr) => {
-        acc = acc + parseFloat(arr.publication.price.pvp) * arr.original_quantity;
-        return acc;
-      },
-      0
-    );
+    if (payload && payload.items) {
+      state.totalAmount = payload.items.reduce(
+        (acc, arr) => {
+          acc = acc + parseFloat(arr.publication.price.pvp) * arr.original_quantity;
+          return acc;
+        },
+        0
+      );
+    }
   },
 
   SET_CART_SUMMART: (state, payload) => {
@@ -61,13 +88,48 @@ const mutations = {
   },
 
   CLEAN_CART: (state) => {
-    state.productsInCart = [];
+    state.productsInCart = { shopping_cart_items: [] };
     state.cartSummary = [];
     state.totalAmount = 0;
+    localStorage.removeItem('guest_cart');
+  },
+  
+  LOAD_GUEST_CART_MUTATION: (state, payload) => {
+      state.productsInCart = payload;
   }
 }
 
 const actions = {
+  async LOAD_GUEST_CART({ commit }) {
+      const guestCart = localStorage.getItem('guest_cart');
+      if (guestCart) {
+          const parsedCart = JSON.parse(guestCart);
+          commit('LOAD_GUEST_CART_MUTATION', parsedCart);
+          commit('TOTAL_AMOUNT', { items: parsedCart.shopping_cart_items });
+      }
+  },
+
+  async SYNC_GUEST_CART({ state, dispatch }) {
+      const guestCart = localStorage.getItem('guest_cart');
+      if (guestCart) {
+          const parsedCart = JSON.parse(guestCart);
+          if (parsedCart.shopping_cart_items && parsedCart.shopping_cart_items.length > 0) {
+              const itemsToSync = parsedCart.shopping_cart_items.map(item => ({
+                  publication_id: item.publication_id,
+                  quantity: item.original_quantity
+              }));
+              
+              // We use CREATE_CART to sync. 
+              // NOTE: API behavior of CREATE_CART needs to be verified if it *adds* to existing or *replaces*.
+              // Assuming it adds/updates based on `ProductDetails.vue` logic.
+              await dispatch('CREATE_CART', { items: itemsToSync });
+              
+              // Clear guest cart after sync
+              localStorage.removeItem('guest_cart');
+          }
+      }
+  },
+
   async SHIPPING_QUOTE_ARG(_, payload) {
     try {
       const response = await store.post(
@@ -92,8 +154,12 @@ const actions = {
     }
   },
 
-  async GET_CURRENT_CART({ commit }, payload) {
+  async GET_CURRENT_CART({ commit, state }, payload) {
     try {
+      if (!localStorage.getItem('token')) {
+           // Return local state mocked as response
+           return { data: { data: state.productsInCart } };
+      }
       const response = await store.get(
         "api/shooping_cart_active",
         payload

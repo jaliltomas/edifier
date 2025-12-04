@@ -67,16 +67,18 @@ export default {
         const products = [...this.productCartState.shopping_cart_items];
         products.splice(indexDelete, 1);
 
-        const request = products.map((prod) => {
-          return {
-            publication_id: prod.publication_id,
-            quantity: prod.original_quantity,
-          };
-        });
+        if (this.$store.getters["auth/AUTHENTICATED"]) {
+            const request = products.map((prod) => {
+              return {
+                publication_id: prod.publication_id,
+                quantity: prod.original_quantity,
+              };
+            });
 
-        await this.$store.dispatch("cart/CREATE_CART", {
-          items: request,
-        });
+            await this.$store.dispatch("cart/CREATE_CART", {
+              items: request,
+            });
+        }
 
         this.$store.commit("cart/REMOVE_ITEM", item);
         this.$store.commit("cart/TOTAL_AMOUNT", {

@@ -43,6 +43,10 @@ const actions = {
       const response = await users.post("api/auth/login/buyers", payload);
       commit("SET_TOKEN", response.data.data.access_token.token);
       commit("SET_USER", response.data.data.user);
+      
+      // Sync guest cart items if any
+      await dispatch("cart/SYNC_GUEST_CART", {}, { root: true });
+      
       dispatch("cart/GET_CURRENT_CART", {}, { root: true });
       return response;
     } catch (error) {
@@ -72,6 +76,16 @@ const actions = {
     try {
       const store_id = localStorage.getItem('store_id');
       const response = await users.get(`api/buyers/auth/getuser?store_id=${store_id}`);
+      commit("SET_USER", response.data.data);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+
+  async UPDATE_PROFILE({ commit }, payload) {
+    try {
+      const response = await users.post("api/buyers/update", payload);
       commit("SET_USER", response.data.data);
       return response;
     } catch (error) {
@@ -153,6 +167,8 @@ const actions = {
         dispatch("products/GET_FAVORITES_PRODUCTS", request, { root: true });
         return;
       } else {
+        // Load guest cart if available
+        dispatch("cart/LOAD_GUEST_CART", {}, { root: true });
         return false;
       }
     } catch (error) {

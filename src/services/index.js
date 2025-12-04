@@ -11,7 +11,7 @@ export const api = axios.create({
 });
 
 export const decentralized = axios.create({
-  baseURL: process.env.VUE_APP_DECENTRALIZED,
+  baseURL: 'https://descentralizado.flextd.com',
   // timeout: 2000,
   headers: {
     'Access-Control-Allow-Origin': process.env.VUE_APP_DECENTRALIZED,
@@ -19,7 +19,7 @@ export const decentralized = axios.create({
 });
 
 export const product = axios.create({
-  baseURL: process.env.VUE_APP_PRODUCT,
+  baseURL: 'https://productos.flextd.com',
   // timeout: 2000,
   headers: {
     'Access-Control-Allow-Origin': process.env.VUE_APP_PRODUCT,
@@ -27,7 +27,7 @@ export const product = axios.create({
 });
 
 export const users = axios.create({
-  baseURL: process.env.VUE_APP_USERS,
+  baseURL: 'https://usuarios.flextd.com',
   // timeout: 2000,
   headers: {
     'Access-Control-Allow-Origin': process.env.VUE_APP_USERS,
@@ -35,7 +35,7 @@ export const users = axios.create({
 });
 
 export const store = axios.create({
-  baseURL: process.env.VUE_APP_STORE,
+  baseURL: 'https://ventas.flextd.com/',
   // timeout: 2000,
   headers: {
     'Access-Control-Allow-Origin': process.env.VUE_APP_STORE,

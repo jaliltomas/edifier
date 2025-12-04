@@ -232,77 +232,108 @@
           open-on-hover
           v-model="menu"
           :close-on-content-click="false"
-          :nudge-width="200"
-          offset-x
+          :nudge-width="320"
+          :nudge-bottom="10"
+          offset-y
+          content-class="cart-menu-content"
+          transition="slide-y-transition"
+          :close-delay="200"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              @click="HandlerRouter('cart')"
-              icon
-              color="#00A0E9"
-              dark
-              v-bind="attrs"
-              v-on="on"
-              class="ml-2"
+            <v-badge
+              :content="cartItemCount"
+              :value="cartItemCount > 0"
+              color="red"
+              overlap
+              offset-x="20"
+              offset-y="20"
+              class="mr-2"
             >
-              <v-icon>mdi-cart-outline</v-icon>
-            </v-btn>
+              <v-btn
+                @click="HandlerRouter('cart')"
+                icon
+                color="#00A0E9"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                class="ml-2"
+              >
+                <v-icon>mdi-cart-outline</v-icon>
+              </v-btn>
+            </v-badge>
           </template>
 
           <v-card
-            v-if="
-              productCartState.shopping_cart_items != null &&
-                productCartState.shopping_cart_items.length > 0
-            "
+            v-if="cartHasItems"
+            class="cart-hover-card rounded-xl overflow-hidden elevation-0"
           >
-            <div
-              class="pt-3 px-5 d-flex"
-              v-for="(item, index) in productCartState.shopping_cart_items"
-              :key="index"
-            >
-              <div>
-                <v-avatar tile v-if="item.publication.images == null">
-                  <img
-                    height="200"
-                    width="100%"
-                    contain
-                    src="@/assets/img/no_image.jpg"
-                  />
-                </v-avatar>
-                <v-avatar v-else tile size="100">
-                  <v-img
-                    contain
-                    :src="item.publication.images[0]"
-                    :lazy-src="item.publication.images[0]"
-                    alt="Product Image"
-                  ></v-img>
-                </v-avatar>
-              </div>
-              <div class="pl-3 align-self-center">
-                <div class="">{{ item.publication.keywords }}</div>
-                <div
-                  class="mt-2"
-                  v-if="
-                    item.publication != null && item.publication.price != null
-                  "
-                >
-                  $ {{ item.publication.price.pvp | currency }}
-                </div>
-              </div>
+            <div class="d-flex justify-space-between align-center px-5 py-4 grey lighten-5 border-bottom">
+               <div class="d-flex align-center">
+                 <v-icon small color="#00A0E9" class="mr-2">mdi-shopping-outline</v-icon>
+                 <span class="font-weight-bold grey--text text--darken-3 text-subtitle-2">Mi Carrito</span>
+               </div>
+               <span class="caption font-weight-bold grey--text text--darken-1 bg-grey-light px-2 py-1 rounded-pill">
+                 {{ cartItemCount }} Item{{ cartItemCount !== 1 ? 's' : '' }}
+               </span>
             </div>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                dark
-                small
-                color="#00a0e9"
-                rounded
-                @click="HandlerRouter('cart')"
-              >
-                Lista de compra
-              </v-btn>
-            </v-card-actions>
+            <v-list class="py-0 cart-items-list custom-scrollbar" max-height="320" style="overflow-y: auto;">
+                <div v-for="(item, index) in productCartState.shopping_cart_items" :key="index">
+                    <v-list-item class="px-4 py-3 cart-item-hover">
+                        <v-list-item-avatar tile size="64" class="rounded-lg my-0 mr-4 grey lighten-5 elevation-1">
+                            <v-img
+                                v-if="item.publication.images && item.publication.images.length > 0"
+                                :src="item.publication.images[0]"
+                                :lazy-src="item.publication.images[0]"
+                                contain
+                            ></v-img>
+                            <v-img v-else src="@/assets/img/no_image.jpg" contain></v-img>
+                        </v-list-item-avatar>
+
+                        <v-list-item-content class="py-1">
+                            <v-list-item-title class="text-body-2 font-weight-bold mb-1 text-wrap" style="line-height: 1.3;">
+                                {{ item.publication.keywords }}
+                            </v-list-item-title>
+                            <div class="d-flex justify-space-between align-center mt-2">
+                                <span class="primary--text font-weight-bold text-body-2">
+                                    ${{ item.publication.price.pvp | currency }}
+                                </span>
+                                <span class="caption grey--text text--darken-1 font-weight-medium px-2 py-0 rounded grey lighten-4">
+                                  x{{ item.quantity || item.original_quantity }}
+                                </span>
+                            </div>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-divider v-if="index < productCartState.shopping_cart_items.length - 1" class="mx-4 my-0"></v-divider>
+                </div>
+            </v-list>
+
+            <v-divider></v-divider>
+
+            <div class="px-5 py-4 grey lighten-5">
+                <div class="d-flex justify-space-between align-center mb-4">
+                    <span class="font-weight-medium grey--text text--darken-2 text-body-2">Subtotal</span>
+                    <span class="font-weight-black black--text text-h6">
+                        ${{ calculateCartTotal() | currency }}
+                    </span>
+                </div>
+                <v-btn
+                    block
+                    rounded
+                    large
+                    color="#00A0E9"
+                    class="white--text text-capitalize shadow-blue font-weight-bold"
+                    @click="HandlerRouter('cart')"
+                    elevation="0"
+                >
+                    Finalizar Compra
+                    <v-icon right small>mdi-arrow-right</v-icon>
+                </v-btn>
+            </div>
+          </v-card>
+          <v-card v-else class="pa-5 text-center rounded-xl">
+             <v-icon size="48" color="grey lighten-2" class="mb-2">mdi-cart-off</v-icon>
+             <div class="grey--text text--darken-1 font-weight-medium">Tu carrito está vacío</div>
           </v-card>
         </v-menu>
 
@@ -586,10 +617,32 @@ export default {
     products() {
       const cart = this.$store.getters["cart/CART_PRODUCTS"];
       return cart.length == 0 ? [] : cart.shopping_cart_items;
+    },
+
+    cartHasItems() {
+      return (
+        this.productCartState &&
+        this.productCartState.shopping_cart_items &&
+        this.productCartState.shopping_cart_items.length > 0
+      );
+    },
+
+    cartItemCount() {
+      if (!this.cartHasItems) return 0;
+      return this.productCartState.shopping_cart_items.length;
     }
   },
 
   methods: {
+    calculateCartTotal() {
+      if (!this.cartHasItems) return 0;
+      return this.productCartState.shopping_cart_items.reduce((acc, item) => {
+        const price = item.publication?.price?.pvp || 0;
+        const qty = item.quantity || item.original_quantity || 1;
+        return acc + price * qty;
+      }, 0);
+    },
+
     HandlerRouter(router) {
       if (router == "cart") {
         if (this.isAuth) {
@@ -798,5 +851,41 @@ export default {
 .theme--light.v-expansion-panels .v-expansion-panel {
   background-color: transparent !important;
   color: black !important;
+}
+
+/* Cart Menu Styles */
+.cart-menu-content {
+  border-radius: 12px !important;
+  box-shadow: none !important; 
+  border: none !important;
+}
+
+.cart-hover-card {
+  border: none !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f9f9f9; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e0e0e0; 
+  border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #bdbdbd; 
+}
+
+.cart-item-hover {
+  transition: background-color 0.2s;
+}
+.cart-item-hover:hover {
+  background-color: #fafafa;
+}
+
+.shadow-blue {
+    box-shadow: 0 4px 14px 0 rgba(0, 160, 233, 0.39) !important;
 }
 </style>
