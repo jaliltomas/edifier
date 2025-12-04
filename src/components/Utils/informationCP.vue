@@ -12,7 +12,7 @@
       </v-btn>
       <div
         v-else-if="showActions && $route.name !== 'cart' && inStock()"
-        class="d-flex flex-column flex-sm-row align-center action-wrapper"
+        class="d-flex flex-column align-items-center action-wrapper"
       >
         <v-btn
           color="#00A0E9"

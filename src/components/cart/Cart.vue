@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column" style="height: 100vh; overflow: hidden; background-color: #F8F9FA;">
+  <div class="d-flex flex-column" style=" overflow: hidden; background-color: #F8F9FA;">
     <v-container class="d-flex flex-column pa-0" style="max-width: 1000px; height: 100%;">
       
       <!-- COMPACT HEADER -->
