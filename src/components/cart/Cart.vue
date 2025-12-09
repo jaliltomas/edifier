@@ -13,22 +13,32 @@
       <!-- STEPPER -->
       <v-stepper v-model="e1" alt-labels class="elevation-0 bg-transparent d-flex flex-column flex-grow-1 overflow-hidden">
         <v-stepper-header class="elevation-0 bg-transparent mb-2 flex-shrink-0" style="height: auto;">
-          <v-stepper-step :complete="e1 > 1" step="1" color="#00A0E9" class="py-2">
-            <span :class="{'font-weight-bold text-primary': e1 === 1}" style="font-size: 0.8rem;">Carrito</span>
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step :complete="e1 > 2" step="2" color="#00A0E9" class="py-2">
-            <span :class="{'font-weight-bold text-primary': e1 === 2}" style="font-size: 0.8rem;">Pago</span>
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step :complete="e1 > 3" step="3" color="#00A0E9" class="py-2">
-            <span :class="{'font-weight-bold text-primary': e1 === 3}" style="font-size: 0.8rem;">Envío</span>
-          </v-stepper-step>
+          <template v-for="(step, index) in stepConfig">
+            <v-stepper-step
+              :key="step.key"
+              :complete="e1 > step.number"
+              :step="step.number"
+              color="#00A0E9"
+              class="py-2"
+            >
+              <span :class="{'font-weight-bold text-primary': e1 === step.number}" style="font-size: 0.8rem;">{{ step.label }}</span>
+            </v-stepper-step>
+            <v-divider v-if="index !== stepConfig.length -1"></v-divider>
+          </template>
         </v-stepper-header>
 
         <v-stepper-items class="flex-grow-1 overflow-hidden relative">
+          <!-- STEP 0: AUTH (ONLY FOR GUESTS) -->
+          <v-stepper-content
+            v-if="!isAuth"
+            :step="stepNumbers.auth"
+            class="pa-0 fill-height"
+          >
+            <cart-auth-step class="fill-height" @authenticated="handleAuthenticated" />
+          </v-stepper-content>
+
           <!-- STEP 1: CART ITEMS -->
-          <v-stepper-content step="1" class="pa-0 fill-height">
+          <v-stepper-content :step="stepNumbers.cart" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
             <v-card class="rounded-lg elevation-0 flex-grow-1 d-flex flex-column overflow-hidden white">
               <v-card-text class="pa-0 flex-grow-1 overflow-hidden">
@@ -62,7 +72,7 @@
                         rounded
                         color="#00A0E9"
                         class="white--text px-6 text-capitalize font-weight-bold shadow-blue"
-                        @click="e1 = 2"
+                        @click="goToStep('payment')"
                         :disabled="productCartState.shopping_cart_items.length === 0"
                         small
                       >
@@ -76,7 +86,7 @@
           </v-stepper-content>
 
           <!-- STEP 2: PAYMENT METHOD -->
-          <v-stepper-content step="2" class="pa-0 fill-height">
+          <v-stepper-content :step="stepNumbers.payment" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
             <v-row justify="center" class="fill-height ma-0 overflow-auto custom-scrollbar">
               <v-col cols="12" md="10" lg="8" class="pa-0">
@@ -144,7 +154,7 @@
                   </v-card-text>
 
                   <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
-                       <v-btn text small color="grey darken-1" @click="e1 = 1" class="text-capitalize">
+                       <v-btn text small color="grey darken-1" @click="goToStep('cart')" class="text-capitalize">
                            <v-icon left small>mdi-arrow-left</v-icon> Atrás
                        </v-btn>
                        <v-btn
@@ -166,7 +176,7 @@
           </v-stepper-content>
 
           <!-- STEP 3: DELIVERY/PICKUP -->
-          <v-stepper-content step="3" class="pa-0 fill-height">
+          <v-stepper-content :step="stepNumbers.delivery" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
              <v-row justify="center" class="fill-height ma-0 overflow-auto custom-scrollbar">
               <v-col cols="12" md="10" lg="8" class="pa-0">
@@ -318,7 +328,7 @@
 
                   </v-card-text>
                   <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
-                    <v-btn text small color="grey darken-1" @click="e1 = 2" class="text-capitalize">
+                    <v-btn text small color="grey darken-1" @click="goToStep('payment')" class="text-capitalize">
                         <v-icon left small>mdi-arrow-left</v-icon> Atrás
                     </v-btn>
                     <v-btn
@@ -421,6 +431,7 @@ import Suscribe from "../Utils/suscribe_component.vue";
 import TransferCheckout from "./utils/TransferCheckout.vue";
 import CartAddressForm from "./utils/CartAddressForm.vue";
 import CartProfileForm from "./utils/CartProfileForm.vue";
+import CartAuthStep from "./utils/CartAuthStep.vue";
 
 export default {
   components: {
@@ -430,7 +441,8 @@ export default {
     "suscribe-component": Suscribe,
     "transfer-checkout": TransferCheckout,
     "cart-address-form": CartAddressForm,
-    "cart-profile-form": CartProfileForm
+    "cart-profile-form": CartProfileForm,
+    "cart-auth-step": CartAuthStep
   },
   data() {
     return {
@@ -486,7 +498,7 @@ export default {
       alertPerfil: [],
 
       loadingLocation: false,
-      freeShipping: true,
+      freeShipping: false,
 
       // Embedded checkout
       checkoutDialog: false,
@@ -518,7 +530,7 @@ export default {
       }
     },
     e1(val) {
-      if(val === 3) {
+      if(val === this.stepNumbers.delivery && this.isAuth) {
         this.HandlerGetAddress();
         // Check if we have addresses, if so, prioritize one
         if (this.userAddress.length > 0 && this.radioGroup == 1) {
@@ -528,6 +540,12 @@ export default {
         if (this.radioGroup == 0 && this.userAddress.length > 0) {
            this.ValidateProductWarehouse();
         }
+      }
+    },
+    isAuth(val) {
+      if (val) {
+        this.HandlerGetAddress();
+        this.goToStep('cart');
       }
     }
   },
@@ -543,10 +561,41 @@ export default {
 
     totalAmount() {
       return this.$store.getters["cart/TOTAL_AMOUNT"];
+    },
+
+    stepConfig() {
+      const steps = [];
+      if (!this.isAuth) {
+        steps.push({ key: "auth", label: "Acceso" });
+      }
+      steps.push({ key: "cart", label: "Carrito" });
+      steps.push({ key: "payment", label: "Pago" });
+      steps.push({ key: "delivery", label: "Envío" });
+
+      return steps.map((step, index) => ({ ...step, number: index + 1 }));
+    },
+
+    stepNumbers() {
+      return this.stepConfig.reduce((acc, step) => {
+        acc[step.key] = step.number;
+        return acc;
+      }, {});
     }
   },
 
   methods: {
+    goToStep(stepKey) {
+      const target = this.stepNumbers[stepKey];
+      if (target) {
+        this.e1 = target;
+      }
+    },
+
+    async handleAuthenticated() {
+      await this.HandlerGetAddress();
+      this.goToStep('cart');
+    },
+
     async HandlerShippingQuote() {
       try {
         let calculatedQuote = 0;
@@ -584,6 +633,9 @@ export default {
 
     async HandlerGetCartsProducts() {
       try {
+        if (!this.isAuth) {
+          await this.$store.dispatch("cart/LOAD_GUEST_CART");
+        }
         const response = await this.$store.dispatch("cart/GET_CURRENT_CART");
         this.originalItems = response.data.data;
       } catch (error) {
@@ -835,27 +887,27 @@ export default {
 
     canCheckoutStepper() {
       if (!this.isAuth) {
-        this.$router.push({ name: "login" });
+        this.goToStep('auth');
         return;
       }
-      
+
       this.errorGetQuoute = false;
       if (this.radioGroupDues === 0) {
         this.payments_type = "installments";
         this.default_installments = 6;
-        this.e1 = 3; // Move to delivery step
+        this.goToStep('delivery');
         this.totalPrice();
       }
 
       if (this.radioGroupCredit === 0) {
         this.payments_type = "card";
         this.default_installments = "";
-        this.e1 = 3; // Move to delivery step
+        this.goToStep('delivery');
         this.totalPrice();
       }
 
       if (this.radioGroupTransfer === 0) {
-        this.e1 = 3; // Move to delivery step
+        this.goToStep('delivery');
         this.totalPrice();
       }
     },

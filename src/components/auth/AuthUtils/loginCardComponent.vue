@@ -117,6 +117,10 @@ export default {
       type: String,
       default: "",
       required: false
+    },
+    stayOnLogin: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -146,7 +150,11 @@ export default {
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
-        this.$router.push({ name: "home" });
+        if (this.stayOnLogin) {
+          this.$emit("login:success");
+        } else {
+          this.$router.push({ name: "home" });
+        }
       } catch (error) {
         console.log(error.response.data);
         if (error.response.status == 401) {
