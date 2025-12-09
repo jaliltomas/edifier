@@ -858,6 +858,11 @@ export default {
 
     async HandlerConfirmItems() {
       try {
+        if (!this.isAuth) {
+          this.e1 = this.accountStep;
+          return;
+        }
+
         const request = {
           update_items: true,
           address_id: this.idAddress.id || this.idAddress
@@ -966,6 +971,11 @@ export default {
 
     async HandlerCheckout() {
       try {
+        if (!this.isAuth) {
+          this.e1 = this.accountStep;
+          return;
+        }
+
         this.loadingCheckout = true;
         const request = {
           shopping_cart_id: this.originalItems.id,
@@ -1154,6 +1164,11 @@ export default {
 
     async HandlerTransferCheckout(cart) {
       try {
+        if (!this.isAuth) {
+          this.e1 = this.accountStep;
+          return;
+        }
+
         this.loadingCheckout = true;
 
         const address =
