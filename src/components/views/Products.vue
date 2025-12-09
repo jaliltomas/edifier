@@ -199,6 +199,7 @@
                         class="text-center"
                         :dataProduct="item"
                         :authUser="authUser"
+                        :showActions="true"
                       />
                     </div>
                   </v-col>
@@ -361,6 +362,10 @@ export default {
 
     authUser() {
       return this.$store.getters["auth/GET_PROFILE"];
+    },
+
+    productCartState() {
+      return this.$store.getters["cart/CART_PRODUCTS"];
     },
 
     productsData() {
@@ -585,7 +590,6 @@ export default {
           keywords.replaceAll("-", "_").replaceAll(" ", "-")
       });
     },
-
     resetSearch() {
       this.HandlerGetProducts();
       this.$router.replace({ query: null });
@@ -725,6 +729,24 @@ export default {
 .banner-btn {
   position: absolute;
   right: 12px;
+}
+
+.products__card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.action-btn {
+  width: 100%;
+  letter-spacing: 0.2px;
+}
+
+@media only screen and (min-width: 600px) {
+  .products__card__actions {
+    flex-direction: row;
+  }
 }
 @media only screen and (max-width: 800px) {
   .banner-container {

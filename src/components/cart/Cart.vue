@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column" style="height: 100vh; overflow: hidden; background-color: #F8F9FA;">
+  <div class="d-flex flex-column" style=" overflow: hidden; background-color: #F8F9FA;">
     <v-container class="d-flex flex-column pa-0" style="max-width: 1000px; height: 100%;">
       
       <!-- COMPACT HEADER -->
@@ -362,11 +362,44 @@
         max-width="600"
         persistent
       >
-        <cart-profile-form 
-            :missingDetails="alertPerfil" 
+        <cart-profile-form
+            :missingDetails="alertPerfil"
             @cancel="showAlertPerfil = false"
             @profile-updated="HandlerProfileUpdated"
         />
+      </v-dialog>
+      <v-dialog
+        v-model="checkoutDialog"
+        max-width="1100"
+        scrollable
+        persistent
+      >
+        <v-card>
+          <v-card-title class="d-flex justify-space-between align-center pr-2">
+            <div class="d-flex align-center">
+              <v-icon color="#00A0E9" left>mdi-credit-card</v-icon>
+              <span class="font-weight-bold text-subtitle-1">Finaliza tu pago</span>
+            </div>
+            <v-btn icon @click="closeCheckoutDialog">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider class="mb-0"></v-divider>
+          <v-card-text class="pa-0">
+            <div class="checkout-frame-wrapper">
+              <iframe
+                v-if="checkoutUrl"
+                class="checkout-frame"
+                :src="checkoutUrl"
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+              <div v-else class="d-flex align-center justify-center py-12">
+                <v-progress-circular indeterminate color="#00A0E9"></v-progress-circular>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
       </v-dialog>
     </v-container>
     <!-- PAGO POR TRANSFERENCIA -->
@@ -453,7 +486,11 @@ export default {
       alertPerfil: [],
 
       loadingLocation: false,
-      freeShipping: true
+      freeShipping: true,
+
+      // Embedded checkout
+      checkoutDialog: false,
+      checkoutUrl: ""
     };
   },
 
@@ -463,6 +500,14 @@ export default {
       this.HandlerGetAddress();
     }
     window.fbq("trackCustom", "CartView");
+  },
+
+  mounted() {
+    window.addEventListener("message", this.handleCheckoutMessage);
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("message", this.handleCheckoutMessage);
   },
 
     watch: {
@@ -709,7 +754,8 @@ export default {
           "products/CHECKOUT_DO",
           request
         );
-        window.location.replace(response.data.data.url);
+        this.checkoutUrl = response.data.data.url;
+        this.checkoutDialog = true;
       } catch (error) {
         if (
           error.response.data.error.message ==
@@ -722,6 +768,29 @@ export default {
       } finally {
         this.loadingCheckout = false;
       }
+    },
+
+    handleCheckoutMessage(event) {
+      if (event.origin !== window.location.origin) return;
+      const data = event.data || {};
+      if (data.type === "mp-checkout-result") {
+        if (data.success) {
+          this.$store.commit("cart/CLEAN_CART");
+        }
+        this.checkoutDialog = false;
+        this.checkoutUrl = "";
+        if (data.query) {
+          this.$router.push({
+            name: "checkout_notifiction",
+            query: data.query
+          });
+        }
+      }
+    },
+
+    closeCheckoutDialog() {
+      this.checkoutDialog = false;
+      this.checkoutUrl = "";
     },
 
     HandlerCloseAcceptProduct() {
@@ -1020,7 +1089,25 @@ export default {
   background: #f1f1f1; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e0e0e0; 
+  background: #e0e0e0;
   border-radius: 2px;
+}
+
+.checkout-frame-wrapper {
+  height: 80vh;
+  background: #f9f9f9;
+}
+
+.checkout-frame {
+  width: 100%;
+  height: 80vh;
+  border: none;
+}
+
+@media (max-width: 960px) {
+  .checkout-frame-wrapper,
+  .checkout-frame {
+    height: 70vh;
+  }
 }
 </style>
