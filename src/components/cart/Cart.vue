@@ -17,17 +17,15 @@
             <span :class="{'font-weight-bold text-primary': e1 === 1}" style="font-size: 0.8rem;">Carrito</span>
           </v-stepper-step>
           <v-divider></v-divider>
-          <template v-if="!isAuth">
-            <v-stepper-step
-              :complete="e1 > accountStep"
-              :step="accountStep"
-              color="#00A0E9"
-              class="py-2"
-            >
-              <span :class="{'font-weight-bold text-primary': e1 === accountStep}" style="font-size: 0.8rem;">Cuenta</span>
-            </v-stepper-step>
-            <v-divider></v-divider>
-          </template>
+          <v-stepper-step
+            :complete="e1 > accountStep || isAuth"
+            :step="accountStep"
+            color="#00A0E9"
+            class="py-2"
+          >
+            <span :class="{'font-weight-bold text-primary': e1 === accountStep}" style="font-size: 0.8rem;">Cuenta</span>
+          </v-stepper-step>
+          <v-divider></v-divider>
           <v-stepper-step
             :complete="e1 > paymentStep"
             :step="paymentStep"
@@ -98,19 +96,22 @@
             </div>
           </v-stepper-content>
 
-          <!-- STEP 2 (IF NOT AUTH): ACCOUNT -->
-          <v-stepper-content v-if="!isAuth" :step="accountStep" class="pa-0 fill-height">
+          <!-- STEP 2: ACCOUNT -->
+          <v-stepper-content :step="accountStep" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-auto custom-scrollbar">
               <v-row justify="center" class="ma-0">
                 <v-col cols="12" md="10" lg="8" class="pa-0">
                   <v-card class="rounded-lg elevation-0 mt-1 white">
                     <div class="text-center pt-4 pb-1">
-                      <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Inicia sesión o registrate</h2>
-                      <p class="caption grey--text mb-1">Continuá el pago sin salir del carrito.</p>
+                      <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Cuenta</h2>
+                      <p class="caption grey--text mb-1">
+                        <span v-if="!isAuth">Inicia sesión o registrate y seguí comprando sin salir del carrito.</span>
+                        <span v-else>Ya iniciaste sesión. Revisá tu cuenta y continuá al pago.</span>
+                      </p>
                     </div>
 
                     <v-card-text class="px-4 py-2">
-                      <div class="d-flex justify-center">
+                      <div class="d-flex justify-center" v-if="!isAuth">
                         <login-card-component
                           v-if="showLoginCard"
                           :redirectOnLogin="false"
@@ -124,6 +125,12 @@
                           v-else
                           @register:change="toggleAuthCard"
                         />
+                      </div>
+
+                      <div v-else class="d-flex flex-column align-center py-4">
+                        <v-icon color="#00A0E9" size="36" class="mb-2">mdi-account-check-outline</v-icon>
+                        <p class="text-subtitle-2 font-weight-medium grey--text text--darken-3 mb-1">Sesión iniciada</p>
+                        <p class="caption grey--text text-center mb-0">Continuá al pago para finalizar tu compra.</p>
                       </div>
                     </v-card-text>
 
@@ -684,7 +691,7 @@ export default {
     isAuth(val, oldVal) {
       if (val && oldVal === false) {
         this.HandlerGetAddress();
-        if (this.e1 >= (this.accountStep || 0)) {
+        if (this.e1 >= this.accountStep) {
           this.e1 = this.paymentStep;
         }
       } else if (!val && oldVal === true) {
@@ -710,15 +717,15 @@ export default {
 
   computed: {
     accountStep() {
-      return this.isAuth ? null : 2;
+      return 2;
     },
 
     paymentStep() {
-      return this.isAuth ? 2 : 3;
+      return 3;
     },
 
     deliveryStep() {
-      return this.isAuth ? 3 : 4;
+      return 4;
     },
 
     isAuth() {
@@ -741,7 +748,7 @@ export default {
     },
 
     goToPreviousFromPayment() {
-      this.e1 = this.isAuth ? 1 : this.accountStep;
+      this.e1 = this.accountStep;
     },
 
     toggleAuthCard() {
@@ -1090,19 +1097,19 @@ export default {
       if (this.radioGroupDues === 0) {
         this.payments_type = "installments";
         this.default_installments = 6;
-        this.e1 = 3; // Move to delivery step
+        this.e1 = this.deliveryStep; // Move to delivery step
         this.totalPrice();
       }
 
       if (this.radioGroupCredit === 0) {
         this.payments_type = "card";
         this.default_installments = "";
-        this.e1 = 3; // Move to delivery step
+        this.e1 = this.deliveryStep; // Move to delivery step
         this.totalPrice();
       }
 
       if (this.radioGroupTransfer === 0) {
-        this.e1 = 3; // Move to delivery step
+        this.e1 = this.deliveryStep; // Move to delivery step
         this.totalPrice();
       }
     },

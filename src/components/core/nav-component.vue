@@ -644,15 +644,7 @@ export default {
     },
 
     HandlerRouter(router) {
-      if (router == "cart") {
-        if (this.isAuth) {
-          this.$router.push({ name: router }).catch(err => {});
-        } else {
-          this.$router.push({ name: "login" }).catch(err => {});
-        }
-      } else {
-        this.$router.push({ name: router }).catch(err => {});
-      }
+      this.$router.push({ name: router }).catch(err => {});
     },
 
     HandlerRoute(route, value) {
