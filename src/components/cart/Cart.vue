@@ -729,7 +729,7 @@ export default {
     },
 
     isAuth() {
-      return this.$store.getters["auth/AUTHENTICATED"];
+      return !!this.$store.state.auth.token;
     },
 
     productCartState() {
