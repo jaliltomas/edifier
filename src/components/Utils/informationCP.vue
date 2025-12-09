@@ -11,27 +11,29 @@
         AVISAME
       </v-btn>
       <div
-        v-else-if="showActions && $route.name !== 'cart' && inStock()"
-        class="d-flex flex-column align-items-center action-wrapper"
-      >
-        <v-btn
-          color="#00A0E9"
-          class="white--text text-capitalize action-btn"
-          rounded
-          @click.stop="handleBuyNow()"
-        >
-          Comprar ahora
-        </v-btn>
-        <v-btn
-          outlined
-          color="#00A0E9"
-          class="text-capitalize action-btn"
-          rounded
-          @click.stop="handleAddToCart()"
-        >
-          Agregar al carrito
-        </v-btn>
-      </div>
+  v-else-if="showActions && $route.name !== 'cart' && inStock()"
+  class="d-flex flex-column align-center action-wrapper"
+>
+  <v-btn
+    color="#00A0E9"
+    class="white--text text-capitalize action-btn"
+    rounded
+    @click.stop="handleBuyNow()"
+  >
+    Comprar ahora
+  </v-btn>
+
+  <v-btn
+    outlined
+    color="#00A0E9"
+    class="text-capitalize action-btn"
+    rounded
+    @click.stop="handleAddToCart()"
+  >
+    Agregar al carrito
+  </v-btn>
+</div>
+
     </div>
 
     <ValidationObserver ref="obs" v-slot="{ passes }">
