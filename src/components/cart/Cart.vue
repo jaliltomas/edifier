@@ -17,12 +17,35 @@
             <span :class="{'font-weight-bold text-primary': e1 === 1}" style="font-size: 0.8rem;">Carrito</span>
           </v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step :complete="e1 > 2" step="2" color="#00A0E9" class="py-2">
-            <span :class="{'font-weight-bold text-primary': e1 === 2}" style="font-size: 0.8rem;">Pago</span>
+          <template v-if="!isAuth">
+            <v-stepper-step
+              :complete="e1 > accountStep"
+              :step="accountStep"
+              color="#00A0E9"
+              class="py-2"
+            >
+              <span :class="{'font-weight-bold text-primary': e1 === accountStep}" style="font-size: 0.8rem;">Cuenta</span>
+            </v-stepper-step>
+            <v-divider></v-divider>
+          </template>
+          <v-stepper-step
+            :complete="e1 > paymentStep"
+            :step="paymentStep"
+            :disabled="!isAuth"
+            color="#00A0E9"
+            class="py-2"
+          >
+            <span :class="{'font-weight-bold text-primary': e1 === paymentStep}" style="font-size: 0.8rem;">Pago</span>
           </v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step :complete="e1 > 3" step="3" color="#00A0E9" class="py-2">
-            <span :class="{'font-weight-bold text-primary': e1 === 3}" style="font-size: 0.8rem;">Envío</span>
+          <v-stepper-step
+            :complete="e1 > deliveryStep"
+            :step="deliveryStep"
+            :disabled="!isAuth"
+            color="#00A0E9"
+            class="py-2"
+          >
+            <span :class="{'font-weight-bold text-primary': e1 === deliveryStep}" style="font-size: 0.8rem;">Envío</span>
           </v-stepper-step>
         </v-stepper-header>
 
@@ -62,7 +85,7 @@
                         rounded
                         color="#00A0E9"
                         class="white--text px-6 text-capitalize font-weight-bold shadow-blue"
-                        @click="e1 = 2"
+                        @click="goToNextFromCart"
                         :disabled="productCartState.shopping_cart_items.length === 0"
                         small
                       >
@@ -75,8 +98,135 @@
             </div>
           </v-stepper-content>
 
+          <!-- STEP 2 (IF NOT AUTH): ACCOUNT -->
+          <v-stepper-content v-if="!isAuth" :step="accountStep" class="pa-0 fill-height">
+            <div class="d-flex flex-column fill-height overflow-auto custom-scrollbar">
+              <v-row justify="center" class="ma-0">
+                <v-col cols="12" md="10" lg="8" class="pa-0">
+                  <v-card class="rounded-lg elevation-0 mt-1 white">
+                    <div class="text-center pt-4 pb-1">
+                      <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Inicia sesión o registrate</h2>
+                      <p class="caption grey--text mb-1">Continuá el pago sin salir del carrito.</p>
+                    </div>
+
+                    <v-card-text class="px-4 py-2">
+                      <div class="d-flex justify-center">
+                        <login-card-component
+                          v-if="showLoginCard"
+                          :redirectOnLogin="false"
+                          :emailUser="email"
+                          :passwordUser="password"
+                          @login:change="toggleAuthCard"
+                          @recovery:change="toggleRecovery"
+                          @login:success="handleLoginSuccess"
+                        />
+                        <register-card-component
+                          v-else
+                          @register:change="toggleAuthCard"
+                        />
+                      </div>
+                    </v-card-text>
+
+                    <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
+                      <v-btn text small color="grey darken-1" @click="e1 = 1" class="text-capitalize">
+                        <v-icon left small>mdi-arrow-left</v-icon> Atrás
+                      </v-btn>
+                      <v-btn
+                        :disabled="!isAuth"
+                        color="#00A0E9"
+                        class="white--text px-6 shadow-blue"
+                        rounded
+                        small
+                        @click="e1 = paymentStep"
+                      >
+                        Ir a pago
+                        <v-icon right small>mdi-arrow-right</v-icon>
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </div>
+
+            <v-dialog v-model="showRecovery" max-width="500">
+              <ValidationObserver ref="obsRec" v-slot="{ passes }">
+                <v-card
+                  class="animate__animated animate__fadeIn animate__faster"
+                  :loading="loading_verification"
+                  v-if="!showNotificationEmail"
+                >
+                  <v-card-title>
+                    Ingresa tu correo para recuperar tu cuenta
+                  </v-card-title>
+                  <v-card-text class="mt-2 mb-0 pb-0">
+                    <ValidationProvider
+                      name="correo"
+                      rules="required|email"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        @keyup.enter="passes(HandlerRecoveryAccount)"
+                        v-model="email_verifiction"
+                        label="Correo Electrónico"
+                        dense
+                        filled
+                        color="#00A0E9"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      :loading="loading_verification"
+                      @click="showRecovery = false"
+                      dark
+                      color="grey darken-3"
+                      text
+                    >
+                      Cancelar
+                    </v-btn>
+                    <v-btn
+                      color="#00A0E9"
+                      :loading="loading_verification"
+                      @click="passes(HandlerRecoveryAccount)"
+                      dark
+                      rounded
+                    >
+                      Recuperar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+                <v-card
+                  v-else
+                  class="animate__animated animate__fadeIn animate__faster"
+                >
+                  <v-card-text>
+                    <v-alert
+                      class="pt-7"
+                      icon="mdi-check-outline"
+                      prominent
+                      text
+                      type="success"
+                    >
+                      Se ha enviado un correo para que modifique su contraseña
+                    </v-alert>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn text @click="() => {
+                      showRecovery = false;
+                      showNotificationEmail = false;
+                      email_verifiction = '';
+                    }">Ok</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </ValidationObserver>
+            </v-dialog>
+          </v-stepper-content>
+
           <!-- STEP 2: PAYMENT METHOD -->
-          <v-stepper-content step="2" class="pa-0 fill-height">
+          <v-stepper-content :step="paymentStep" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
             <v-row justify="center" class="fill-height ma-0 overflow-auto custom-scrollbar">
               <v-col cols="12" md="10" lg="8" class="pa-0">
@@ -144,7 +294,7 @@
                   </v-card-text>
 
                   <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
-                       <v-btn text small color="grey darken-1" @click="e1 = 1" class="text-capitalize">
+                       <v-btn text small color="grey darken-1" @click="goToPreviousFromPayment" class="text-capitalize">
                            <v-icon left small>mdi-arrow-left</v-icon> Atrás
                        </v-btn>
                        <v-btn
@@ -166,7 +316,7 @@
           </v-stepper-content>
 
           <!-- STEP 3: DELIVERY/PICKUP -->
-          <v-stepper-content step="3" class="pa-0 fill-height">
+          <v-stepper-content :step="deliveryStep" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
              <v-row justify="center" class="fill-height ma-0 overflow-auto custom-scrollbar">
               <v-col cols="12" md="10" lg="8" class="pa-0">
@@ -318,7 +468,7 @@
 
                   </v-card-text>
                   <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
-                    <v-btn text small color="grey darken-1" @click="e1 = 2" class="text-capitalize">
+                    <v-btn text small color="grey darken-1" @click="e1 = paymentStep" class="text-capitalize">
                         <v-icon left small>mdi-arrow-left</v-icon> Atrás
                     </v-btn>
                     <v-btn
@@ -362,11 +512,44 @@
         max-width="600"
         persistent
       >
-        <cart-profile-form 
-            :missingDetails="alertPerfil" 
+        <cart-profile-form
+            :missingDetails="alertPerfil"
             @cancel="showAlertPerfil = false"
             @profile-updated="HandlerProfileUpdated"
         />
+      </v-dialog>
+      <v-dialog
+        v-model="checkoutDialog"
+        max-width="1100"
+        scrollable
+        persistent
+      >
+        <v-card>
+          <v-card-title class="d-flex justify-space-between align-center pr-2">
+            <div class="d-flex align-center">
+              <v-icon color="#00A0E9" left>mdi-credit-card</v-icon>
+              <span class="font-weight-bold text-subtitle-1">Finaliza tu pago</span>
+            </div>
+            <v-btn icon @click="closeCheckoutDialog">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider class="mb-0"></v-divider>
+          <v-card-text class="pa-0">
+            <div class="checkout-frame-wrapper">
+              <iframe
+                v-if="checkoutUrl"
+                class="checkout-frame"
+                :src="checkoutUrl"
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+              <div v-else class="d-flex align-center justify-center py-12">
+                <v-progress-circular indeterminate color="#00A0E9"></v-progress-circular>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
       </v-dialog>
     </v-container>
     <!-- PAGO POR TRANSFERENCIA -->
@@ -388,6 +571,8 @@ import Suscribe from "../Utils/suscribe_component.vue";
 import TransferCheckout from "./utils/TransferCheckout.vue";
 import CartAddressForm from "./utils/CartAddressForm.vue";
 import CartProfileForm from "./utils/CartProfileForm.vue";
+import LoginCardComponent from "../auth/AuthUtils/loginCardComponent.vue";
+import RegisterCardComponent from "../auth/AuthUtils/RegisterCardComponent.vue";
 
 export default {
   components: {
@@ -397,12 +582,15 @@ export default {
     "suscribe-component": Suscribe,
     "transfer-checkout": TransferCheckout,
     "cart-address-form": CartAddressForm,
-    "cart-profile-form": CartProfileForm
+    "cart-profile-form": CartProfileForm,
+    "login-card-component": LoginCardComponent,
+    "register-card-component": RegisterCardComponent
   },
   data() {
     return {
       e1: 1,
       quote: 0,
+      total_order: 0,
       errorGetQuoute: false,
       statusQuote: false,
       items: [],
@@ -453,7 +641,20 @@ export default {
       alertPerfil: [],
 
       loadingLocation: false,
-      freeShipping: true
+      freeShipping: false,
+
+      // Embedded checkout
+      checkoutDialog: false,
+      checkoutUrl: "",
+
+      // Inline auth flow
+      showLoginCard: true,
+      showRecovery: false,
+      showNotificationEmail: false,
+      loading_verification: false,
+      email_verifiction: "",
+      email: "",
+      password: ""
     };
   },
 
@@ -465,6 +666,14 @@ export default {
     window.fbq("trackCustom", "CartView");
   },
 
+  mounted() {
+    window.addEventListener("message", this.handleCheckoutMessage);
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("message", this.handleCheckoutMessage);
+  },
+
     watch: {
     radioGroup(val) {
       console.log(val);
@@ -472,8 +681,20 @@ export default {
         this.ValidateProductWarehouse();
       }
     },
+    isAuth(val, oldVal) {
+      if (val && oldVal === false) {
+        this.HandlerGetAddress();
+        if (this.e1 >= (this.accountStep || 0)) {
+          this.e1 = this.paymentStep;
+        }
+      } else if (!val && oldVal === true) {
+        this.e1 = 1;
+        this.userAddress = [];
+        this.idAddress = null;
+      }
+    },
     e1(val) {
-      if(val === 3) {
+      if(val === this.deliveryStep) {
         this.HandlerGetAddress();
         // Check if we have addresses, if so, prioritize one
         if (this.userAddress.length > 0 && this.radioGroup == 1) {
@@ -488,6 +709,18 @@ export default {
   },
 
   computed: {
+    accountStep() {
+      return this.isAuth ? null : 2;
+    },
+
+    paymentStep() {
+      return this.isAuth ? 2 : 3;
+    },
+
+    deliveryStep() {
+      return this.isAuth ? 3 : 4;
+    },
+
     isAuth() {
       return this.$store.getters["auth/AUTHENTICATED"];
     },
@@ -502,6 +735,50 @@ export default {
   },
 
   methods: {
+    goToNextFromCart() {
+      const nextStep = this.isAuth ? this.paymentStep : this.accountStep;
+      this.e1 = nextStep;
+    },
+
+    goToPreviousFromPayment() {
+      this.e1 = this.isAuth ? 1 : this.accountStep;
+    },
+
+    toggleAuthCard() {
+      this.showLoginCard = !this.showLoginCard;
+    },
+
+    toggleRecovery() {
+      this.showRecovery = !this.showRecovery;
+    },
+
+    async HandlerRecoveryAccount() {
+      try {
+        this.loading_verification = true;
+        const request = {
+          email: this.email_verifiction,
+          url_base: process.env.VUE_APP_CHECKOUT,
+          store_id: 3
+        };
+        await this.$store.dispatch("auth/RECOVERY_PASSWORD", request);
+        this.showNotificationEmail = true;
+      } catch (error) {
+        console.log(error);
+        this.$snotify.error(error.response.data.error.err_message, "Error!");
+      } finally {
+        this.loading_verification = false;
+      }
+    },
+
+    handleLoginSuccess() {
+      this.showLoginCard = true;
+      this.showRecovery = false;
+      this.showNotificationEmail = false;
+      this.email_verifiction = "";
+      this.e1 = this.paymentStep;
+      this.HandlerGetAddress();
+    },
+
     async HandlerShippingQuote() {
       try {
         let calculatedQuote = 0;
@@ -511,6 +788,11 @@ export default {
           this.statusQuote = false;
 
           if (this.radioGroup == 0) {
+            return;
+          }
+
+          if (!this.idAddress) {
+            this.loadingCheckout = false;
             return;
           }
 
@@ -709,7 +991,8 @@ export default {
           "products/CHECKOUT_DO",
           request
         );
-        window.location.replace(response.data.data.url);
+        this.checkoutUrl = response.data.data.url;
+        this.checkoutDialog = true;
       } catch (error) {
         if (
           error.response.data.error.message ==
@@ -722,6 +1005,29 @@ export default {
       } finally {
         this.loadingCheckout = false;
       }
+    },
+
+    handleCheckoutMessage(event) {
+      if (event.origin !== window.location.origin) return;
+      const data = event.data || {};
+      if (data.type === "mp-checkout-result") {
+        if (data.success) {
+          this.$store.commit("cart/CLEAN_CART");
+        }
+        this.checkoutDialog = false;
+        this.checkoutUrl = "";
+        if (data.query) {
+          this.$router.push({
+            name: "checkout_notifiction",
+            query: data.query
+          });
+        }
+      }
+    },
+
+    closeCheckoutDialog() {
+      this.checkoutDialog = false;
+      this.checkoutUrl = "";
     },
 
     HandlerCloseAcceptProduct() {
@@ -1020,7 +1326,25 @@ export default {
   background: #f1f1f1; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e0e0e0; 
+  background: #e0e0e0;
   border-radius: 2px;
+}
+
+.checkout-frame-wrapper {
+  height: 80vh;
+  background: #f9f9f9;
+}
+
+.checkout-frame {
+  width: 100%;
+  height: 80vh;
+  border: none;
+}
+
+@media (max-width: 960px) {
+  .checkout-frame-wrapper,
+  .checkout-frame {
+    height: 70vh;
+  }
 }
 </style>

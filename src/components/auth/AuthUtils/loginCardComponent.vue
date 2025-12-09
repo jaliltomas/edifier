@@ -117,6 +117,10 @@ export default {
       type: String,
       default: "",
       required: false
+    },
+    redirectOnLogin: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -146,7 +150,11 @@ export default {
         };
         await this.$store.dispatch("auth/LOGIN", request);
         this.$snotify.success("Nos encanta tenerte de vuelta", "Bienvenido");
-        this.$router.push({ name: "home" });
+        if (this.redirectOnLogin) {
+          this.$router.push({ name: "home" });
+        } else {
+          this.$emit("login:success");
+        }
       } catch (error) {
         console.log(error.response.data);
         if (error.response.status == 401) {

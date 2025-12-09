@@ -3,24 +3,35 @@
     <div class="mb-5">
       <v-btn
         v-if="!inStock() || !validateUmbral()"
-        @click="showModalReserve = true"
+        @click.stop="HandlerModalAvisame()"
         class="mt-0 white--text"
         rounded
         color="#00A0E9"
       >
         AVISAME
       </v-btn>
-      <v-btn
-        v-else-if="
-          $route.name != 'product_details' && $route.name != 'cart' && inStock()
-        "
-        @click="HandlerShowProduct(dataProduct)"
-        class="mt-0 white--text"
-        rounded
-        color="#00A0E9"
+      <div
+        v-else-if="showActions && $route.name !== 'cart' && inStock()"
+        class="d-flex flex-column flex-sm-row align-center action-wrapper"
       >
-        COMPRAR
-      </v-btn>
+        <v-btn
+          color="#00A0E9"
+          class="white--text text-capitalize action-btn"
+          rounded
+          @click.stop="handleBuyNow()"
+        >
+          Comprar ahora
+        </v-btn>
+        <v-btn
+          outlined
+          color="#00A0E9"
+          class="text-capitalize action-btn"
+          rounded
+          @click.stop="handleAddToCart()"
+        >
+          Agregar al carrito
+        </v-btn>
+      </div>
     </div>
 
     <ValidationObserver ref="obs" v-slot="{ passes }">
@@ -107,6 +118,10 @@ export default {
       type: Object,
       required: true,
       default: () => {}
+    },
+    showActions: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -186,6 +201,10 @@ export default {
           this.customPhone = value;
         }
       }
+    },
+
+    productCartState() {
+      return this.$store.getters["cart/CART_PRODUCTS"];
     }
   },
 
@@ -341,17 +360,6 @@ export default {
       return isValidUmbral(paylod) > 0 ? true : false;
     },
 
-    HandlerShowProduct(publication) {
-      const { product, keywords } = publication;
-      this.$router.push({
-        path:
-          "/product-details/" +
-          product?.brand.name +
-          "/" +
-          keywords.replaceAll("-", "_").replaceAll(" ", "-")
-      });
-    },
-
     HandlerModalAvisame() {
       if (this.isAuth) {
         this.showModalReserve = true;
@@ -367,9 +375,84 @@ export default {
         !this.dataProduct.store.out_stock &&
         !this.dataProduct.out_stock
       );
+    },
+
+    async handleAddToCart(publication = this.dataProduct, goToCart = false) {
+      if (!this.inStock()) return;
+      try {
+        const cartState = this.productCartState;
+
+        if (!cartState || !cartState.shopping_cart_items) {
+          if (!cartState) {
+            this.$store.commit("cart/SET_ITEM", { shopping_cart_items: [] });
+          }
+        }
+
+        const currentCart = this.productCartState;
+        const existingItem = currentCart.shopping_cart_items.find(
+          item => item.publication_id === publication.id
+        );
+
+        if (existingItem) {
+          const newQuantity = (existingItem.original_quantity || 0) + 1;
+          this.$store.commit("cart/UPDATE_ITEM_QUANTITY", {
+            publication_id: publication.id,
+            quantity: newQuantity
+          });
+        } else {
+          this.$store.commit("cart/ADD_ITEM", {
+            ...publication,
+            original_quantity: 1
+          });
+        }
+
+        const normalizedItems = this.productCartState.shopping_cart_items.map(
+          item => ({
+            publication_id: item.publication_id,
+            quantity: item.original_quantity
+          })
+        );
+
+        if (this.isAuth) {
+          await this.$store.dispatch("cart/CREATE_CART", {
+            items: normalizedItems
+          });
+          await this.$store.dispatch("cart/GET_CURRENT_CART");
+        } else {
+          this.$store.commit("cart/TOTAL_AMOUNT", {
+            items: this.productCartState.shopping_cart_items
+          });
+        }
+
+        if (goToCart) {
+          this.$router.push({ name: "cart" });
+        } else {
+          this.$snotify.success(
+            "Producto agregado al carrito",
+            "¡Listo!"
+          );
+        }
+      } catch (error) {
+        this.$snotify.error(
+          "No se pudo agregar el producto al carrito.",
+          "Error"
+        );
+      }
+    },
+
+    async handleBuyNow(publication = this.dataProduct) {
+      await this.handleAddToCart(publication, true);
     }
   }
 };
 </script>
 
-<style></style>
+<style scoped>
+.action-wrapper {
+  gap: 10px;
+}
+
+.action-btn {
+  min-width: 160px;
+}
+</style>
