@@ -39,10 +39,7 @@ const routes = [
   {
     path: "/cart",
     component: Cart,
-    name: "cart",
-    meta: {
-      requiresAuth: true
-    }
+    name: "cart"
   },
   { path: "/login", component: Login, name: "login" },
   { path: "/recovery", component: Recovery, name: "recovery" },

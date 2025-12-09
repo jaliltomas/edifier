@@ -1072,7 +1072,7 @@ export default {
 
     canCheckoutStepper() {
       if (!this.isAuth) {
-        this.$router.push({ name: "login" });
+        this.e1 = this.accountStep;
         return;
       }
       
@@ -1128,7 +1128,7 @@ export default {
 
     canCheckout() {
       if (!this.isAuth) {
-        this.$router.push({ name: "login" });
+        this.e1 = this.accountStep;
         return;
       }
       this.errorGetQuoute = false;
