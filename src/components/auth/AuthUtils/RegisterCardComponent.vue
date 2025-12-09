@@ -250,6 +250,7 @@ export default {
         };
         await this.$store.dispatch("auth/REGISTER", request);
         this.emitEvent();
+        this.$emit("register:success");
         // this.emitVerification();
       } catch (error) {
         console.log(error);
