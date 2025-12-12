@@ -85,6 +85,7 @@ export default {
           this.messageNotification =
             "<p>Enviamos un email con la factura y detalles de la operación</p><p style='margin-top:5px'>En 24hs hábiles vas a recibir un correo con los datos de envío.</p>";
           this.$store.commit("cart/CLEAN_CART");
+          localStorage.removeItem('guest_cart'); // Asegurar limpieza completa
           this.notifyParent("approved");
         } else {
           this.notifyParent(response.data.message);

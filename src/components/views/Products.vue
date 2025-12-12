@@ -382,6 +382,10 @@ export default {
   },
 
   methods: {
+    HandlerRouter(routeName, params = {}) {
+      this.$router.push({ name: routeName, params: params }).catch(err => err);
+    },
+
     HandlerGetProducts(page) {
       if (!this.isAuth) this.HandlerGetPublicProducts(page);
       if (this.isAuth) this.HandlerGetAuthProducts(page);

@@ -249,11 +249,24 @@ export default {
           password: this.password,
         };
         await this.$store.dispatch("auth/REGISTER", request);
-        this.emitEvent();
-        // this.emitVerification();
+        
+        // Auto-login después de registro exitoso
+        try {
+          const loginRequest = {
+            email: this.email,
+            password: this.password,
+            store: 3
+          };
+          await this.$store.dispatch("auth/LOGIN", loginRequest);
+          this.$snotify.success("Cuenta creada exitosamente", "¡Bienvenido!");
+          this.$emit("register:success"); // Nuevo evento para indicar registro+login exitoso
+        } catch (loginError) {
+          // Si falla el auto-login, mostrar mensaje y cambiar a login
+          this.$snotify.info("Cuenta creada. Por favor inicia sesión.", "Info");
+          this.emitEvent();
+        }
       } catch (error) {
         console.log(error);
-
         this.$snotify.error(error.response.data.error.err_message, "Error!");
       } finally {
         this.loading = false;

@@ -78,7 +78,7 @@
           Ingresar
         </v-btn>
         <v-btn
-          :loading="loading"
+          :disabled="loading"
           @click="emitEvent"
           rounded
           elevation="0"
@@ -128,6 +128,7 @@ export default {
     return {
       //Login
       loading: false,
+      loadingRegister: false, // Nuevo estado separado
       email: "",
       password: ""
     };

@@ -250,60 +250,63 @@
               <div class="text-sub-title-order ml-5 mb-5">DATOS DE ENVIO</div>
               <v-sheet color="#FFFFFF">
                 <div class="py-5 px-5">
-                  <v-row v-if="authUser.address != null">
+                  <v-row v-if="shippingAddress">
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <div>
                         <span class="font-title"> Estado: </span>
                         <span class="text-capitalize">
-                          {{ authUser.address.state.name }}
+                          {{ shippingAddress.state?.name || 'N/A' }}
                         </span>
                       </div>
                     </v-col>
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <span class="font-title"> Municipio: </span>
                       <span class="text-capitalize">
-                        {{ authUser.address.location }}
+                        {{ shippingAddress.location }}
                       </span>
                     </v-col>
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <span class="font-title"> Código Postal: </span>
                       <span>
-                        {{ authUser.address.zipcode }}
+                        {{ shippingAddress.zipcode }}
                       </span>
                     </v-col>
                   </v-row>
-                  <v-row v-if="authUser.address != null">
+                  <v-row v-if="shippingAddress">
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <div>
                         <span class="font-title"> Calle: </span>
-                        <span v-if="authUser.address != null">
-                          {{ authUser.address.street }}
+                        <span>
+                          {{ shippingAddress.street }}
                         </span>
                       </div>
                     </v-col>
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <span class="font-title"> Nº: </span>
-                      <span v-if="authUser.address != null">
-                        {{ authUser.address.street_number }}
+                      <span>
+                        {{ shippingAddress.street_number }}
                       </span>
                     </v-col>
                   </v-row>
-                  <v-row v-if="authUser.address != null">
+                  <v-row v-if="shippingAddress">
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <div>
                         <span class="font-title"> Piso: </span>
-
-                        <span v-if="authUser.address != null">
-                          {{ authUser.address.floor_number }}
+                        <span>
+                          {{ shippingAddress.floor_number }}
                         </span>
                       </div>
                     </v-col>
                     <v-col cols="12" sm="6" md="4" class="py-1">
                       <span class="font-title"> Dpto: </span>
-
-                      <span v-if="authUser.address != null">
-                        {{ authUser.address.department_number }}
+                      <span>
+                        {{ shippingAddress.department_number }}
                       </span>
+                    </v-col>
+                  </v-row>
+                  <v-row v-else>
+                    <v-col cols="12" class="py-1">
+                      <span class="grey--text">Retiro en tienda</span>
                     </v-col>
                   </v-row>
                 </div>
@@ -417,6 +420,11 @@ export default {
       type: Object,
       default: () => {},
       required: true
+    },
+    selectedAddress: {
+      type: Object,
+      default: () => null,
+      required: false
     }
   },
 
@@ -445,6 +453,9 @@ export default {
   computed: {
     authUser() {
       return this.$store.getters["auth/GET_PROFILE"];
+    },
+    shippingAddress() {
+      return this.selectedAddress || this.authUser?.address;
     }
   },
 

@@ -565,6 +565,7 @@
       :showModalTransfer="showModalTransfer"
       :productCartState="productCartState"
       :responseTransferCheckout="responseTransferCheckout"
+      :selectedAddress="idAddress"
     />
     <suscribe-component />
   </div>
@@ -840,6 +841,7 @@ export default {
         const response = await this.$store.dispatch("auth/GET_ADDRESS");
         this.userAddress = response.data.data;
         this.idAddress = this.userAddress.find(addr => addr.status == true);
+        return response; // Agregar return
       } catch (error) {
         console.log(error);
       }
@@ -1008,8 +1010,17 @@ export default {
           "products/CHECKOUT_DO",
           request
         );
-        this.checkoutUrl = response.data.data.url;
-        this.checkoutDialog = true;
+        
+        // Detectar Safari y redirigir directamente
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        
+        if (isSafari) {
+          // Redirigir directamente a la URL de MercadoPago
+          window.location.href = response.data.data.url;
+        } else {
+          this.checkoutUrl = response.data.data.url;
+          this.checkoutDialog = true;
+        }
       } catch (error) {
         if (
           error.response.data.error.message ==
@@ -1087,30 +1098,61 @@ export default {
       }
     },
 
-    canCheckoutStepper() {
+    async canCheckoutStepper() {
       if (!this.isAuth) {
         this.e1 = this.accountStep;
         return;
+      }
+
+      // Verificar perfil completo antes de continuar
+      try {
+        const profileCheck = await this.checkProfileComplete();
+        if (!profileCheck.complete) {
+          this.showAlertPerfil = true;
+          this.alertPerfil = profileCheck.missingFields;
+          return;
+        }
+      } catch (error) {
+        console.log(error);
       }
       
       this.errorGetQuoute = false;
       if (this.radioGroupDues === 0) {
         this.payments_type = "installments";
         this.default_installments = 6;
-        this.e1 = this.deliveryStep; // Move to delivery step
+        this.e1 = this.deliveryStep;
         this.totalPrice();
       }
 
       if (this.radioGroupCredit === 0) {
         this.payments_type = "card";
         this.default_installments = "";
-        this.e1 = this.deliveryStep; // Move to delivery step
+        this.e1 = this.deliveryStep;
         this.totalPrice();
       }
 
       if (this.radioGroupTransfer === 0) {
-        this.e1 = this.deliveryStep; // Move to delivery step
+        this.e1 = this.deliveryStep;
         this.totalPrice();
+      }
+    },
+
+    async checkProfileComplete() {
+      try {
+        const user = this.$store.getters["auth/GET_PROFILE"];
+        const missingFields = [];
+        
+        if (!user.buyer?.doc_type) missingFields.push("doc_type");
+        if (!user.buyer?.doc_number) missingFields.push("doc_number");
+        if (!user.buyer?.phone) missingFields.push("phone");
+        if (!user.buyer?.first_name) missingFields.push("first_name");
+        
+        return {
+          complete: missingFields.length === 0,
+          missingFields: missingFields
+        };
+      } catch (error) {
+        return { complete: true, missingFields: [] };
       }
     },
 
@@ -1267,7 +1309,13 @@ export default {
     },
 
     HandlerAddressAdded() {
-      this.HandlerGetAddress();
+      this.HandlerGetAddress().then(() => {
+        // Seleccionar la nueva dirección y recalcular envío
+        if (this.userAddress.length > 0 && this.radioGroup === 1) {
+          this.idAddress = this.userAddress.find(addr => addr.status === true) || this.userAddress[0];
+          this.HandlerShippingQuote();
+        }
+      });
     },
 
     async HandlerProfileUpdated() {

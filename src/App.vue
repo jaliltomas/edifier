@@ -28,6 +28,7 @@
     <v-main>
       <nav-component
         v-if="$route.name != 'login' && $route.name != 'recovery'"
+        :key="$store.state.auth.token"
       />
       <div
         v-if="$route.name != 'login' && $route.name != 'recovery'"
