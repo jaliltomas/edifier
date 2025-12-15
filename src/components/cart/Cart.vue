@@ -537,6 +537,8 @@
                 :src="checkoutUrl"
                 frameborder="0"
                 allowfullscreen
+                allow="payment; geolocation; microphone; camera; midi; encrypted-media"
+                sandbox="allow-forms allow-modals allow-popups allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation"
               ></iframe>
               <div v-else class="d-flex align-center justify-center py-12">
                 <v-progress-circular indeterminate color="#00A0E9"></v-progress-circular>
