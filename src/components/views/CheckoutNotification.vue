@@ -85,7 +85,9 @@ export default {
           this.messageNotification =
             "<p>Enviamos un email con la factura y detalles de la operación</p><p style='margin-top:5px'>En 24hs hábiles vas a recibir un correo con los datos de envío.</p>";
           this.$store.commit("cart/CLEAN_CART");
-          localStorage.removeItem('guest_cart'); // Asegurar limpieza completa
+          // Asegurar limpieza completa de localStorage
+          localStorage.removeItem('guest_cart');
+          localStorage.removeItem('pending_checkout_cart_id');
           this.notifyParent("approved");
         } else {
           this.notifyParent(response.data.message);
@@ -194,18 +196,33 @@ export default {
     },
 
     notifyParent(status) {
+      const resultData = {
+        type: "mp-checkout-result",
+        status,
+        success: status === "approved",
+        query: this.$route.query
+      };
+
+      // Guardar en localStorage para comunicación entre pestañas (Safari/iOS)
       try {
-        window.parent?.postMessage(
-          {
-            type: "mp-checkout-result",
-            status,
-            success: status === "approved",
-            query: this.$route.query
-          },
-          window.location.origin
-        );
+        localStorage.setItem('checkout_completed', JSON.stringify(resultData));
+      } catch (e) {
+        console.log("localStorage error", e);
+      }
+
+      // PostMessage para comunicación con iframe (Chrome/Windows/Android)
+      try {
+        window.parent?.postMessage(resultData, window.location.origin);
       } catch (error) {
         console.log("mp-checkout-result-notify", error);
+      }
+
+      // Si estamos en una ventana abierta con window.open, intentar cerrarla después de mostrar el resultado
+      // Solo si fue abierta desde otra ventana y el pago fue exitoso
+      if (status === "approved" && window.opener) {
+        setTimeout(() => {
+          // No cerrar automáticamente, dejar que el usuario vea el mensaje
+        }, 2000);
       }
     },
   },

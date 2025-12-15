@@ -2,7 +2,6 @@
   <div class="d-flex flex-column" style=" overflow: hidden; background-color: #F8F9FA;">
     <v-container class="d-flex flex-column pa-0" style="max-width: 1000px; height: 100%;">
       
-      <!-- COMPACT HEADER -->
       <div class="d-flex flex-column align-center pt-4 pb-2 flex-shrink-0">
         <h1 class="text-h6 font-weight-bold grey--text text--darken-3 mb-1" style="letter-spacing: 0.5px;">
           Lista de Compra
@@ -10,7 +9,6 @@
         <div class="primary-underline"></div>
       </div>
 
-      <!-- STEPPER -->
       <v-stepper v-model="e1" alt-labels class="elevation-0 bg-transparent d-flex flex-column flex-grow-1 overflow-hidden">
         <v-stepper-header class="elevation-0 bg-transparent mb-2 flex-shrink-0" style="height: auto;">
           <v-stepper-step :complete="e1 > 1" step="1" color="#00A0E9" class="py-2">
@@ -48,7 +46,6 @@
         </v-stepper-header>
 
         <v-stepper-items class="flex-grow-1 overflow-hidden relative">
-          <!-- STEP 1: CART ITEMS -->
           <v-stepper-content step="1" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
             <v-card class="rounded-lg elevation-0 flex-grow-1 d-flex flex-column overflow-hidden white">
@@ -96,7 +93,6 @@
             </div>
           </v-stepper-content>
 
-          <!-- STEP 2: ACCOUNT -->
           <v-stepper-content :step="accountStep" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-auto custom-scrollbar">
               <v-row justify="center" class="ma-0">
@@ -232,7 +228,6 @@
             </v-dialog>
           </v-stepper-content>
 
-          <!-- STEP 2: PAYMENT METHOD -->
           <v-stepper-content :step="paymentStep" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
             <v-row justify="center" class="fill-height ma-0 overflow-auto custom-scrollbar">
@@ -244,7 +239,6 @@
                   
                   <v-card-text class="px-4 py-2">
                     <v-row dense>
-                      <!-- 6 CUOTAS -->
                       <v-col cols="12" sm="4" class="d-flex pa-1">
                         <v-card
                           outlined
@@ -259,7 +253,6 @@
                         </v-card>
                       </v-col>
 
-                      <!-- 1 PAGO -->
                       <v-col cols="12" sm="4" class="d-flex pa-1">
                         <v-card
                           outlined
@@ -274,7 +267,6 @@
                         </v-card>
                       </v-col>
 
-                      <!-- TRANSFERENCIA -->
                       <v-col cols="12" sm="4" class="d-flex pa-1">
                         <v-card
                           outlined
@@ -322,7 +314,6 @@
             </div>
           </v-stepper-content>
 
-          <!-- STEP 3: DELIVERY/PICKUP -->
           <v-stepper-content :step="deliveryStep" class="pa-0 fill-height">
             <div class="d-flex flex-column fill-height overflow-hidden">
              <v-row justify="center" class="fill-height ma-0 overflow-auto custom-scrollbar">
@@ -333,7 +324,6 @@
                   </div>
 
                   <v-card-text class="px-4 py-2">
-                    <!-- Delivery Selection Cards -->
                     <v-radio-group v-model="radioGroup" @change="HandlerShippingQuote()" class="mt-0" hide-details>
                         <v-row dense class="mb-3">
                             <v-col cols="12" sm="6" class="pa-1">
@@ -377,7 +367,6 @@
 
                     <v-expand-transition>
                         <div v-if="radioGroup !== null">
-                            <!-- RETIRO EN TIENDA CONTENT -->
                             <div v-if="radioGroup == 0" class="details-container pa-3 rounded grey lighten-5 mb-2">
                                <div v-if="userAddress.length > 0">
                                    <div v-if="availableWharehouses.length > 0">
@@ -407,7 +396,6 @@
                                </div>
                             </div>
 
-                            <!-- ENTREGA A DOMICILIO CONTENT -->
                             <div v-if="radioGroup == 1" class="details-container pa-3 rounded grey lighten-5 mb-2">
                               <div v-if="userAddress.length > 0">
                                  <p class="font-weight-bold mb-2 text-caption black--text">Dirección de entrega:</p>
@@ -443,7 +431,6 @@
                         </div>
                     </v-expand-transition>
 
-                    <!-- SUMMARY SECTION -->
                     <v-card flat outlined class="mt-3 rounded">
                         <v-card-text class="py-2 px-3">
                             <div class="d-flex justify-space-between mb-1">
@@ -559,7 +546,6 @@
         </v-card>
       </v-dialog>
     </v-container>
-    <!-- PAGO POR TRANSFERENCIA -->
     <transfer-checkout
       v-if="showModalTransfer"
       :showModalTransfer="showModalTransfer"
@@ -662,11 +648,17 @@ export default {
       loading_verification: false,
       email_verifiction: "",
       email: "",
-      password: ""
+      password: "",
+
+      // Polling para checkout en Safari/iOS (Dejado por compatibilidad pero no se usa en el modal)
+      checkoutPollInterval: null
     };
   },
 
     created() {
+    // Verificar si hay un checkout completado pendiente de procesar
+    this.checkCompletedCheckout();
+    
     this.HandlerGetCartsProducts();
     if (this.isAuth) {
       this.HandlerGetAddress();
@@ -676,10 +668,17 @@ export default {
 
   mounted() {
     window.addEventListener("message", this.handleCheckoutMessage);
+    // Escuchar cambios en localStorage desde otras pestañas (Safari/iOS)
+    window.addEventListener("storage", this.handleStorageChange);
   },
 
   beforeDestroy() {
     window.removeEventListener("message", this.handleCheckoutMessage);
+    window.removeEventListener("storage", this.handleStorageChange);
+    // Limpiar polling de checkout si existe
+    if (this.checkoutPollInterval) {
+      clearInterval(this.checkoutPollInterval);
+    }
   },
 
     watch: {
@@ -1011,24 +1010,25 @@ export default {
           request
         );
         
-        // Detectar Safari y redirigir directamente
-        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        // --- CAMBIO: Se fuerza el uso del modal en todos los dispositivos ---
+        // Se elimina la verificación de isAppleDevice para usar siempre el iframe.
         
-        if (isSafari) {
-          // Redirigir directamente a la URL de MercadoPago
-          window.location.href = response.data.data.url;
-        } else {
-          this.checkoutUrl = response.data.data.url;
-          this.checkoutDialog = true;
-        }
+        this.checkoutUrl = response.data.data.url;
+        this.checkoutDialog = true;
+
       } catch (error) {
         if (
+          error.response &&
+          error.response.data && 
+          error.response.data.error &&
           error.response.data.error.message ==
           "perfil actual incompleto para realizar compra"
         ) {
           this.showAlertPerfil = true;
           this.alertPerfil = error.response.data.error.details;
           this.showSelectDelivery = !this.showSelectDelivery;
+        } else {
+            console.log(error);
         }
       } finally {
         this.loadingCheckout = false;
@@ -1049,6 +1049,34 @@ export default {
             name: "checkout_notifiction",
             query: data.query
           });
+        }
+      }
+    },
+
+    handleStorageChange(event) {
+      // Detectar cuando el checkout se completa desde otra pestaña
+      if (event.key === 'checkout_completed' && event.newValue) {
+        try {
+          const result = JSON.parse(event.newValue);
+          if (result.success) {
+            this.$store.commit("cart/CLEAN_CART");
+            this.$snotify.success('¡Pago completado exitosamente!', 'Éxito');
+          }
+          // Limpiar polling si existe
+          if (this.checkoutPollInterval) {
+            clearInterval(this.checkoutPollInterval);
+          }
+          localStorage.removeItem('checkout_completed');
+          localStorage.removeItem('pending_checkout_cart_id');
+          // Redirigir a la página de notificación
+          if (result.query) {
+            this.$router.push({
+              name: "checkout_notifiction",
+              query: result.query
+            });
+          }
+        } catch (e) {
+          console.log("Error parsing checkout result", e);
         }
       }
     },
@@ -1328,6 +1356,84 @@ export default {
         } else {
              this.HandlerCheckout();
         }
+    },
+
+    checkCompletedCheckout() {
+      // Verificar si hay un checkout completado pendiente de procesar
+      const checkoutCompleted = localStorage.getItem('checkout_completed');
+      if (checkoutCompleted) {
+        try {
+          const result = JSON.parse(checkoutCompleted);
+          if (result.success) {
+            this.$store.commit("cart/CLEAN_CART");
+            this.$snotify.success('¡Compra completada exitosamente!', 'Éxito');
+          }
+          localStorage.removeItem('checkout_completed');
+          localStorage.removeItem('pending_checkout_cart_id');
+          // Redirigir a la página de notificación si no estamos ahí
+          if (result.query && this.$route.name !== 'checkout_notifiction') {
+            this.$router.push({
+              name: "checkout_notifiction",
+              query: result.query
+            });
+          }
+        } catch (e) {
+          console.log("Error processing checkout result", e);
+        }
+      }
+    },
+
+    isAppleDevice() {
+      const ua = navigator.userAgent.toLowerCase();
+      const platform = navigator.platform?.toLowerCase() || '';
+      
+      // Detectar iOS (iPhone, iPad, iPod)
+      const isIOS = /iphone|ipad|ipod/.test(ua) || 
+                    (platform === 'macintel' && navigator.maxTouchPoints > 1); // iPad con iPadOS
+      
+      // Detectar Safari en macOS (no Chrome/Firefox/Edge en Mac)
+      const isMacSafari = /macintosh|mac os x/.test(ua) && 
+                          /safari/.test(ua) && 
+                          !/chrome|chromium|firefox|edge|opera|opr/.test(ua);
+      
+      return isIOS || isMacSafari;
+    },
+
+    startCheckoutPolling() {
+      // Limpiar cualquier polling anterior
+      if (this.checkoutPollInterval) {
+        clearInterval(this.checkoutPollInterval);
+      }
+      
+      // Poll cada 2 segundos para verificar si el checkout se completó
+      this.checkoutPollInterval = setInterval(() => {
+        const checkoutResult = localStorage.getItem('checkout_completed');
+        if (checkoutResult) {
+          clearInterval(this.checkoutPollInterval);
+          const result = JSON.parse(checkoutResult);
+          localStorage.removeItem('checkout_completed');
+          localStorage.removeItem('pending_checkout_cart_id');
+          
+          if (result.success) {
+            this.$store.commit("cart/CLEAN_CART");
+            this.$snotify.success('¡Pago completado exitosamente!', 'Éxito');
+          }
+          
+          // Redirigir a la página de notificación
+          this.$router.push({
+            name: "checkout_notifiction",
+            query: result.query
+          });
+        }
+      }, 2000);
+      
+      // Detener el polling después de 10 minutos (por si el usuario abandona)
+      setTimeout(() => {
+        if (this.checkoutPollInterval) {
+          clearInterval(this.checkoutPollInterval);
+          localStorage.removeItem('pending_checkout_cart_id');
+        }
+      }, 600000);
     }
   }
 };

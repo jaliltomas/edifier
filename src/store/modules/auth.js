@@ -155,6 +155,22 @@ const actions = {
   TRY_AUTO_LOGIN({ commit, dispatch }) {
     try {
       const token = localStorage.getItem("token");
+      
+      // Verificar si hay un checkout recién completado para limpiar el carrito
+      const checkoutCompleted = localStorage.getItem('checkout_completed');
+      if (checkoutCompleted) {
+        try {
+          const result = JSON.parse(checkoutCompleted);
+          if (result.success) {
+            commit("cart/CLEAN_CART", null, { root: true });
+          }
+          localStorage.removeItem('checkout_completed');
+          localStorage.removeItem('pending_checkout_cart_id');
+        } catch (e) {
+          console.log("Error processing checkout result", e);
+        }
+      }
+      
       if (token) {
         commit("SET_TOKEN", token);
         dispatch("cart/GET_CURRENT_CART", {}, { root: true });
