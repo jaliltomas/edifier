@@ -690,8 +690,10 @@ export default {
         this.ValidateProductWarehouse();
       }
     },
-    isAuth(val, oldVal) {
+    async isAuth(val, oldVal) {
       if (val && oldVal === false) {
+        // Recargar el carrito después del login para obtener el shopping_cart_id actualizado
+        await this.HandlerGetCartsProducts();
         this.HandlerGetAddress();
         if (this.e1 >= this.accountStep) {
           this.e1 = this.paymentStep;
@@ -779,11 +781,15 @@ export default {
       }
     },
 
-    handleLoginSuccess() {
+    async handleLoginSuccess() {
       this.showLoginCard = true;
       this.showRecovery = false;
       this.showNotificationEmail = false;
       this.email_verifiction = "";
+      
+      // Recargar el carrito después del login para obtener el shopping_cart_id actualizado
+      await this.HandlerGetCartsProducts();
+      
       this.e1 = this.paymentStep;
       this.HandlerGetAddress();
     },
