@@ -277,7 +277,6 @@
               <v-col cols="12" sm="6" md="6" class="mt-md-n5">
                 <ValidationProvider
                   name="Observaciones"
-                  rules="required"
                   v-slot="{ errors }"
                 >
                   <label for="email" class="text-uppercase font-weight-bold">
@@ -291,6 +290,8 @@
                     filled
                     flat
                     :error-messages="errors"
+                    hint="Opcional"
+                    persistent-hint
                   ></v-text-field>
                 </ValidationProvider>
               </v-col>

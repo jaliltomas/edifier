@@ -368,31 +368,25 @@
                     <v-expand-transition>
                         <div v-if="radioGroup !== null">
                             <div v-if="radioGroup == 0" class="details-container pa-3 rounded grey lighten-5 mb-2">
-                               <div v-if="userAddress.length > 0">
-                                   <div v-if="availableWharehouses.length > 0">
-                                      <p class="font-weight-bold mb-2 text-caption black--text">Punto de retiro:</p>
-                                      <v-radio-group v-model="selectedWharehouse" mandatory dense hide-details>
-                                        <v-radio
-                                          v-for="n in availableWharehouses"
-                                          :key="n.id"
-                                          :label="`${depositElements[n.name]}`"
-                                          :value="`${n.warehouse_id}`"
-                                          color="#00A0E9"
-                                          class="mb-1"
-                                        >
-                                          <template v-slot:label>
-                                            <span class="text-caption text-uppercase font-weight-medium">{{depositElements[n.name]}}</span>
-                                          </template>
-                                        </v-radio>
-                                      </v-radio-group>
-                                   </div>
-                                   <div v-else class="text-center py-2">
-                                     <p class="error--text caption font-weight-medium ma-0">Sin stock en tiendas.</p>
-                                   </div>
+                               <div v-if="availableWharehouses.length > 0">
+                                  <p class="font-weight-bold mb-2 text-caption black--text">Punto de retiro:</p>
+                                  <v-radio-group v-model="selectedWharehouse" mandatory dense hide-details>
+                                    <v-radio
+                                      v-for="n in availableWharehouses"
+                                      :key="n.id"
+                                      :label="`${depositElements[n.name]}`"
+                                      :value="`${n.warehouse_id}`"
+                                      color="#00A0E9"
+                                      class="mb-1"
+                                    >
+                                      <template v-slot:label>
+                                        <span class="text-caption text-uppercase font-weight-medium">{{depositElements[n.name]}}</span>
+                                      </template>
+                                    </v-radio>
+                                  </v-radio-group>
                                </div>
                                <div v-else class="text-center py-2">
-                                  <p class="mb-2 text-caption black--text">Necesitamos una dirección de facturación.</p>
-                                  <cart-address-form @address-added="HandlerAddressAdded" />
+                                 <p class="error--text caption font-weight-medium ma-0">Sin stock en tiendas.</p>
                                </div>
                             </div>
 
@@ -472,7 +466,7 @@
                       :disabled="
                         radioGroup == null ||
                         (radioGroup == 1 && (!statusQuote || userAddress.length === 0 || !idAddress || errorGetQuoute)) ||
-                        (radioGroup == 0 && (userAddress.length === 0 || canBuyWarehouse == null || !selectedWharehouse))
+                        (radioGroup == 0 && (canBuyWarehouse == null || !selectedWharehouse))
                       "
                       @click="HandlerConfirmItems()"
                       color="#14A7EB"
@@ -881,7 +875,7 @@ export default {
 
         const request = {
           update_items: true,
-          address_id: this.idAddress.id || this.idAddress
+          address_id: this.idAddress ? (this.idAddress.id || this.idAddress) : ""
         };
         const response = await this.$store.dispatch(
           "cart/CONFIRM_PRODUCTS_CART",

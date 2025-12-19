@@ -48,7 +48,7 @@
           </v-col>
           <v-col cols="12" sm="6">
             <label class="text-uppercase font-weight-bold">Observaciones</label>
-            <v-text-field v-model="observations" class="mt-2" color="#00A0E9" dense filled flat></v-text-field>
+            <v-text-field v-model="observations" class="mt-2" color="#00A0E9" dense filled flat hint="Opcional" persistent-hint></v-text-field>
           </v-col>
           <v-col cols="12" sm="6">
             <label class="text-uppercase font-weight-bold">Quien recibe</label>
