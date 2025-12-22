@@ -73,7 +73,7 @@
                       <div class="mr-4 text-right" v-if="productCartState.shopping_cart_items.length > 0">
                           <span class="text-caption grey--text text--darken-1 d-block" style="line-height: 1;">Subtotal</span>
                           <span class="text-subtitle-1 font-weight-bold black--text">
-                              ${{ totalPriceOnePayment(originalItems.shopping_cart_items) | currency }}
+                               ${{ totalPriceOnePayment(productCartState.shopping_cart_items) | currency }}
                           </span>
                       </div>
                       <v-btn
@@ -287,7 +287,7 @@
                     <div class="d-flex justify-space-between align-center px-3 py-2 grey lighten-5 rounded">
                       <span class="text-caption grey--text text--darken-2 font-weight-medium">Total</span>
                       <span class="text-subtitle-1 font-weight-black black--text">
-                           ${{ (totalPrice(originalItems.shopping_cart_items) || totalAmount) | currency }}
+                           ${{ (totalPrice(productCartState.shopping_cart_items) || totalAmount) | currency }}
                       </span>
                     </div>
                   </v-card-text>
@@ -430,7 +430,7 @@
                             <div class="d-flex justify-space-between mb-1">
                                 <span class="grey--text text--darken-1 text-caption">Subtotal</span>
                                 <span class="font-weight-medium black--text text-caption">
-                                    ${{ totalPrice(originalItems.shopping_cart_items) | currency }}
+                                    ${{ totalPrice(productCartState.shopping_cart_items) | currency }}
                                 </span>
                             </div>
                             <div class="d-flex justify-space-between mb-1" v-if="radioGroup === 1">
@@ -444,7 +444,7 @@
                             <div class="d-flex justify-space-between align-end">
                                 <span class="text-body-2 font-weight-bold black--text">Total</span>
                                 <span class="text-h6 font-weight-black blue--text text--darken-1">
-                                    ${{ (totalPrice(originalItems.shopping_cart_items) + (radioGroup === 1 ? quote : 0)) | currency }}
+                                    ${{ (totalPrice(productCartState.shopping_cart_items) + (radioGroup === 1 ? quote : 0)) | currency }}
                                 </span>
                             </div>
                         </v-card-text>
@@ -584,7 +584,6 @@ export default {
       errorGetQuoute: false,
       statusQuote: false,
       items: [],
-      originalItems: [],
       showAlertRemove: false,
       selectProduct: null,
       confirmOrder: [],
@@ -830,8 +829,7 @@ export default {
 
     async HandlerGetCartsProducts() {
       try {
-        const response = await this.$store.dispatch("cart/GET_CURRENT_CART");
-        this.originalItems = response.data.data;
+        await this.$store.dispatch("cart/GET_CURRENT_CART");
       } catch (error) {
         console.log(error);
       }
@@ -849,15 +847,11 @@ export default {
     },
 
     getUserAddressPriority() {
-      const userAddress = this.userAddress.find(addrr => {
-        if (addrr.status == true) {
-          return addrr;
-        }
-      });
+      const userAddress = this.userAddress.find(addrr => addrr.status == true);
       if (userAddress != undefined) {
-        this.idAddress = userAddress.id;
+        this.idAddress = userAddress;
         return userAddress;
-      } else return "";
+      } else return null;
     },
 
     HandlerClose() {
@@ -875,7 +869,7 @@ export default {
 
         const request = {
           update_items: true,
-          address_id: this.idAddress ? (this.idAddress.id || this.idAddress) : ""
+          address_id: this.idAddress?.id || null
         };
         const response = await this.$store.dispatch(
           "cart/CONFIRM_PRODUCTS_CART",
@@ -988,19 +982,17 @@ export default {
 
         this.loadingCheckout = true;
         const request = {
-          shopping_cart_id: this.originalItems.id,
+          shopping_cart_id: this.productCartState.id,
           route_success: `${process.env.VUE_APP_CHECKOUT}/checkout_notification`,
           route_failure: `${process.env.VUE_APP_CHECKOUT}/checkout_notification`,
           route_pending: `${process.env.VUE_APP_CHECKOUT}/checkout_notification`,
           store_pickup: this.radioGroup == 0 ? true : false,
           addresse_id:
             this.radioGroup == 1
-              ? this.idAddress.id == undefined
-                ? this.idAddress
-                : this.idAddress.id
-              : "",
+              ? this.idAddress?.id || 1
+              : 1,
           warehouse_id:
-            this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
+            this.radioGroup == 0 ? Number(this.selectedWharehouse) : null,
           store_id: 3,
           payment_type: this.payments_type,
           default_installments: this.default_installments,
@@ -1095,14 +1087,14 @@ export default {
     async ValidateProductWarehouse() {
       try {
         this.loadingCheckout = true;
-        const publication_ids = this.originalItems.shopping_cart_items.map(
+        const publication_ids = this.productCartState.shopping_cart_items.map(
           item => {
-            return [item.publication_id];
+            return item.publication_id;
           }
         );
 
         const request = {
-          publication_ids: [...publication_ids.flat()],
+          publication_ids: [...publication_ids],
           debug: true
         };
 
@@ -1250,20 +1242,14 @@ export default {
 
         this.loadingCheckout = true;
 
-        const address =
-          this.idAddress == undefined
-            ? ""
-            : typeof this.idAddress == "number"
-            ? this.idAddress
-            : this.idAddress.id;
-        const id = address;
+        const id = this.idAddress?.id || null;
         const request = {
           store_id: 3,
           store_pickup: this.radioGroup == 0 ? true : false,
           shopping_cart_id: cart.id,
           addresse_id: id,
           warehouse_id:
-            this.radioGroup == 0 ? Number(this.selectedWharehouse) : "",
+            this.radioGroup == 0 ? Number(this.selectedWharehouse) : null,
           quote: this.radioGroup == 0 ? 0 : this.quote
         };
 
