@@ -47,7 +47,7 @@ const actions = {
       // Sync guest cart items if any
       await dispatch("cart/SYNC_GUEST_CART", {}, { root: true });
       
-      dispatch("cart/GET_CURRENT_CART", {}, { root: true });
+      await dispatch("cart/GET_CURRENT_CART", {}, { root: true });
       return response;
     } catch (error) {
       return Promise.reject(error);

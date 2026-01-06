@@ -119,7 +119,7 @@ export default {
           street_number: this.street_number,
           between_streets: this.between_streets,
           floor_number: this.floor_number,
-          observations: this.observations,
+          observations: this.observations || "sin observacion",
           status: true, // Set as default since it's the first one
         };
 

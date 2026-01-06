@@ -249,7 +249,7 @@
                         >
                           <v-icon :color="radioGroupDues === 0 ? '#00A0E9' : 'grey lighten-1'" class="mb-1">mdi-credit-card-clock-outline</v-icon>
                           <span class="text-body-2 font-weight-bold black--text">6 Cuotas</span>
-                          <span class="caption grey--text text-center" style="font-size: 0.7rem;">Sin Interés</span>
+                          <span class="caption grey--text text-center" style="font-size: 0.7rem;">Fijas</span>
                         </v-card>
                       </v-col>
 
@@ -685,8 +685,7 @@ export default {
     },
     async isAuth(val, oldVal) {
       if (val && oldVal === false) {
-        // Recargar el carrito después del login para obtener el shopping_cart_id actualizado
-        await this.HandlerGetCartsProducts();
+        // El carrito ya se carga en la acción de LOGIN después del sync
         this.HandlerGetAddress();
         if (this.e1 >= this.accountStep) {
           this.e1 = this.paymentStep;
@@ -784,8 +783,7 @@ export default {
       this.showNotificationEmail = false;
       this.email_verifiction = "";
       
-      // Recargar el carrito después del login para obtener el shopping_cart_id actualizado
-      await this.HandlerGetCartsProducts();
+      // El carrito ya se carga en la acción de LOGIN después del sync
       
       this.e1 = this.paymentStep;
       this.HandlerGetAddress();
@@ -1012,7 +1010,8 @@ export default {
         if (this.isMobile) {
           // Guardar el cart_id para detectar cuando el checkout se complete
           localStorage.setItem('pending_checkout_cart_id', this.productCartState.id);
-          window.open(response.data.data.url, '_blank');
+          // Usar location.href para asegurar que los deep links funcionen en iOS
+          window.location.href = response.data.data.url;
         } else {
           // En desktop, usar el modal con iframe
           this.checkoutUrl = response.data.data.url;
