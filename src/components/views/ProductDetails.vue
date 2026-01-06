@@ -657,10 +657,15 @@ export default {
 
     async HandlerBuy() {
       try {
+        // Si no está autenticado, agregar al carrito y redirigir al carrito
         if (!this.isAuth) {
-          this.$router.push({ name: "login" });
+          await this.HandlerAddCart();
+          setTimeout(() => {
+            this.$router.push({ name: "cart" });
+          }, 300);
           return;
         }
+
         const request = {
           update_items: true
         };
