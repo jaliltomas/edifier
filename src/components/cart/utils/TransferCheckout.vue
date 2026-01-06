@@ -10,135 +10,154 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" sm="12" md="12" class="mt-10">
-              <div
-                class="
-                  text-title text-capitalize
-                  ml-10
-                  d-flex
-                  justify-space-between
-                "
-                style="color: #393939; font-size: 1.6em"
-              >
-                FELICITACIONES Y GRACIAS POR TU COMPRA
-                <v-btn icon @click="HandlerGoProfile()">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </div>
-              <div
-                v-if="bankTransfer()"
-                class="text-sub-title-order mt-3 ml-10"
-              >
-                FORMA DE PAGO ELEGIDA
-              </div>
-            </v-col>
-            <v-col cols="12" md="12" v-if="bankTransfer()">
-              <v-card class="elevation-0">
-                <div class="px-5 py-5">
-                  <div class="d-flex justify-space-between">
-                    <div class="d-flex">
-                      <v-img
-                        width="100px"
-                        contain
-                        src="@/assets/img/checkout/transferencia.svg"
-                      ></v-img>
-                      <div class="align-self-center">
-                        Transferencia Bancaria
-                      </div>
+            <v-col cols="12">
+              <div style="position: relative;">
+                 <!-- Close Button -->
+                 <v-btn icon absolute top right @click="HandlerGoProfile()" class="mr-n2 mt-n2">
+                    <v-icon color="grey darken-2">mdi-close</v-icon>
+                 </v-btn>
+
+                 <!-- Success Header -->
+                 <div class="text-center pt-8 pb-6">
+                    <v-icon size="72" color="#00C853" class="mb-4">mdi-check-circle</v-icon>
+                    <h2 class="text-h5 font-weight-bold grey--text text--darken-3 mb-2">¡Felicitaciones!</h2>
+                    <div class="subtitle-1 grey--text text--darken-1">
+                       Muchas gracias por tu compra
                     </div>
-                  </div>
-                  <div class="ml-5 mt-4">
-                    <v-alert
-                      border="left"
-                      colored-border
-                      color="#00A0E9"
-                      elevation="1"
-                      class="mb-4 white"
-                    >
-                      <div class="subtitle-1 font-weight-bold mb-2 grey--text text--darken-3">Datos Bancarios:</div>
-                      <div class="body-2 grey--text text--darken-2">
-                        <div class="mb-1"><strong>Titular:</strong> G. IKONO SA</div>
-                        <div class="mb-1"><strong>Banco:</strong> Banco Francés</div>
-                        <div class="mb-1"><strong>Cuenta:</strong> 470-0003973/1</div>
-                        <div class="mb-1"><strong>CUIT:</strong> 30-70497382-5</div>
-                        <div class="d-flex align-center mt-2 pa-2 grey lighten-4 rounded">
-                          <strong class="mr-2">CBU:</strong> 
-                          <span class="text-truncate">0170470320000000397319</span>
-                          <v-btn icon small color="#00A0E9" @click="handlerCoy('0170470320000000397319')" class="ml-auto">
-                             <v-icon small>mdi-content-copy</v-icon>
+                 </div>
+              </div>
+
+              <!-- Bank Transfer Section -->
+              <div v-if="bankTransfer()" class="mb-6 px-md-10">
+                 <div class="text-center mb-4">
+                    <v-chip outlined color="primary" class="font-weight-bold text-uppercase">
+                       Forma de Pago Elegida
+                    </v-chip>
+                 </div>
+                 
+                 <v-card outlined class="rounded-xl overflow-hidden" style="border: 2px solid #F5F5F5;">
+                    <!-- Bank Header -->
+                    <div class="d-flex align-center pa-5 grey lighten-5">
+                       <v-img 
+                         max-width="50" 
+                         contain 
+                         src="@/assets/img/checkout/transferencia.svg"
+                         class="mr-4"
+                       ></v-img>
+                       <div>
+                          <div class="subtitle-1 font-weight-bold grey--text text--darken-4">Transferencia Bancaria</div>
+                          <div class="caption grey--text">Datos para realizar el pago</div>
+                       </div>
+                    </div>
+                    <v-divider></v-divider>
+
+                    <div class="pa-5">
+                       <!-- Bank Details Grid -->
+                       <v-row dense class="mb-4">
+                          <v-col cols="12" sm="6" >
+                             <div class="d-flex flex-column mb-3">
+                                <span class="caption grey--text text-uppercase font-weight-bold">Banco</span>
+                                <span class="body-2 grey--text text--darken-3">Banco Francés</span>
+                             </div>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                             <div class="d-flex flex-column mb-3">
+                                <span class="caption grey--text text-uppercase font-weight-bold">Titular</span>
+                                <span class="body-2 grey--text text--darken-3">G. IKONO SA</span>
+                             </div>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                             <div class="d-flex flex-column mb-3">
+                                <span class="caption grey--text text-uppercase font-weight-bold">Cuenta</span>
+                                <span class="body-2 grey--text text--darken-3">470-0003973/1</span>
+                             </div>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                             <div class="d-flex flex-column mb-3">
+                                <span class="caption grey--text text-uppercase font-weight-bold">CUIT</span>
+                                <span class="body-2 grey--text text--darken-3">30-70497382-5</span>
+                             </div>
+                          </v-col>
+                       </v-row>
+                       
+                       <!-- CBU Box -->
+                       <v-sheet 
+                          color="#E1F5FE" 
+                          class="rounded-lg pa-4 text-center mb-5 d-flex flex-column align-center"
+                          style="border: 1px dashed #039BE5;"
+                        >
+                          <div class="caption blue--text text--darken-3 font-weight-bold mb-1">CBU / ALIAS</div>
+                          <div class="text-h6 font-weight-black blue--text text--darken-4 mb-3 text-break" style="font-family: monospace;">
+                             0170470320000000397319
+                          </div>
+                          <v-btn 
+                            color="#0288D1" 
+                            dark 
+                            rounded 
+                            small 
+                            elevation="0"
+                            @click="handlerCoy('0170470320000000397319')"
+                          >
+                             <v-icon left small>mdi-content-copy</v-icon>
+                             {{ isCopyCBU === 'CBU1' ? '¡Copiado!' : 'Copiar CBU' }}
                           </v-btn>
-                        </div>
-                        <div v-if="isCopyCBU === 'CBU1'" class="caption green--text mt-1">¡CBU Copiado!</div>
-                      </div>
-                    </v-alert>
-
-                    <v-divider class="my-4"></v-divider>
-
-                    <!-- Upload Receipt Section -->
-                    <div v-if="!dowloadTransfer" class="upload-section pa-4 rounded grey lighten-4 mb-4">
-                      <div class="subtitle-1 font-weight-bold mb-3 grey--text text--darken-3 d-flex align-center">
-                        <v-icon color="#00A0E9" class="mr-2">mdi-upload</v-icon>
-                        Subir Comprobante de Pago
-                      </div>
-                      <p class="body-2 grey--text text--darken-2 mb-4">
-                        Una vez realizada la transferencia, subí tu comprobante aquí para agilizar el proceso.
-                      </p>
-                      <v-btn
-                        @click="uploadTransfer = true"
-                        color="#00A0E9"
-                        rounded
-                        dark
-                        block
-                        class="text-capitalize font-weight-bold"
-                      >
-                        <v-icon left>mdi-arrow-up-bold-circle-outline</v-icon>
-                        Subir Comprobante
-                      </v-btn>
+                       </v-sheet>
+                       
+                        <!-- Instructions (Timer) -->
+                       <v-alert
+                          dense
+                          text
+                          type="info"
+                          color="blue-grey"
+                          class="mb-0 caption"
+                          border="left"
+                       >
+                          Tu operación se mantiene activa por <strong>1 hora</strong>. 
+                          Monto a transferir: <strong>{{ (orderData.total_amount + (orderData.total_amount_with_shipping - orderData.total_amount)) | currencyTotal }}</strong>
+                       </v-alert>
                     </div>
 
-                    <!-- Success message after upload -->
-                    <v-alert
-                      v-else
-                      type="success"
-                      class="mb-4"
-                      prominent
-                      border="left"
-                    >
-                      <div class="font-weight-bold">¡Comprobante subido exitosamente!</div>
-                      <div class="body-2">Tu pago será verificado en breve.</div>
-                    </v-alert>
+                    <v-divider></v-divider>
 
-                    <div class="subtitle-1 font-weight-bold mb-2 grey--text text--darken-3">Información adicional:</div>
-                    <div class="pl-2">
-                        <div class="d-flex mb-2 align-start">
-                            <v-icon color="grey" x-small class="mt-1 mr-2">mdi-information-outline</v-icon>
-                            <span class="body-2 grey--text text--darken-2">
-                                También podés subir el comprobante desde tu <strong>Perfil</strong> > <strong>Compras</strong> > <strong>Ver más</strong>
-                            </span>
-                        </div>
+                    <!-- Upload Action -->
+                    <div class="pa-5">
+                       <div v-if="!dowloadTransfer">
+                          <div class="d-flex flex-column flex-sm-row align-center justify-space-between">
+                             <div class="mb-3 mb-sm-0 text-center text-sm-left mr-sm-4">
+                                <div class="subtitle-2 font-weight-bold black--text">Subir Comprobante</div>
+                                <div class="caption grey--text">Para finalizar y agilizar el envío</div>
+                             </div>
+                             <v-btn 
+                               color="#A5253E" 
+                               dark 
+                               rounded
+                               depressed
+                               @click="uploadTransfer = true"
+                             >
+                                <v-icon left>mdi-cloud-upload</v-icon>
+                                Adjuntar
+                             </v-btn>
+                          </div>
+                       </div>
+                       <v-alert
+                         v-else
+                         type="success"
+                         text
+                         dense
+                         class="mb-0"
+                       >
+                         <strong>¡Comprobante subido!</strong> Verificaremos tu pago en breve.
+                       </v-alert>
                     </div>
-                  </div>
-                  <div class="ml-5 mt-3" style="font-size: 0.9em">
-                    Finalizá tu compra realizando una transferencia por la suma
-                    de
-                    {{
-                      (orderData.total_amount +
-                        (orderData.total_amount_with_shipping -
-                          orderData.total_amount))
-                        | currencyTotal
-                    }}
-                  </div>
-                  <div class="ml-5 mt-3" style="font-size: 0.9em">
-                    Tu operación se mantiene activa por 1 hora para hacer el
-                    pago
-                  </div>
-                  <div class="ml-5 mt-3" style="font-size: 0.9em">
-                    Podrás subir el comprobante hasta las
-                    {{ orderData.date_created | today }} hs, desde COMPRAS ->
-                    Ver más en tu Perfil
-                  </div>
-                </div>
-              </v-card>
+                    
+                    <!-- Footer Info -->
+                     <div class="pa-3 grey lighten-4 text-center">
+                         <span class="caption grey--text text--darken-1">
+                             También podés subirlo luego desde <strong>Perfil > Compras</strong>
+                         </span>
+                     </div>
+                 </v-card>
+              </div>
             </v-col>
             <v-col cols="12" md="12">
               <div class="text-sub-title-order ml-10">DETALLE DE TU COMPRA</div>
@@ -226,113 +245,104 @@
               </v-card>
             </v-col>
             <v-col cols="12" md="5">
-              <div class="text-sub-title-order ml-10 mb-5">
-                DATOS DE FACTURACIÓN
-              </div>
-              <v-sheet color="#FFFFFF">
-                <div class="py-5 px-5">
-                  <div class="d-flex ml-5">
-                    <div class="font-title mr-4 d-flex">Nombre:</div>
-                    <span v-if="authUser.buyer != null">
-                      {{ authUser.buyer.first_name }}
-                    </span>
+               <v-card outlined class="fill-height rounded-xl" style="border: 1px solid #E0E0E0;">
+                  <div class="pa-4 grey lighten-5 d-flex align-center">
+                     <v-icon color="primary" class="mr-2">mdi-receipt</v-icon>
+                     <div class="subtitle-2 font-weight-bold grey--text text--darken-3 text-uppercase">
+                        Datos de Facturación
+                     </div>
                   </div>
-                  <div class="d-flex ml-5">
-                    <div class="font-title mr-0 d-flex">Email:</div>
-                    <span
-                      v-if="authUser.buyer != null"
-                      style="
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                      "
-                      class="ml-4"
-                    >
-                      {{ authUser.buyer.email }}
-                    </span>
+                  <v-divider></v-divider>
+                  <div class="pa-4">
+                     <div class="d-flex align-center mb-3">
+                        <v-icon size="20" color="grey lighten-1">mdi-account</v-icon>
+                        <div class="ml-3">
+                           <div class="caption grey--text">Nombre</div>
+                           <div class="subtitle-2 font-weight-regular text-truncate" v-if="authUser.buyer != null">
+                              {{ authUser.buyer.first_name }}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="d-flex align-center mb-3">
+                        <v-icon size="20" color="grey lighten-1">mdi-email</v-icon>
+                        <div class="ml-3" style="min-width: 0; flex: 1;">
+                           <div class="caption grey--text">Email</div>
+                           <div class="subtitle-2 font-weight-regular text-truncate" v-if="authUser.buyer != null">
+                              {{ authUser.buyer.email }}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="d-flex align-center mb-3">
+                        <v-icon size="20" color="grey lighten-1">mdi-phone</v-icon>
+                        <div class="ml-3">
+                           <div class="caption grey--text">Teléfono</div>
+                           <div class="subtitle-2 font-weight-regular" v-if="authUser.buyer != null">
+                              {{ authUser.buyer.phone }}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="d-flex align-center">
+                        <v-icon size="20" color="grey lighten-1">mdi-card-account-details</v-icon>
+                        <div class="ml-3">
+                           <div class="caption grey--text">{{ authUser.buyer.doc_type || 'Documento' }}</div>
+                           <div class="subtitle-2 font-weight-regular" v-if="authUser.buyer != null">
+                              {{ authUser.buyer.doc_number }}
+                           </div>
+                        </div>
+                     </div>
                   </div>
-                  <div class="d-flex ml-5">
-                    <div class="font-title mr-4 d-flex">Teléfono:</div>
-                    <span v-if="authUser.buyer != null">
-                      {{ authUser.buyer.phone }}
-                    </span>
-                  </div>
-                  <div class="d-flex ml-5">
-                    <div class="font-title mr-4 d-flex">
-                      {{ authUser.buyer.doc_type }}:
-                    </div>
-                    <span v-if="authUser.buyer != null">
-                      {{ authUser.buyer.doc_number }}
-                    </span>
-                  </div>
-                </div>
-              </v-sheet>
+               </v-card>
             </v-col>
+            
             <v-col cols="12" md="7">
-              <div class="text-sub-title-order ml-5 mb-5">DATOS DE ENVIO</div>
-              <v-sheet color="#FFFFFF">
-                <div class="py-5 px-5">
-                  <v-row v-if="shippingAddress">
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <div>
-                        <span class="font-title"> Estado: </span>
-                        <span class="text-capitalize">
-                          {{ shippingAddress.state?.name || 'N/A' }}
-                        </span>
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <span class="font-title"> Municipio: </span>
-                      <span class="text-capitalize">
-                        {{ shippingAddress.location }}
-                      </span>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <span class="font-title"> Código Postal: </span>
-                      <span>
-                        {{ shippingAddress.zipcode }}
-                      </span>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="shippingAddress">
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <div>
-                        <span class="font-title"> Calle: </span>
-                        <span>
-                          {{ shippingAddress.street }}
-                        </span>
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <span class="font-title"> Nº: </span>
-                      <span>
-                        {{ shippingAddress.street_number }}
-                      </span>
-                    </v-col>
-                  </v-row>
-                  <v-row v-if="shippingAddress">
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <div>
-                        <span class="font-title"> Piso: </span>
-                        <span>
-                          {{ shippingAddress.floor_number }}
-                        </span>
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4" class="py-1">
-                      <span class="font-title"> Dpto: </span>
-                      <span>
-                        {{ shippingAddress.department_number }}
-                      </span>
-                    </v-col>
-                  </v-row>
-                  <v-row v-else>
-                    <v-col cols="12" class="py-1">
-                      <span class="grey--text">Retiro en tienda</span>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-sheet>
+               <v-card outlined class="fill-height rounded-xl" style="border: 1px solid #E0E0E0;">
+                  <div class="pa-4 grey lighten-5 d-flex align-center">
+                     <v-icon color="primary" class="mr-2">mdi-truck-delivery</v-icon>
+                     <div class="subtitle-2 font-weight-bold grey--text text--darken-3 text-uppercase">
+                        Datos de Envío
+                     </div>
+                  </div>
+                  <v-divider></v-divider>
+                  <div class="pa-4">
+                     <v-row v-if="shippingAddress">
+                        <!-- Location -->
+                        <v-col cols="12" sm="6" class="pb-2">
+                           <div class="d-flex">
+                              <v-icon size="20" color="grey lighten-1" class="mt-1">mdi-map-marker</v-icon>
+                              <div class="ml-3">
+                                 <div class="caption grey--text">Ubicación</div>
+                                 <div class="subtitle-2 font-weight-regular text-capitalize">
+                                    {{ shippingAddress.location }}, {{ shippingAddress.state?.name || 'N/A' }}
+                                 </div>
+                                 <div class="caption grey--text mt-1">CP: {{ shippingAddress.zipcode }}</div>
+                              </div>
+                           </div>
+                        </v-col>
+                        
+                        <!-- Address -->
+                        <v-col cols="12" sm="6" class="pb-2">
+                           <div class="d-flex">
+                              <v-icon size="20" color="grey lighten-1" class="mt-1">mdi-home</v-icon>
+                              <div class="ml-3">
+                                 <div class="caption grey--text">Dirección</div>
+                                 <div class="subtitle-2 font-weight-regular">
+                                    {{ shippingAddress.street }} {{ shippingAddress.street_number }}
+                                 </div>
+                                 <div class="caption grey--text mt-1">
+                                    {{ shippingAddress.floor_number ? `Piso ${shippingAddress.floor_number}` : '' }} 
+                                    {{ shippingAddress.department_number ? `Dpto ${shippingAddress.department_number}` : '' }}
+                                 </div>
+                              </div>
+                           </div>
+                        </v-col>
+                     </v-row>
+                     
+                     <div v-else class="text-center pa-4 text--secondary">
+                        <v-icon large color="grey lighten-2" class="mb-2">mdi-store</v-icon>
+                        <div>Retiro en tienda</div>
+                     </div>
+                  </div>
+               </v-card>
             </v-col>
           </v-row>
           <v-row justify="center">

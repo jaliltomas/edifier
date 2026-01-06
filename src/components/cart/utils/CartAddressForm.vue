@@ -112,13 +112,14 @@ export default {
           state_id: this.state_id,
           location: this.localite_id,
           zipcode: this.zipcode,
-          department_number: this.department_number,
+
           contact_phone: this.contact_phone,
           contact_name: this.contact_name,
           street: this.street,
           street_number: this.street_number,
           between_streets: this.between_streets,
-          floor_number: this.floor_number,
+          floor_number: this.floor_number || "0",
+          department_number: this.department_number || "sin departamento",
           observations: this.observations || "sin observacion",
           status: true, // Set as default since it's the first one
         };
