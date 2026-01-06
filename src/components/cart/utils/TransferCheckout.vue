@@ -74,24 +74,46 @@
 
                     <v-divider class="my-4"></v-divider>
 
-                    <div class="subtitle-1 font-weight-bold mb-2 grey--text text--darken-3">Pasos a seguir:</div>
-                    <p class="body-2 grey--text text--darken-2 mb-3">
-                      Le pedimos por favor que cuando realice la transferencia cargue el comprobante en la página.
-                    </p>
-                    
+                    <!-- Upload Receipt Section -->
+                    <div v-if="!dowloadTransfer" class="upload-section pa-4 rounded grey lighten-4 mb-4">
+                      <div class="subtitle-1 font-weight-bold mb-3 grey--text text--darken-3 d-flex align-center">
+                        <v-icon color="#00A0E9" class="mr-2">mdi-upload</v-icon>
+                        Subir Comprobante de Pago
+                      </div>
+                      <p class="body-2 grey--text text--darken-2 mb-4">
+                        Una vez realizada la transferencia, subí tu comprobante aquí para agilizar el proceso.
+                      </p>
+                      <v-btn
+                        @click="uploadTransfer = true"
+                        color="#00A0E9"
+                        rounded
+                        dark
+                        block
+                        class="text-capitalize font-weight-bold"
+                      >
+                        <v-icon left>mdi-arrow-up-bold-circle-outline</v-icon>
+                        Subir Comprobante
+                      </v-btn>
+                    </div>
+
+                    <!-- Success message after upload -->
+                    <v-alert
+                      v-else
+                      type="success"
+                      class="mb-4"
+                      prominent
+                      border="left"
+                    >
+                      <div class="font-weight-bold">¡Comprobante subido exitosamente!</div>
+                      <div class="body-2">Tu pago será verificado en breve.</div>
+                    </v-alert>
+
+                    <div class="subtitle-1 font-weight-bold mb-2 grey--text text--darken-3">Información adicional:</div>
                     <div class="pl-2">
-                        <div class="d-flex mb-3 align-start">
-                            <v-icon color="#00A0E9" small class="mt-1 mr-2">mdi-numeric-1-circle</v-icon>
-                            <span class="body-2 grey--text text--darken-2">Ir al <strong>Perfil</strong> > <strong>Compras</strong></span>
-                        </div>
-                        <div class="d-flex mb-3 align-start">
-                            <v-icon color="#00A0E9" small class="mt-1 mr-2">mdi-numeric-2-circle</v-icon>
-                            <span class="body-2 grey--text text--darken-2">Busca la compra y en acción selecciona <strong>ver más</strong>.</span>
-                        </div>
-                        <div class="d-flex mb-3 align-start">
-                            <v-icon color="#00A0E9" small class="mt-1 mr-2">mdi-numeric-3-circle</v-icon>
+                        <div class="d-flex mb-2 align-start">
+                            <v-icon color="grey" x-small class="mt-1 mr-2">mdi-information-outline</v-icon>
                             <span class="body-2 grey--text text--darken-2">
-                                En el detalle, busque el cartel celeste en el margen superior derecho <strong>"envía tu comprobante de pago"</strong> y cárguelo allí.
+                                También podés subir el comprobante desde tu <strong>Perfil</strong> > <strong>Compras</strong> > <strong>Ver más</strong>
                             </span>
                         </div>
                     </div>

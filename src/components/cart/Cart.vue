@@ -735,6 +735,10 @@ export default {
 
     totalAmount() {
       return this.$store.getters["cart/TOTAL_AMOUNT"];
+    },
+
+    isMobile() {
+      return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
     }
   },
 
@@ -1004,11 +1008,16 @@ export default {
           request
         );
         
-        // --- CAMBIO: Se fuerza el uso del modal en todos los dispositivos ---
-        // Se elimina la verificación de isAppleDevice para usar siempre el iframe.
-        
-        this.checkoutUrl = response.data.data.url;
-        this.checkoutDialog = true;
+        // En mobile, abrir en nueva ventana para permitir que MercadoPago redirija a la app
+        if (this.isMobile) {
+          // Guardar el cart_id para detectar cuando el checkout se complete
+          localStorage.setItem('pending_checkout_cart_id', this.productCartState.id);
+          window.open(response.data.data.url, '_blank');
+        } else {
+          // En desktop, usar el modal con iframe
+          this.checkoutUrl = response.data.data.url;
+          this.checkoutDialog = true;
+        }
 
       } catch (error) {
         if (

@@ -229,7 +229,7 @@
         </v-btn>
 
         <v-menu
-          open-on-hover
+          :open-on-hover="!isMobile"
           v-model="menu"
           :close-on-content-click="false"
           :nudge-width="320"
@@ -264,7 +264,7 @@
           </template>
 
           <v-card
-            v-if="cartHasItems"
+            v-if="cartHasItems && !isMobile"
             class="cart-hover-card rounded-xl overflow-hidden elevation-0"
           >
             <div class="d-flex justify-space-between align-center px-5 py-4 grey lighten-5 border-bottom">
@@ -331,7 +331,7 @@
                 </v-btn>
             </div>
           </v-card>
-          <v-card v-else class="pa-5 text-center rounded-xl">
+          <v-card v-if="!cartHasItems && !isMobile" class="pa-5 text-center rounded-xl">
              <v-icon size="48" color="grey lighten-2" class="mb-2">mdi-cart-off</v-icon>
              <div class="grey--text text--darken-1 font-weight-medium">Tu carrito está vacío</div>
           </v-card>
@@ -564,6 +564,7 @@ export default {
 
   watch: {
     isMobile(val) {
+      console.log(val);
       if (!val) this.drawer = false;
     },
     $route(to, from) {
