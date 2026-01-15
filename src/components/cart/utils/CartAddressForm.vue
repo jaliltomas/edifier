@@ -107,12 +107,11 @@ export default {
     async HandlerRegister() {
       try {
         this.loading = true;
-        const request = {
+        const addressData = {
           country_id: 1,
           state_id: this.state_id,
           location: this.localite_id,
           zipcode: this.zipcode,
-
           contact_phone: this.contact_phone,
           contact_name: this.contact_name,
           street: this.street,
@@ -124,9 +123,19 @@ export default {
           status: true, // Set as default since it's the first one
         };
 
-        await this.$store.dispatch("auth/REGISTER_ADDRESS", request);
+        // Verificar si es usuario guest (no si hay token, porque ahora siempre hay token)
+        const isGuestUser = this.$store.getters['auth/IS_GUEST'];
+        
+        // Siempre registrar en el servidor (ya sea con guest o usuario real)
+        await this.$store.dispatch("auth/REGISTER_ADDRESS", addressData);
+        
+        // Si es usuario guest, también guardar en localStorage para sincronizar después del registro
+        if (isGuestUser) {
+          localStorage.setItem('guest_address', JSON.stringify(addressData));
+        }
+        
         this.$snotify.success("Dirección registrada con éxito", "Exitos!");
-        this.$emit('address-added');
+        this.$emit('address-added', addressData);
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status == 422) {
@@ -141,4 +150,3 @@ export default {
   },
 };
 </script>
-

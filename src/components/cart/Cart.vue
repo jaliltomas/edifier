@@ -16,18 +16,8 @@
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
-            :complete="e1 > accountStep || isAuth"
-            :step="accountStep"
-            color="#00A0E9"
-            class="py-2"
-          >
-            <span :class="{'font-weight-bold text-primary': e1 === accountStep}" style="font-size: 0.8rem;">Cuenta</span>
-          </v-stepper-step>
-          <v-divider></v-divider>
-          <v-stepper-step
             :complete="e1 > paymentStep"
             :step="paymentStep"
-            :disabled="!isAuth"
             color="#00A0E9"
             class="py-2"
           >
@@ -37,11 +27,19 @@
           <v-stepper-step
             :complete="e1 > deliveryStep"
             :step="deliveryStep"
-            :disabled="!isAuth"
             color="#00A0E9"
             class="py-2"
           >
             <span :class="{'font-weight-bold text-primary': e1 === deliveryStep}" style="font-size: 0.8rem;">Envío</span>
+          </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step
+            :complete="e1 > accountStep || isAuth"
+            :step="accountStep"
+            color="#00A0E9"
+            class="py-2"
+          >
+            <span :class="{'font-weight-bold text-primary': e1 === accountStep}" style="font-size: 0.8rem;">Cuenta</span>
           </v-stepper-step>
         </v-stepper-header>
 
@@ -101,13 +99,14 @@
                     <div class="text-center pt-4 pb-1">
                       <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Cuenta</h2>
                       <p class="caption grey--text mb-1">
-                        <span v-if="!isAuth">Inicia sesión o registrate y seguí comprando sin salir del carrito.</span>
-                        <span v-else>Ya iniciaste sesión. Revisá tu cuenta y continuá al pago.</span>
+                        <span v-if="isGuestUser">Registrate para finalizar tu compra y recibir tu pedido.</span>
+                        <span v-else>Ya iniciaste sesión. Finalizá tu compra.</span>
                       </p>
                     </div>
 
                     <v-card-text class="px-4 py-2">
-                      <div class="d-flex justify-center" v-if="!isAuth">
+                      <!-- Mostrar formulario de registro si es usuario guest -->
+                      <div class="d-flex justify-center" v-if="isGuestUser">
                         <login-card-component
                           v-if="showLoginCard"
                           :redirectOnLogin="false"
@@ -120,30 +119,33 @@
                         <register-card-component
                           v-else
                           @register:change="toggleAuthCard"
+                          @register:success="handleRegisterSuccess"
                         />
                       </div>
 
+                      <!-- Si ya está logueado con cuenta real, mostrar mensaje y botón -->
                       <div v-else class="d-flex flex-column align-center py-4">
                         <v-icon color="#00A0E9" size="36" class="mb-2">mdi-account-check-outline</v-icon>
                         <p class="text-subtitle-2 font-weight-medium grey--text text--darken-3 mb-1">Sesión iniciada</p>
-                        <p class="caption grey--text text-center mb-0">Continuá al pago para finalizar tu compra.</p>
+                        <p class="caption grey--text text-center mb-0">Todo listo para finalizar tu compra.</p>
                       </div>
                     </v-card-text>
 
                     <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
-                      <v-btn text small color="grey darken-1" @click="e1 = 1" class="text-capitalize">
+                      <v-btn text small color="grey darken-1" @click="e1 = deliveryStep" class="text-capitalize">
                         <v-icon left small>mdi-arrow-left</v-icon> Atrás
                       </v-btn>
                       <v-btn
-                        :disabled="!isAuth"
+                        :disabled="isGuestUser"
+                        :loading="loadingCheckout"
                         color="#00A0E9"
                         class="white--text px-6 shadow-blue"
                         rounded
                         small
-                        @click="e1 = paymentStep"
+                        @click="HandlerFinalizeFromAccount()"
                       >
-                        Ir a pago
-                        <v-icon right small>mdi-arrow-right</v-icon>
+                        Finalizar compra
+                        <v-icon right small>mdi-check</v-icon>
                       </v-btn>
                     </v-card-actions>
                   </v-card>
@@ -327,8 +329,8 @@
                     <v-radio-group v-model="radioGroup" @change="HandlerShippingQuote()" class="mt-0" hide-details>
                         <v-row dense class="mb-3">
                             <v-col cols="12" sm="6" class="pa-1">
-                                <v-card 
-                                  outlined 
+                                <v-card
+                                  outlined
                                   class="delivery-option-card pa-3 cursor-pointer transition-swing d-flex align-center"
                                   :class="{'selected-delivery-card': radioGroup === 0}"
                                   @click="radioGroup = 0; HandlerShippingQuote()"
@@ -465,15 +467,15 @@
                       :loading="loadingCheckout"
                       :disabled="
                         radioGroup == null ||
-                        (radioGroup == 1 && (!statusQuote || userAddress.length === 0 || !idAddress || errorGetQuoute)) ||
+                        (radioGroup == 1 && (!guestHasAddress && !statusQuote || (isAuth && userAddress.length === 0) || errorGetQuoute)) ||
                         (radioGroup == 0 && (canBuyWarehouse == null || !selectedWharehouse))
                       "
-                      @click="HandlerConfirmItems()"
+                      @click="handleDeliveryNext()"
                       color="#14A7EB"
                       class="white--text px-6 shadow-blue text-capitalize font-weight-bold"
                     >
-                      Finalizar
-                      <v-icon right small>mdi-check</v-icon>
+                      {{ isAuth ? 'Finalizar' : 'Siguiente' }}
+                      <v-icon right small>{{ isAuth ? 'mdi-check' : 'mdi-arrow-right' }}</v-icon>
                     </v-btn>
                   </v-card-actions>
                   </v-card>
@@ -637,7 +639,7 @@ export default {
       checkoutUrl: "",
 
       // Inline auth flow
-      showLoginCard: true,
+      showLoginCard: false,  // Mostrar registro directo en checkout
       showRecovery: false,
       showNotificationEmail: false,
       loading_verification: false,
@@ -646,13 +648,25 @@ export default {
       password: "",
 
       // Polling para checkout en Safari/iOS (Dejado por compatibilidad pero no se usa en el modal)
-      checkoutPollInterval: null
+      checkoutPollInterval: null,
+
+      // Dirección temporal para guests (se sincroniza después del registro)
+      guestAddress: null
     };
   },
 
-    created() {
+  async created() {
     // Verificar si hay un checkout completado pendiente de procesar
     this.checkCompletedCheckout();
+    
+    // Si no hay token, hacer login automático como guest
+    if (!this.isAuth) {
+      try {
+        await this.$store.dispatch('auth/GUEST_LOGIN');
+      } catch (error) {
+        console.log('Error en guest login, continuando sin auth:', error);
+      }
+    }
     
     this.HandlerGetCartsProducts();
     if (this.isAuth) {
@@ -679,53 +693,65 @@ export default {
     watch: {
     radioGroup(val) {
       console.log(val);
+      // Ahora siempre hay auth (guest o real), validar warehouse normalmente
       if (val == 0) {
         this.ValidateProductWarehouse();
       }
     },
     async isAuth(val, oldVal) {
       if (val && oldVal === false) {
-        // El carrito ya se carga en la acción de LOGIN después del sync
-        this.HandlerGetAddress();
-        if (this.e1 >= this.accountStep) {
-          this.e1 = this.paymentStep;
-        }
+        // Usuario se logueó con cuenta real
+        // Las direcciones y checkout se manejan en restoreGuestSelectionsAndCheckout
+        // NO cambiar de paso - el flujo automático se encarga de todo
       } else if (!val && oldVal === true) {
+        // Usuario cerró sesión
         this.e1 = 1;
         this.userAddress = [];
         this.idAddress = null;
       }
     },
     e1(val) {
+      // Guardar selecciones al llegar al paso de Cuenta (guest)
+      if (val === this.accountStep && this.isGuestUser) {
+        this.saveGuestSelections();
+      }
+      
       if(val === this.deliveryStep) {
-        this.HandlerGetAddress();
-        // Check if we have addresses, if so, prioritize one
-        if (this.userAddress.length > 0 && this.radioGroup == 1) {
-           this.getUserAddressPriority();
-        }
-        // If pickup is selected and we have addresses, ensure warehouse validation
-        if (this.radioGroup == 0 && this.userAddress.length > 0) {
-           this.ValidateProductWarehouse();
+        // Llamar APIs con cualquier token disponible (guest o real)
+        if (this.hasApiToken) {
+          this.HandlerGetAddress();
+          if (this.userAddress.length > 0 && this.radioGroup == 1) {
+             this.getUserAddressPriority();
+          }
+          if (this.radioGroup == 0) {
+             this.ValidateProductWarehouse();
+          }
         }
       }
     }
   },
 
   computed: {
-    accountStep() {
+    // Nuevo orden: Carrito(1) -> Pago(2) -> Envío(3) -> Cuenta(4)
+    paymentStep() {
       return 2;
     },
 
-    paymentStep() {
+    deliveryStep() {
       return 3;
     },
 
-    deliveryStep() {
+    accountStep() {
       return 4;
     },
 
     isAuth() {
       return !!this.$store.state.auth.token;
+    },
+
+    // Indica si el usuario actual es el usuario genérico guest
+    isGuestUser() {
+      return this.$store.getters['auth/IS_GUEST'];
     },
 
     productCartState() {
@@ -738,17 +764,39 @@ export default {
 
     isMobile() {
       return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs;
+    },
+
+    // Indica si hay algún token disponible para APIs (guest o real)
+    hasApiToken() {
+      return this.$store.getters['auth/HAS_API_TOKEN'];
+    },
+
+    // Para guests, siempre consideramos que tienen dirección si completaron el formulario inline
+    guestHasAddress() {
+      // Si hay dirección seleccionada (idAddress) o si es retiro en tienda, consideramos que hay dirección
+      return this.radioGroup === 0 || (this.idAddress !== null && this.statusQuote);
     }
   },
 
   methods: {
     goToNextFromCart() {
-      const nextStep = this.isAuth ? this.paymentStep : this.accountStep;
-      this.e1 = nextStep;
+      // Siempre ir a Pago, independientemente de si está logueado
+      this.e1 = this.paymentStep;
     },
 
     goToPreviousFromPayment() {
-      this.e1 = this.accountStep;
+      // Volver al Carrito (paso 1)
+      this.e1 = 1;
+    },
+
+    handleDeliveryNext() {
+      // Si el usuario no está logueado, ir al paso de Cuenta (registro)
+      // Si está logueado, ejecutar el checkout directamente
+      if (!this.isAuth) {
+        this.e1 = this.accountStep;
+      } else {
+        this.HandlerConfirmItems();
+      }
     },
 
     toggleAuthCard() {
@@ -778,15 +826,89 @@ export default {
     },
 
     async handleLoginSuccess() {
-      this.showLoginCard = true;
-      this.showRecovery = false;
-      this.showNotificationEmail = false;
-      this.email_verifiction = "";
-      
-      // El carrito ya se carga en la acción de LOGIN después del sync
-      
-      this.e1 = this.paymentStep;
-      this.HandlerGetAddress();
+      // Después de login con cuenta real, restaurar selecciones y ejecutar checkout
+      await this.restoreGuestSelectionsAndCheckout();
+    },
+
+    async handleRegisterSuccess() {
+      // Después de registro, restaurar selecciones y ejecutar checkout
+      await this.restoreGuestSelectionsAndCheckout();
+    },
+
+    // Guardar las selecciones actuales del guest antes del login/registro
+    saveGuestSelections() {
+      const selections = {
+        radioGroup: this.radioGroup,
+        radioGroupDues: this.radioGroupDues,
+        radioGroupCredit: this.radioGroupCredit,
+        radioGroupTransfer: this.radioGroupTransfer,
+        payments_type: this.payments_type,
+        default_installments: this.default_installments,
+        selectedWharehouse: this.selectedWharehouse,
+        quote: this.quote
+      };
+      localStorage.setItem('guest_checkout_selections', JSON.stringify(selections));
+    },
+
+    // Restaurar selecciones del guest y ejecutar checkout automáticamente
+    async restoreGuestSelectionsAndCheckout() {
+      try {
+        this.loadingCheckout = true;
+        this.$snotify.info("Procesando tu compra...", "Un momento");
+        
+        // 1. Cargar direcciones del usuario real
+        await this.HandlerGetAddress();
+        
+        // 2. Si había una dirección guardada del guest, registrarla
+        const guestAddressData = localStorage.getItem('guest_address');
+        if (guestAddressData) {
+          try {
+            const addressData = JSON.parse(guestAddressData);
+            await this.$store.dispatch("auth/REGISTER_ADDRESS", addressData);
+            await this.HandlerGetAddress();
+            localStorage.removeItem('guest_address');
+          } catch (addrError) {
+            console.log("Error registrando dirección del guest:", addrError);
+          }
+        }
+        
+        // 3. Restaurar selecciones guardadas
+        const savedSelections = localStorage.getItem('guest_checkout_selections');
+        if (savedSelections) {
+          const selections = JSON.parse(savedSelections);
+          this.radioGroup = selections.radioGroup;
+          this.radioGroupDues = selections.radioGroupDues;
+          this.radioGroupCredit = selections.radioGroupCredit;
+          this.radioGroupTransfer = selections.radioGroupTransfer;
+          this.payments_type = selections.payments_type;
+          this.default_installments = selections.default_installments;
+          this.selectedWharehouse = selections.selectedWharehouse;
+          this.quote = selections.quote;
+          
+          // Seleccionar dirección si es envío a domicilio
+          if (this.radioGroup === 1 && this.userAddress.length > 0) {
+            this.idAddress = this.userAddress[0];
+            await this.HandlerShippingQuote();
+          }
+          
+          localStorage.removeItem('guest_checkout_selections');
+        }
+        
+        // 4. Ejecutar checkout automáticamente (mostrará modal de pago)
+        await this.HandlerConfirmItems();
+        
+      } catch (error) {
+        console.log("Error en restoreGuestSelectionsAndCheckout:", error);
+        this.$snotify.error("Error procesando la compra. Intentá nuevamente.", "Error");
+      } finally {
+        this.loadingCheckout = false;
+      }
+    },
+
+    async HandlerFinalizeFromAccount() {
+      // Este método se llama desde el paso de Cuenta (último paso) para finalizar
+      // Ejecutamos HandlerConfirmItems que maneja todo el flujo de checkout
+      await this.HandlerConfirmItems();
     },
 
     async HandlerShippingQuote() {
@@ -1129,21 +1251,19 @@ export default {
     },
 
     async canCheckoutStepper() {
-      if (!this.isAuth) {
-        this.e1 = this.accountStep;
-        return;
-      }
-
-      // Verificar perfil completo antes de continuar
-      try {
-        const profileCheck = await this.checkProfileComplete();
-        if (!profileCheck.complete) {
-          this.showAlertPerfil = true;
-          this.alertPerfil = profileCheck.missingFields;
-          return;
+      // Ya no verificamos isAuth aquí - permitimos que guests continúen
+      // La verificación de perfil solo aplica si el usuario está logueado
+      if (this.isAuth) {
+        try {
+          const profileCheck = await this.checkProfileComplete();
+          if (!profileCheck.complete) {
+            this.showAlertPerfil = true;
+            this.alertPerfil = profileCheck.missingFields;
+            return;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
       
       this.errorGetQuoute = false;
@@ -1332,14 +1452,38 @@ export default {
       }
     },
 
-    HandlerAddressAdded() {
-      this.HandlerGetAddress().then(() => {
-        // Seleccionar la nueva dirección y recalcular envío
-        if (this.userAddress.length > 0 && this.radioGroup === 1) {
-          this.idAddress = this.userAddress.find(addr => addr.status === true) || this.userAddress[0];
-          this.HandlerShippingQuote();
+    HandlerAddressAdded(addressData) {
+      // Si el usuario está autenticado, cargar direcciones del servidor
+      if (this.isAuth) {
+        this.HandlerGetAddress().then(() => {
+          // Seleccionar la nueva dirección y recalcular envío
+          if (this.userAddress.length > 0 && this.radioGroup === 1) {
+            this.idAddress = this.userAddress.find(addr => addr.status === true) || this.userAddress[0];
+            this.HandlerShippingQuote();
+          }
+        });
+      } else {
+        // Para guests, usar la dirección que viene del formulario
+        if (addressData) {
+          this.guestAddress = addressData;
+          // Crear un objeto similar a las direcciones del servidor para usar en el UI
+          const fakeAddress = {
+            id: 'guest',
+            street: addressData.street,
+            street_number: addressData.street_number,
+            location: addressData.location,
+            zipcode: addressData.zipcode,
+            status: true
+          };
+          this.userAddress = [fakeAddress];
+          this.idAddress = fakeAddress;
+          // Para guests, marcamos que tienen dirección pero no cotizamos envío
+          // La cotización se hará después del registro
+          this.statusQuote = true;
+          this.quote = 0; // Se calculará después del registro
+          this.$snotify.info("El costo de envío se calculará al finalizar el registro", "Info");
         }
-      });
+      }
     },
 
     async HandlerProfileUpdated() {

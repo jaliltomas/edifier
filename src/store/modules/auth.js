@@ -1,19 +1,34 @@
 import { users, store, product } from "../../services";
 
 const state = {
-  token: null,
-  user: {}
+  token: null,           // Token del usuario real (afecta UI)
+  guestToken: null,      // Token del usuario guest (solo para APIs, no afecta UI)
+  user: {},
+  isGuestUser: false     // Indica si estamos usando el token guest
 };
 
 const getters = {
-  AUTHENTICATED: state => (state.token == null ? false : true),
-  GET_PROFILE: state => state.user
+  AUTHENTICATED: state => (state.token == null ? false : true),  // Solo true con usuario real
+  GET_PROFILE: state => state.user,
+  IS_GUEST: state => state.isGuestUser,
+  // Indica si hay algún token disponible para APIs (guest o real)
+  HAS_API_TOKEN: state => state.token != null || state.guestToken != null
 };
 
 const mutations = {
   SET_TOKEN: (state, payload) => {
     state.token = payload;
     localStorage.setItem("token", payload);
+    users.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
+    store.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
+    product.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
+  },
+
+  // Token guest: configura headers pero NO cambia state.token (no afecta UI)
+  SET_GUEST_TOKEN: (state, payload) => {
+    state.guestToken = payload;
+    localStorage.setItem("guest_token", payload);
+    // Configurar headers de axios con el token guest
     users.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
     store.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
     product.defaults.headers.common["Authorization"] = `Bearer ${payload}`;
@@ -27,13 +42,25 @@ const mutations = {
 
   CLEAR_DATA: (state) => {
     state.token = null;
+    state.guestToken = null;
     state.user = {};
+    state.isGuestUser = false;
     localStorage.clear();
+    // Limpiar headers
+    delete users.defaults.headers.common["Authorization"];
+    delete store.defaults.headers.common["Authorization"];
+    delete product.defaults.headers.common["Authorization"];
+  },
+
+  SET_GUEST_USER: (state, isGuest) => {
+    state.isGuestUser = isGuest;
+    localStorage.setItem('is_guest_user', isGuest ? 'true' : 'false');
   },
 
   CLEAR_DATA_LOGOUT: state => {
     state.token = null;
-    localStorage.clear();
+    // Mantener el guest token si existe para que las APIs sigan funcionando
+    localStorage.removeItem('token');
   }
 };
 
@@ -43,6 +70,7 @@ const actions = {
       const response = await users.post("api/auth/login/buyers", payload);
       commit("SET_TOKEN", response.data.data.access_token.token);
       commit("SET_USER", response.data.data.user);
+      commit("SET_GUEST_USER", false);  // Login real, no es guest
       
       // Sync guest cart items if any
       await dispatch("cart/SYNC_GUEST_CART", {}, { root: true });
@@ -50,6 +78,29 @@ const actions = {
       await dispatch("cart/GET_CURRENT_CART", {}, { root: true });
       return response;
     } catch (error) {
+      return Promise.reject(error);
+    }
+  },
+
+  // Login con usuario genérico para APIs - NO afecta el estado de login en UI
+  async GUEST_LOGIN({ commit, dispatch }) {
+    try {
+      // Credenciales del usuario genérico (configurar en backend)
+      const guestCredentials = {
+        email: 'guest@edifier.com.ar',
+        password: 'GuestEdifier2024!',
+        store: 3
+      };
+      
+      const response = await users.post("api/auth/login/buyers", guestCredentials);
+      // Usar SET_GUEST_TOKEN en lugar de SET_TOKEN (no afecta UI)
+      commit("SET_GUEST_TOKEN", response.data.data.access_token.token);
+      commit("SET_GUEST_USER", true);  // Marcar como guest
+      
+      await dispatch("cart/GET_CURRENT_CART", {}, { root: true });
+      return response;
+    } catch (error) {
+      console.log("Error en GUEST_LOGIN:", error);
       return Promise.reject(error);
     }
   },
