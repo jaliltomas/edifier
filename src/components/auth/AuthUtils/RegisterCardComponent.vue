@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-card
     class="animate__animated animate__backInUp"
     width="600"
@@ -71,84 +71,6 @@
         </v-col>
 
         <v-col cols="12" md="6" class="mt-2">
-          <label
-            style="color: #666666"
-            class="font-weight-bold ml-3 ml-md-0"
-            for="Codigo Postal"
-          >
-            Codigo Postal
-          </label>
-          <ValidationProvider
-            name="codigo postal"
-            rules="required|min:4|max:4|numeric"
-            v-slot="{ errors }"
-          >
-            <v-text-field
-              v-model="postal_code"
-              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
-              color="black"
-              dense
-              filled
-              flat
-              placeholder="Ingresa tu codigo postal"
-              :error-messages="errors"
-            ></v-text-field>
-          </ValidationProvider>
-        </v-col>
-
-        <v-col cols="12" md="6" class="mt-2">
-          <label
-            style="color: #666666"
-            class="font-weight-bold ml-3"
-            for="dni"
-          >
-            DNI / CUIT / CUIL
-          </label>
-          <ValidationProvider
-            name="DNI"
-            rules="required|numeric|min:7"
-            v-slot="{ errors }"
-          >
-            <v-text-field
-              v-model="doc_number"
-              class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
-              color="black"
-              dense
-              filled
-              flat
-              placeholder="Sin puntos ni guiones"
-              :error-messages="errors"
-            ></v-text-field>
-          </ValidationProvider>
-        </v-col>
-
-        <v-col cols="12" md="6" class="mt-2">
-          <label
-            style="color: #666666"
-            class="font-weight-bold ml-3 ml-md-0"
-            for="telefono"
-          >
-            Teléfono
-          </label>
-          <ValidationProvider
-            name="telefono"
-            rules="required|numeric|min:8"
-            v-slot="{ errors }"
-          >
-            <v-text-field
-              v-model="phone"
-              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
-              color="black"
-              dense
-              filled
-              flat
-              placeholder="Ej: 1112345678"
-              :error-messages="errors"
-            ></v-text-field>
-          </ValidationProvider>
-        </v-col>
-
-        <v-col cols="12" md="6" class="mt-md-n5">
           <ValidationProvider
             name="correo"
             rules="email|required|confirmed:email_confirmation"
@@ -160,7 +82,7 @@
             <v-text-field
               autocomplete="off"
               v-model="email"
-              class="mt-2 pl-3 pr-3 pr-sm-3 pr-md-0"
+              class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
               color="black"
               dense
               filled
@@ -171,7 +93,7 @@
           </ValidationProvider>
         </v-col>
 
-        <v-col cols="12" md="6" class="mt-md-n5">
+        <v-col cols="12" md="6" class="mt-2">
           <ValidationProvider
             name="confirmar correo"
             rules="email|required"
@@ -188,18 +110,18 @@
             <v-text-field
               autocomplete="off"
               v-model="email_confirmation"
-              class="mt-2 pr-3 ml-3 ml-sm-3 ml-md-0"
+              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
               color="black"
               dense
               filled
               flat
-              placeholder="Confrima tu correo electronico"
+              placeholder="Confirma tu correo electronico"
               :error-messages="errors"
             ></v-text-field>
           </ValidationProvider>
         </v-col>
 
-        <v-col cols="12" md="6" class="mt-md-n5">
+        <v-col cols="12" md="6" class="mt-2">
           <ValidationProvider
             name="contraseña"
             rules="required|confirmed:confirmation"
@@ -216,7 +138,7 @@
               autocomplete="off"
               v-model="password"
               type="password"
-              class="mt-2 pl-3 pr-3 pr-sm-3 pr-md-0"
+              class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
               color="black"
               dense
               filled
@@ -227,7 +149,7 @@
           </ValidationProvider>
         </v-col>
 
-        <v-col cols="12" md="6" class="mt-md-n5">
+        <v-col cols="12" md="6" class="mt-2">
           <ValidationProvider
             name="confirmar contraseña"
             rules="required"
@@ -236,7 +158,7 @@
           >
             <label
               style="color: #666666"
-              class="font-weight-bold"
+              class="font-weight-bold ml-3 ml-md-0"
               for="password confirmar"
             >
               Confirmar Contraseña
@@ -245,12 +167,90 @@
               autocomplete="off"
               v-model="confirm_password"
               type="password"
-              class="mt-2 pr-3 ml-3 ml-sm-3 ml-md-0"
+              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
               color="black"
               dense
               filled
               flat
-              placeholder="Confirma tu nombre contraseña"
+              placeholder="Confirma tu contraseña"
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-2">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3"
+            for="Codigo Postal"
+          >
+            Codigo Postal
+          </label>
+          <ValidationProvider
+            name="codigo postal"
+            rules="required|min:4|max:4|numeric"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="postal_code"
+              class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
+              color="black"
+              dense
+              filled
+              flat
+              placeholder="Ingresa tu codigo postal"
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-2">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3 ml-md-0"
+            for="dni"
+          >
+            DNI / CUIT / CUIL
+          </label>
+          <ValidationProvider
+            name="DNI"
+            rules="required|numeric|min:7"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="doc_number"
+              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
+              color="black"
+              dense
+              filled
+              flat
+              placeholder="Sin puntos ni guiones"
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-2">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3"
+            for="telefono"
+          >
+            Teléfono
+          </label>
+          <ValidationProvider
+            name="telefono"
+            rules="required|numeric|min:8"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="phone"
+              class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
+              color="black"
+              dense
+              filled
+              flat
+              placeholder="Ej: 1112345678"
               :error-messages="errors"
             ></v-text-field>
           </ValidationProvider>
@@ -293,10 +293,10 @@ export default {
     return {
       loading: false,
       //Register
-      doc_type: "",
+      doc_type: "DNI",
       doc_number: "",
-      store_id: "",
-      country_id: "",
+      store_id: 3,
+      country_id: 1,
       phone: "",
       email: "",
       email_confirmation: "",
