@@ -259,6 +259,7 @@ export default {
           };
           await this.$store.dispatch("auth/LOGIN", loginRequest);
           this.$snotify.success("Cuenta creada exitosamente", "¡Bienvenido!");
+          console.log(">>> RegisterCardComponent: Emitiendo register:success");
           this.$emit("register:success"); // Nuevo evento para indicar registro+login exitoso
         } catch (loginError) {
           // Si falla el auto-login, mostrar mensaje y cambiar a login

@@ -41,6 +41,15 @@
           >
             <span :class="{'font-weight-bold text-primary': e1 === accountStep}" style="font-size: 0.8rem;">Cuenta</span>
           </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step
+            :complete="e1 > checkoutStep"
+            :step="checkoutStep"
+            color="#00A0E9"
+            class="py-2"
+          >
+            <span :class="{'font-weight-bold text-primary': e1 === checkoutStep}" style="font-size: 0.8rem;">Checkout</span>
+          </v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items class="flex-grow-1 overflow-hidden relative">
@@ -99,14 +108,14 @@
                     <div class="text-center pt-4 pb-1">
                       <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Cuenta</h2>
                       <p class="caption grey--text mb-1">
-                        <span v-if="isGuestUser">Registrate para finalizar tu compra y recibir tu pedido.</span>
+                        <span v-if="!isAuth">Registrate para finalizar tu compra y recibir tu pedido.</span>
                         <span v-else>Ya iniciaste sesión. Finalizá tu compra.</span>
                       </p>
                     </div>
 
                     <v-card-text class="px-4 py-2">
-                      <!-- Mostrar formulario de registro si es usuario guest -->
-                      <div class="d-flex justify-center" v-if="isGuestUser">
+                      <!-- Mostrar formulario de registro si no está logueado -->
+                      <div class="d-flex justify-center" v-if="!isAuth">
                         <login-card-component
                           v-if="showLoginCard"
                           :redirectOnLogin="false"
@@ -136,16 +145,16 @@
                         <v-icon left small>mdi-arrow-left</v-icon> Atrás
                       </v-btn>
                       <v-btn
-                        :disabled="isGuestUser"
+                        :disabled="!isAuth"
                         :loading="loadingCheckout"
                         color="#00A0E9"
                         class="white--text px-6 shadow-blue"
                         rounded
                         small
-                        @click="HandlerFinalizeFromAccount()"
+                        @click="e1 = checkoutStep"
                       >
-                        Finalizar compra
-                        <v-icon right small>mdi-check</v-icon>
+                        Continuar
+                        <v-icon right small>mdi-arrow-right</v-icon>
                       </v-btn>
                     </v-card-actions>
                   </v-card>
@@ -483,6 +492,84 @@
              </v-row>
              </div>
           </v-stepper-content>
+
+          <!-- PASO 5: CHECKOUT - Resumen final y pago -->
+          <v-stepper-content :step="checkoutStep" class="pa-0 fill-height">
+            <div class="d-flex flex-column fill-height overflow-auto custom-scrollbar">
+              <v-row justify="center" class="ma-0">
+                <v-col cols="12" md="10" lg="8" class="pa-0">
+                  <v-card class="rounded-lg elevation-0 mt-1 white">
+                    <div class="text-center pt-4 pb-1">
+                      <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Resumen de Compra</h2>
+                      <p class="caption grey--text mb-1">Revisá los detalles antes de pagar</p>
+                    </div>
+
+                    <v-card-text class="px-4 py-2">
+                      <!-- Resumen de productos -->
+                      <div class="mb-3">
+                        <p class="font-weight-bold text-caption black--text mb-2">Productos</p>
+                        <div v-for="item in (productCartState.shopping_cart_items || [])" :key="item.id" class="d-flex justify-space-between mb-1">
+                          <span class="text-caption grey--text">{{ item.product?.name || 'Producto' }} x{{ item.quantity }}</span>
+                          <span class="text-caption font-weight-medium">${{ ((item.product?.price || 0) * item.quantity) | currency }}</span>
+                        </div>
+                      </div>
+
+                      <v-divider class="my-2"></v-divider>
+
+                      <!-- Método de envío -->
+                      <div class="d-flex justify-space-between mb-1">
+                        <span class="text-caption grey--text">Método de envío</span>
+                        <span class="text-caption font-weight-medium">{{ radioGroup === 0 ? 'Retiro en tienda' : 'Envío a domicilio' }}</span>
+                      </div>
+
+                      <!-- Costo de envío -->
+                      <div class="d-flex justify-space-between mb-1" v-if="radioGroup === 1">
+                        <span class="text-caption grey--text">Costo de envío</span>
+                        <span class="text-caption font-weight-medium" v-if="quote > 0">${{ quote | currency }}</span>
+                        <span class="text-caption grey--text" v-else>Calculando...</span>
+                      </div>
+
+                      <v-divider class="my-2"></v-divider>
+
+                      <!-- Total -->
+                      <div class="d-flex justify-space-between">
+                        <span class="text-subtitle-2 font-weight-bold black--text">Total</span>
+                        <span class="text-subtitle-1 font-weight-bold" style="color: #00A0E9;">
+                          ${{ (totalPrice(productCartState.shopping_cart_items) + quote) | currency }}
+                        </span>
+                      </div>
+
+                      <!-- Método de pago seleccionado -->
+                      <div class="mt-4 pa-3 rounded grey lighten-4">
+                        <p class="font-weight-bold text-caption black--text mb-1">Método de pago</p>
+                        <span class="text-caption grey--text">
+                          {{ radioGroupTransfer === 0 ? 'Transferencia bancaria' : 'Tarjeta de crédito/débito' }}
+                        </span>
+                      </div>
+                    </v-card-text>
+
+                    <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
+                      <v-btn text small color="grey darken-1" @click="e1 = accountStep" class="text-capitalize">
+                        <v-icon left small>mdi-arrow-left</v-icon> Atrás
+                      </v-btn>
+                      <v-btn
+                        :loading="loadingCheckout"
+                        :disabled="radioGroup === 1 && quote === 0"
+                        color="#00A0E9"
+                        class="white--text px-6 shadow-blue"
+                        rounded
+                        small
+                        @click="HandlerProceedToPayment()"
+                      >
+                        Proceder al Pago
+                        <v-icon right small>mdi-credit-card</v-icon>
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </div>
+          </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
 
@@ -659,12 +746,12 @@ export default {
     // Verificar si hay un checkout completado pendiente de procesar
     this.checkCompletedCheckout();
     
-    // Si no hay token, hacer login automático como guest
+    // Si no hay token de usuario real, hacer login con guest para APIs
     if (!this.isAuth) {
       try {
         await this.$store.dispatch('auth/GUEST_LOGIN');
       } catch (error) {
-        console.log('Error en guest login, continuando sin auth:', error);
+        console.log('Error en guest login:', error);
       }
     }
     
@@ -700,9 +787,11 @@ export default {
     },
     async isAuth(val, oldVal) {
       if (val && oldVal === false) {
-        // Usuario se logueó con cuenta real
-        // Las direcciones y checkout se manejan en restoreGuestSelectionsAndCheckout
-        // NO cambiar de paso - el flujo automático se encarga de todo
+        // Usuario se logueó (login o registro) durante el checkout
+        if (this.e1 === this.accountStep) {
+          console.log(">>> isAuth watcher: Usuario logueado, ejecutando APIs");
+          await this.restoreGuestSelectionsAndCheckout();
+        }
       } else if (!val && oldVal === true) {
         // Usuario cerró sesión
         this.e1 = 1;
@@ -711,14 +800,14 @@ export default {
       }
     },
     e1(val) {
-      // Guardar selecciones al llegar al paso de Cuenta (guest)
-      if (val === this.accountStep && this.isGuestUser) {
+      // Guardar selecciones al llegar al paso de Cuenta (si no está logueado)
+      if (val === this.accountStep && !this.isAuth) {
         this.saveGuestSelections();
       }
       
       if(val === this.deliveryStep) {
-        // Llamar APIs con cualquier token disponible (guest o real)
-        if (this.hasApiToken) {
+        // Las APIs de dirección solo se llaman cuando está logueado
+        if (this.isAuth) {
           this.HandlerGetAddress();
           if (this.userAddress.length > 0 && this.radioGroup == 1) {
              this.getUserAddressPriority();
@@ -732,7 +821,7 @@ export default {
   },
 
   computed: {
-    // Nuevo orden: Carrito(1) -> Pago(2) -> Envío(3) -> Cuenta(4)
+    // Orden: Carrito(1) -> Pago(2) -> Envío(3) -> Cuenta(4) -> Checkout(5)
     paymentStep() {
       return 2;
     },
@@ -745,13 +834,12 @@ export default {
       return 4;
     },
 
-    isAuth() {
-      return !!this.$store.state.auth.token;
+    checkoutStep() {
+      return 5;
     },
 
-    // Indica si el usuario actual es el usuario genérico guest
-    isGuestUser() {
-      return this.$store.getters['auth/IS_GUEST'];
+    isAuth() {
+      return !!this.$store.state.auth.token;
     },
 
     productCartState() {
@@ -789,18 +877,52 @@ export default {
       this.e1 = 1;
     },
 
-    handleDeliveryNext() {
+    async handleDeliveryNext() {
       // Si el usuario no está logueado, ir al paso de Cuenta (registro)
-      // Si está logueado, ejecutar el checkout directamente
+      // Si está logueado, ir al paso Checkout directamente (saltea Cuenta)
       if (!this.isAuth) {
         this.e1 = this.accountStep;
       } else {
-        this.HandlerConfirmItems();
+        // Usuario logueado: cargar datos y ir al paso Checkout
+        await this.prepareCheckoutForLoggedUser();
       }
     },
 
     toggleAuthCard() {
       this.showLoginCard = !this.showLoginCard;
+    },
+
+    // Preparar datos para el checkout cuando el usuario ya está logueado
+    async prepareCheckoutForLoggedUser() {
+      try {
+        this.loadingCheckout = true;
+        console.log(">>> prepareCheckoutForLoggedUser - isAuth:", this.isAuth);
+        
+        // Recargar carrito
+        await this.$store.dispatch("cart/GET_CURRENT_CART");
+        
+        // Cargar direcciones
+        await this.HandlerGetAddress();
+        
+        // Si es envío a domicilio, seleccionar primera dirección y calcular
+        if (this.radioGroup === 1) {
+          if (this.userAddress.length > 0 && !this.idAddress) {
+            this.idAddress = this.userAddress[0];
+          }
+          if (this.idAddress) {
+            await this.HandlerShippingQuote();
+          }
+        }
+        
+        this.e1 = this.checkoutStep;
+      } catch (error) {
+        console.log("Error preparando checkout:", error);
+        this.$snotify.error("Error al cargar datos", "Error");
+        // Aún así ir al checkout
+        this.e1 = this.checkoutStep;
+      } finally {
+        this.loadingCheckout = false;
+      }
     },
 
     toggleRecovery() {
@@ -832,6 +954,7 @@ export default {
 
     async handleRegisterSuccess() {
       // Después de registro, restaurar selecciones y ejecutar checkout
+      console.log(">>> handleRegisterSuccess - isAuth:", this.isAuth);
       await this.restoreGuestSelectionsAndCheckout();
     },
 
@@ -854,10 +977,13 @@ export default {
     async restoreGuestSelectionsAndCheckout() {
       try {
         this.loadingCheckout = true;
+        console.log(">>> restoreGuestSelectionsAndCheckout INICIO - isAuth:", this.isAuth);
         this.$snotify.info("Procesando tu compra...", "Un momento");
         
         // 1. Cargar direcciones del usuario real
+        console.log(">>> Llamando HandlerGetAddress...");
         await this.HandlerGetAddress();
+        console.log(">>> Direcciones cargadas:", this.userAddress?.length);
         
         // 2. Si había una dirección guardada del guest, registrarla
         const guestAddressData = localStorage.getItem('guest_address');
@@ -872,7 +998,7 @@ export default {
           }
         }
         
-        // 3. Restaurar selecciones guardadas
+        // 3. Restaurar selecciones guardadas si existen
         const savedSelections = localStorage.getItem('guest_checkout_selections');
         if (savedSelections) {
           const selections = JSON.parse(savedSelections);
@@ -884,31 +1010,48 @@ export default {
           this.default_installments = selections.default_installments;
           this.selectedWharehouse = selections.selectedWharehouse;
           this.quote = selections.quote;
-          
-          // Seleccionar dirección si es envío a domicilio
-          if (this.radioGroup === 1 && this.userAddress.length > 0) {
-            this.idAddress = this.userAddress[0];
-            await this.HandlerShippingQuote();
-          }
-          
           localStorage.removeItem('guest_checkout_selections');
         }
         
-        // 4. Ejecutar checkout automáticamente (mostrará modal de pago)
-        await this.HandlerConfirmItems();
+        // 4. Seleccionar dirección y calcular envío si es a domicilio
+        if (this.radioGroup === 1 && this.userAddress.length > 0) {
+          this.idAddress = this.userAddress[0];
+          await this.HandlerShippingQuote();
+        }
+        
+        // 5. Ir al paso Checkout para ver resumen y precio de envío
+        this.e1 = this.checkoutStep;
+        this.$snotify.success("Datos cargados correctamente", "Éxito");
         
       } catch (error) {
         console.log("Error en restoreGuestSelectionsAndCheckout:", error);
-        this.$snotify.error("Error procesando la compra. Intentá nuevamente.", "Error");
+        this.$snotify.error("Error procesando. Intentá nuevamente.", "Error");
+        // Aún así ir al paso Checkout
+        this.e1 = this.checkoutStep;
       } finally {
         this.loadingCheckout = false;
       }
     },
 
     async HandlerFinalizeFromAccount() {
-      // Este método se llama desde el paso de Cuenta (último paso) para finalizar
-      // Ejecutamos HandlerConfirmItems que maneja todo el flujo de checkout
-      await this.HandlerConfirmItems();
+      // Este método ya no se usa, se reemplazó por ir al paso Checkout
+      this.e1 = this.checkoutStep;
+    },
+
+    // Método para proceder al pago desde el paso Checkout
+    async HandlerProceedToPayment() {
+      try {
+        this.loadingCheckout = true;
+        
+        // Ejecutar el checkout (mostrará modal de pago según el método seleccionado)
+        await this.HandlerConfirmItems();
+        
+      } catch (error) {
+        console.log("Error en HandlerProceedToPayment:", error);
+        this.$snotify.error("Error al procesar el pago. Intentá nuevamente.", "Error");
+      } finally {
+        this.loadingCheckout = false;
+      }
     },
 
     async HandlerShippingQuote() {

@@ -123,18 +123,18 @@ export default {
           status: true, // Set as default since it's the first one
         };
 
-        // Verificar si es usuario guest (no si hay token, porque ahora siempre hay token)
-        const isGuestUser = this.$store.getters['auth/IS_GUEST'];
+        const isAuth = !!this.$store.state.auth.token;
         
-        // Siempre registrar en el servidor (ya sea con guest o usuario real)
-        await this.$store.dispatch("auth/REGISTER_ADDRESS", addressData);
-        
-        // Si es usuario guest, también guardar en localStorage para sincronizar después del registro
-        if (isGuestUser) {
+        if (isAuth) {
+          // Usuario logueado: registrar dirección con API
+          await this.$store.dispatch("auth/REGISTER_ADDRESS", addressData);
+          this.$snotify.success("Dirección registrada con éxito", "Exitos!");
+        } else {
+          // Usuario no logueado: guardar en localStorage para después del registro
           localStorage.setItem('guest_address', JSON.stringify(addressData));
+          this.$snotify.success("Dirección guardada", "Exitos!");
         }
         
-        this.$snotify.success("Dirección registrada con éxito", "Exitos!");
         this.$emit('address-added', addressData);
       } catch (error) {
         console.log(error);
