@@ -49,6 +49,31 @@
           <label
             style="color: #666666"
             class="font-weight-bold ml-3 ml-md-0"
+            for="apellido"
+            >Apellido</label
+          >
+          <ValidationProvider
+            name="apellido"
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="last_name"
+              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
+              color="black"
+              dense
+              filled
+              flat
+              placeholder="Ingresa tu apellido"
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-2">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3 ml-md-0"
             for="Codigo Postal"
           >
             Codigo Postal
@@ -66,6 +91,58 @@
               filled
               flat
               placeholder="Ingresa tu codigo postal"
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-2">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3"
+            for="dni"
+          >
+            DNI / CUIT / CUIL
+          </label>
+          <ValidationProvider
+            name="DNI"
+            rules="required|numeric|min:7"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="doc_number"
+              class="mt-2 pl-3 pr-3 px-sm-3 pr-md-0"
+              color="black"
+              dense
+              filled
+              flat
+              placeholder="Sin puntos ni guiones"
+              :error-messages="errors"
+            ></v-text-field>
+          </ValidationProvider>
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-2">
+          <label
+            style="color: #666666"
+            class="font-weight-bold ml-3 ml-md-0"
+            for="telefono"
+          >
+            Teléfono
+          </label>
+          <ValidationProvider
+            name="telefono"
+            rules="required|numeric|min:8"
+            v-slot="{ errors }"
+          >
+            <v-text-field
+              v-model="phone"
+              class="mt-2 ml-3 ml-sm-3 ml-md-0 pr-3"
+              color="black"
+              dense
+              filled
+              flat
+              placeholder="Ej: 1112345678"
               :error-messages="errors"
             ></v-text-field>
           </ValidationProvider>
@@ -258,6 +335,28 @@ export default {
             store: 3
           };
           await this.$store.dispatch("auth/LOGIN", loginRequest);
+          
+          // Actualizar perfil con datos adicionales (DNI, teléfono, etc.)
+          try {
+            const profilePayload = {
+              fullname: `${this.first_name} ${this.last_name}`,
+              doc_type: 'DNI',
+              doc_number: this.doc_number,
+              phone: this.phone,
+              email: this.email,
+              billing_email: this.email,
+              first_name: this.first_name,
+              last_name: this.last_name,
+              store_id: 3,
+              contact_phone: this.phone,
+            };
+            await this.$store.dispatch("auth/UPDATE_PROFILE", profilePayload);
+            console.log(">>> Perfil actualizado con datos adicionales");
+          } catch (profileError) {
+            console.log("Error actualizando perfil:", profileError);
+            // No bloquear el flujo si falla la actualización del perfil
+          }
+          
           this.$snotify.success("Cuenta creada exitosamente", "¡Bienvenido!");
           console.log(">>> RegisterCardComponent: Emitiendo register:success");
           this.$emit("register:success"); // Nuevo evento para indicar registro+login exitoso
