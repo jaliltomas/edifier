@@ -8,14 +8,28 @@
       border-radius: 20px !important;
     "
   >
-    <div class="text-center" style="font-size: 2em; font-weight: 380">
-      Bienvenido
-    </div>
     <div
-      class="text-center mt-3 mb-5"
-      style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
+      class="text-center mt-3 mb-4 px-4"
+      style="font-size: 0.9em; font-weight: 400; line-height: 1.4rem; color: #555;"
     >
-      Registra tu cuenta
+      Completa la información de facturación para registrar tu cuenta y recibir tu compra
+    </div>
+
+    <!-- Checkbox para usar info de envío -->
+    <div v-if="showShippingCheckbox" class="px-6 mb-3">
+      <v-checkbox
+        v-model="useShippingInfo"
+        label="Usar información de envío para facturación"
+        color="#00A0E9"
+        hide-details
+        dense
+        class="mt-0"
+        :disabled="!shippingData || !shippingData.contact_name"
+        @change="handleUseShippingInfo"
+      ></v-checkbox>
+      <div v-if="!shippingData || !shippingData.contact_name" class="caption grey--text mt-1 ml-8">
+        Completa primero la dirección de envío
+      </div>
     </div>
 
     <ValidationObserver ref="obsReg" v-slot="{ passes }">
@@ -289,9 +303,20 @@
 
 <script>
 export default {
+  props: {
+    shippingData: {
+      type: Object,
+      default: () => null
+    },
+    showShippingCheckbox: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       loading: false,
+      useShippingInfo: false,
       //Register
       doc_type: "DNI",
       doc_number: "",
@@ -383,6 +408,25 @@ export default {
         password: this.password,
       };
       this.$emit("verification:change", user);
+    },
+
+    handleUseShippingInfo(checked) {
+      if (checked && this.shippingData) {
+        // Copiar nombre de quien recibe
+        if (this.shippingData.contact_name) {
+          const nameParts = this.shippingData.contact_name.split(' ');
+          this.first_name = nameParts[0] || '';
+          this.last_name = nameParts.slice(1).join(' ') || '';
+        }
+        // Copiar código postal
+        if (this.shippingData.zipcode) {
+          this.postal_code = this.shippingData.zipcode;
+        }
+        // Copiar teléfono
+        if (this.shippingData.contact_phone) {
+          this.phone = this.shippingData.contact_phone;
+        }
+      }
     },
   },
 };

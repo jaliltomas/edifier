@@ -108,7 +108,7 @@
                     <div class="text-center pt-4 pb-1">
                       <h2 class="text-subtitle-1 font-weight-bold grey--text text--darken-3">Cuenta</h2>
                       <p class="caption grey--text mb-1">
-                        <span v-if="!isAuth">Registrate para finalizar tu compra y recibir tu pedido.</span>
+                        <span v-if="!isAuth"></span>
                         <span v-else>Ya iniciaste sesión. Finalizá tu compra.</span>
                       </p>
                     </div>
@@ -127,6 +127,8 @@
                         />
                         <register-card-component
                           v-else
+                          :shippingData="currentShippingData"
+                          :showShippingCheckbox="radioGroup === 1"
                           @register:change="toggleAuthCard"
                           @register:success="handleRegisterSuccess"
                         />
@@ -508,9 +510,14 @@
                       <!-- Resumen de productos -->
                       <div class="mb-3">
                         <p class="font-weight-bold text-caption black--text mb-2">Productos</p>
-                        <div v-for="item in (productCartState.shopping_cart_items || [])" :key="item.id" class="d-flex justify-space-between mb-1">
-                          <span class="text-caption grey--text">{{ item.product?.name || 'Producto' }} x{{ item.quantity }}</span>
-                          <span class="text-caption font-weight-medium">${{ ((item.product?.price || 0) * item.quantity) | currency }}</span>
+                        <div v-for="item in (productCartState.shopping_cart_items || [])" :key="item.id" class="mb-2">
+                          <div class="d-flex justify-space-between">
+                            <span class="text-caption grey--text text--darken-2">{{ item.publication?.keywords || 'Producto' }} x{{ item.original_quantity }}</span>
+                            <span class="text-caption font-weight-medium">${{ ((item.publication?.price?.pvp || 0) * item.original_quantity) | currency }}</span>
+                          </div>
+                          <div v-if="item.publication?.sku || item.publication?.ean" class="text-caption grey--text" style="font-size: 0.7rem;">
+                            Modelo: {{ item.publication?.sku || item.publication?.ean || '-' }}
+                          </div>
                         </div>
                       </div>
 
@@ -542,9 +549,13 @@
                       <!-- Método de pago seleccionado -->
                       <div class="mt-4 pa-3 rounded grey lighten-4">
                         <p class="font-weight-bold text-caption black--text mb-1">Método de pago</p>
-                        <span class="text-caption grey--text">
-                          {{ radioGroupTransfer === 0 ? 'Transferencia bancaria' : 'Tarjeta de crédito/débito' }}
+                        <span class="text-caption grey--text text--darken-2">
+                          {{ paymentMethodDescription }}
                         </span>
+                        <div class="text-caption grey--text mt-1" style="font-size: 0.7rem;">
+                          <v-icon x-small color="grey">mdi-shield-check</v-icon>
+                          Procesado por MercadoPago
+                        </div>
                       </div>
                     </v-card-text>
 
@@ -863,6 +874,45 @@ export default {
     guestHasAddress() {
       // Si hay dirección seleccionada (idAddress) o si es retiro en tienda, consideramos que hay dirección
       return this.radioGroup === 0 || (this.idAddress !== null && this.statusQuote);
+    },
+
+    // Datos de envío para pasar al formulario de registro (solo si eligió envío a domicilio)
+    currentShippingData() {
+      if (this.radioGroup !== 1) return null;
+      
+      // Si hay dirección seleccionada del usuario logueado
+      if (this.idAddress && this.idAddress.contact_name) {
+        return {
+          contact_name: this.idAddress.contact_name,
+          zipcode: this.idAddress.zipcode,
+          contact_phone: this.idAddress.contact_phone
+        };
+      }
+      
+      // Si hay dirección guardada del guest (reactivo)
+      if (this.guestAddress) {
+        return {
+          contact_name: this.guestAddress.contact_name,
+          zipcode: this.guestAddress.zipcode,
+          contact_phone: this.guestAddress.contact_phone
+        };
+      }
+      
+      return null;
+    },
+
+    // Descripción del método de pago seleccionado
+    paymentMethodDescription() {
+      if (this.radioGroupDues === 0) {
+        return '6 Cuotas Fijas - Tarjeta de Crédito';
+      }
+      if (this.radioGroupCredit === 0) {
+        return '1 Pago - Tarjeta de Débito/Crédito';
+      }
+      if (this.radioGroupTransfer === 0) {
+        return 'Transferencia Bancaria';
+      }
+      return 'No seleccionado';
     }
   },
 

@@ -9,14 +9,10 @@
     "
   >
     <div class="text-center" style="font-size: 2em; font-weight: 380">
-      Bienvenido
+            Ingresá a tu cuenta
+  
     </div>
-    <div
-      class="text-center mt-3 mb-5"
-      style="font-size: 0.87em; font-weight: 400; line-height: 1.375rem"
-    >
-      Ingresá a tu cuenta
-    </div>
+
 
     <ValidationObserver ref="obs" v-slot="{ passes }">
       <v-col cols="12" md="12">
