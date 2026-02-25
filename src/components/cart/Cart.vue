@@ -275,8 +275,8 @@
                           ripple
                         >
                            <v-icon :color="radioGroupCredit === 0 ? '#00A0E9' : 'grey lighten-1'" class="mb-1">mdi-credit-card-outline</v-icon>
-                           <span class="text-body-2 font-weight-bold black--text">1 Pago</span>
-                           <span class="caption grey--text text-center" style="font-size: 0.7rem;">Débito / Crédito</span>
+                           <span class="text-body-2 font-weight-bold black--text text-center" style="line-height: 1.1;">Tarjetas / Dinero <br><span style="font-size: 0.6rem; color: #666">(vía MercadoPago)</span></span>
+                           <span class="caption grey--text text-center" style="font-size: 0.7rem;"></span>
                         </v-card>
                       </v-col>
 
@@ -289,8 +289,7 @@
                           ripple
                         >
                             <v-icon :color="radioGroupTransfer === 0 ? '#00A0E9' : 'grey lighten-1'" class="mb-1">mdi-bank-transfer</v-icon>
-                            <span class="text-body-2 font-weight-bold black--text">Transferencia</span>
-                            <span class="caption grey--text text-center" style="font-size: 0.7rem;">Bancaria</span>
+                            <span class="text-body-2 font-weight-bold black--text text-center">Transferencia <br><span style="font-size: 0.7rem; color: #4CAF50;">(Desc. Bancario)</span></span>
                         </v-card>
                       </v-col>
                     </v-row>
@@ -393,7 +392,7 @@
                                       class="mb-1"
                                     >
                                       <template v-slot:label>
-                                        <span class="text-caption text-uppercase font-weight-medium">{{depositElements[n.name]}}</span>
+                                        <span class="text-caption font-weight-medium">{{depositElements[n.name]}}</span>
                                       </template>
                                     </v-radio>
                                   </v-radio-group>
@@ -426,13 +425,13 @@
                                   </v-select>
                                   
                                   <div class="d-flex justify-end mt-1">
-                                      <v-btn x-small text color="#00A0E9" @click="$router.push({ name: 'profile', query: { action: 1 } })" class="px-0">
-                                          <v-icon left x-small>mdi-plus</v-icon> Gestionar
+                                      <v-btn x-small text color="#00A0E9" @click="handleEditAddress" class="px-0">
+                                          <v-icon left x-small>mdi-pencil</v-icon> Editar
                                       </v-btn>
                                   </div>
                               </div>
                               <div v-else>
-                                 <cart-address-form @address-added="HandlerAddressAdded" />
+                                 <cart-address-form ref="addressForm" @address-added="HandlerAddressAdded" />
                               </div>
                             </div>
                         </div>
@@ -448,9 +447,11 @@
                             </div>
                             <div class="d-flex justify-space-between mb-1" v-if="radioGroup === 1">
                                 <span class="grey--text text--darken-1 text-caption">Envío</span>
-                                <span class="font-weight-medium black--text text-caption">
+                                <span class="font-weight-medium black--text text-caption" style="text-align: right; max-width: 60%;">
                                     <span v-if="quote > 0">${{ quote | currency }}</span>
-                                    <span v-else class="green--text">Calculando...</span>
+                                    <span v-else-if="statusQuote && quote === 0" class="green--text">Gratis</span>
+                                    <span v-else-if="loadingCheckout" class="grey--text">Calculando opciones...</span>
+                                    <span v-else class="grey--text">A calcular en el paso de confirmación</span>
                                 </span>
                             </div>
                             <v-divider class="my-1"></v-divider>
@@ -466,6 +467,16 @@
                     <div v-if="errorGetQuoute" class="error--text text-center mt-2 caption" style="line-height: 1.2;">
                       No se pudo cotizar el envío. Verifica tu dirección.
                     </div>
+
+                    <v-alert
+                      v-if="radioGroup === 1 && quote === 0 && !loadingCheckout && !statusQuote"
+                      dense
+                      type="info"
+                      text
+                      class="mt-3 mb-0 caption d-flex align-center"
+                    >
+                      El costo de envío se calculará en el paso de confirmación.
+                    </v-alert>
 
                   </v-card-text>
                   <v-card-actions class="px-4 pb-4 pt-0 justify-space-between">
@@ -538,9 +549,26 @@
 
                       <v-divider class="my-2"></v-divider>
 
+                      <!-- Descuento o recargo -->
+                      <div class="d-flex justify-space-between mb-1" v-if="radioGroupTransfer === 0">
+                        <span class="text-caption green--text text--darken-2">Descuento Transferencia</span>
+                        <span class="text-caption font-weight-medium green--text text--darken-2">
+                          -${{ (totalPriceOnePayment(productCartState.shopping_cart_items) - totalPrice(productCartState.shopping_cart_items)) | currency }}
+                        </span>
+                      </div>
+                      
+                      <div class="d-flex justify-space-between mb-1" v-else-if="radioGroupDues === 0 && totalPrice(productCartState.shopping_cart_items) > totalPriceOnePayment(productCartState.shopping_cart_items)">
+                        <span class="text-caption grey--text text--darken-2">Plan de Cuotas</span>
+                        <span class="text-caption font-weight-medium grey--text text--darken-2">
+                          +${{ (totalPrice(productCartState.shopping_cart_items) - totalPriceOnePayment(productCartState.shopping_cart_items)) | currency }}
+                        </span>
+                      </div>
+
+                      <v-divider class="my-2" v-if="radioGroupTransfer === 0 || radioGroupDues === 0"></v-divider>
+
                       <!-- Total -->
                       <div class="d-flex justify-space-between">
-                        <span class="text-subtitle-2 font-weight-bold black--text">Total</span>
+                        <span class="text-subtitle-2 font-weight-bold black--text">Total a pagar</span>
                         <span class="text-subtitle-1 font-weight-bold" style="color: #00A0E9;">
                           ${{ (totalPrice(productCartState.shopping_cart_items) + quote) | currency }}
                         </span>
@@ -700,7 +728,7 @@ export default {
       showSelectDelivery: false,
       showAddressChange: false,
       depositElements: {
-        FWL01: "CABA",
+        FWL01: "CABA: Vieytes 1155/1149 Barracas. Lunes a Viernes de 9 a 13 hs y de 14 a 17 hs. (Solo retiro, presentar DNI)",
         ROS01: "Rosario",
         CBA01: "Córdoba Capital"
       },
@@ -917,6 +945,17 @@ export default {
   },
 
   methods: {
+    handleEditAddress() {
+      if (this.userAddress && this.userAddress.length === 1 && this.userAddress[0].id === 'guest') {
+        this.userAddress = [];
+        this.idAddress = null;
+        this.statusQuote = false;
+        this.quote = 0;
+      } else {
+        this.$router.push({ name: 'profile', query: { action: 1 } });
+      }
+    },
+
     goToNextFromCart() {
       // Siempre ir a Pago, independientemente de si está logueado
       this.e1 = this.paymentStep;
@@ -928,6 +967,12 @@ export default {
     },
 
     async handleDeliveryNext() {
+      // Validar y guardar la dirección si el formulario está visible
+      if (this.radioGroup == 1 && (!this.userAddress || this.userAddress.length === 0) && this.$refs.addressForm) {
+        const isValid = await this.$refs.addressForm.validateAndSave();
+        if (!isValid) return; 
+      }
+
       // Si el usuario no está logueado, ir al paso de Cuenta (registro)
       // Si está logueado, ir al paso Checkout directamente (saltea Cuenta)
       if (!this.isAuth) {
@@ -1674,7 +1719,6 @@ export default {
           // La cotización se hará después del registro
           this.statusQuote = true;
           this.quote = 0; // Se calculará después del registro
-          this.$snotify.info("El costo de envío se calculará al finalizar el registro", "Info");
         }
       }
     },

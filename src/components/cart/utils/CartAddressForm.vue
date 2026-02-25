@@ -63,11 +63,7 @@
             </ValidationProvider>
           </v-col>
         </v-row>
-        <div class="d-flex justify-end mt-4">
-          <v-btn :loading="loading" @click="passes(HandlerRegister)" color="#00A0E9" dark rounded class="text-capitalize">
-            Guardar Dirección
-          </v-btn>
-        </div>
+
       </v-card-text>
     </v-card>
   </ValidationObserver>
@@ -146,6 +142,12 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    async validateAndSave() {
+      const isValid = await this.$refs.obs.validate();
+      if (!isValid) return false;
+      await this.HandlerRegister();
+      return true;
     },
   },
 };
