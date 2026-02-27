@@ -369,7 +369,7 @@
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="font-weight-bold text-body-2 black--text">Envío a domicilio</div>
-                                        <div class="caption grey--text" style="line-height: 1;">Calculado</div>
+                                        <div class="caption grey--text" style="line-height: 1;">A calcular al finalizar</div>
                                     </div>
                                     <v-radio :value="1" color="#00A0E9" class="ma-0"></v-radio>
                                 </v-card>
@@ -449,9 +449,8 @@
                                 <span class="grey--text text--darken-1 text-caption">Envío</span>
                                 <span class="font-weight-medium black--text text-caption" style="text-align: right; max-width: 60%;">
                                     <span v-if="quote > 0">${{ quote | currency }}</span>
-                                    <span v-else-if="statusQuote && quote === 0" class="green--text">Gratis</span>
                                     <span v-else-if="loadingCheckout" class="grey--text">Calculando opciones...</span>
-                                    <span v-else class="grey--text">A calcular en el paso de confirmación</span>
+                                    <span v-else class="grey--text">A calcular al finalizar</span>
                                 </span>
                             </div>
                             <v-divider class="my-1"></v-divider>
@@ -475,7 +474,7 @@
                       text
                       class="mt-3 mb-0 caption d-flex align-center"
                     >
-                      El costo de envío se calculará en el paso de confirmación.
+                      El costo de envío se calculará al finalizar.
                     </v-alert>
 
                   </v-card-text>
@@ -544,7 +543,7 @@
                       <div class="d-flex justify-space-between mb-1" v-if="radioGroup === 1">
                         <span class="text-caption grey--text">Costo de envío</span>
                         <span class="text-caption font-weight-medium" v-if="quote > 0">${{ quote | currency }}</span>
-                        <span class="text-caption grey--text" v-else>Calculando...</span>
+                        <span class="text-caption grey--text" v-else>A calcular al finalizar</span>
                       </div>
 
                       <v-divider class="my-2"></v-divider>
