@@ -263,6 +263,8 @@
                           <v-icon :color="radioGroupDues === 0 ? '#00A0E9' : 'grey lighten-1'" class="mb-1">mdi-credit-card-clock-outline</v-icon>
                           <span class="text-body-2 font-weight-bold black--text">6 Cuotas</span>
                           <span class="caption grey--text text-center" style="font-size: 0.7rem;">Fijas</span>
+                                                     <span class="text-body-2 font-weight-bold black--text text-center" style="line-height: 1.1;"><span style="font-size: 0.6rem; color: #666">(vía MercadoPago)</span></span>
+
                         </v-card>
                       </v-col>
 
@@ -275,7 +277,7 @@
                           ripple
                         >
                            <v-icon :color="radioGroupCredit === 0 ? '#00A0E9' : 'grey lighten-1'" class="mb-1">mdi-credit-card-outline</v-icon>
-                           <span class="text-body-2 font-weight-bold black--text text-center" style="line-height: 1.1;">Tarjetas / Dinero <br><span style="font-size: 0.6rem; color: #666">(vía MercadoPago)</span></span>
+                           <span class="text-body-2 font-weight-bold black--text text-center" style="line-height: 1.1;">Tarjetas / Dinero en cuenta <br><span style="font-size: 0.6rem; color: #666">(vía Mercado Pago)</span></span>
                            <span class="caption grey--text text-center" style="font-size: 0.7rem;"></span>
                         </v-card>
                       </v-col>
@@ -369,7 +371,7 @@
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="font-weight-bold text-body-2 black--text">Envío a domicilio</div>
-                                        <div class="caption grey--text" style="line-height: 1;">A calcular al finalizar</div>
+                                        <div class="caption grey--text" style="line-height: 1;">Calculado en el checkout</div>
                                     </div>
                                     <v-radio :value="1" color="#00A0E9" class="ma-0"></v-radio>
                                 </v-card>
@@ -450,7 +452,7 @@
                                 <span class="font-weight-medium black--text text-caption" style="text-align: right; max-width: 60%;">
                                     <span v-if="quote > 0">${{ quote | currency }}</span>
                                     <span v-else-if="loadingCheckout" class="grey--text">Calculando opciones...</span>
-                                    <span v-else class="grey--text">A calcular al finalizar</span>
+                                    <span v-else class="grey--text">Calculado en el checkout</span>
                                 </span>
                             </div>
                             <v-divider class="my-1"></v-divider>
@@ -543,7 +545,7 @@
                       <div class="d-flex justify-space-between mb-1" v-if="radioGroup === 1">
                         <span class="text-caption grey--text">Costo de envío</span>
                         <span class="text-caption font-weight-medium" v-if="quote > 0">${{ quote | currency }}</span>
-                        <span class="text-caption grey--text" v-else>A calcular al finalizar</span>
+                        <span class="text-caption grey--text" v-else>Calculado en el checkout</span>
                       </div>
 
                       <v-divider class="my-2"></v-divider>
@@ -581,7 +583,7 @@
                         </span>
                         <div class="text-caption grey--text mt-1" style="font-size: 0.7rem;">
                           <v-icon x-small color="grey">mdi-shield-check</v-icon>
-                          Procesado por MercadoPago
+                          Procesado por Mercado Pago
                         </div>
                       </div>
                     </v-card-text>
