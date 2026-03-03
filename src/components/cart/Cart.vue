@@ -525,7 +525,7 @@
                         <div v-for="item in (productCartState.shopping_cart_items || [])" :key="item.id" class="mb-2">
                           <div class="d-flex justify-space-between">
                             <span class="text-caption grey--text text--darken-2">{{ item.publication?.keywords || 'Producto' }} x{{ item.original_quantity }}</span>
-                            <span class="text-caption font-weight-medium">${{ ((item.publication?.price?.pvp || 0) * item.original_quantity) | currency }}</span>
+                            <span class="text-caption font-weight-medium">${{ (getItemDisplayPrice(item) * item.original_quantity) | currency }}</span>
                           </div>
                           <div v-if="item.publication?.sku || item.publication?.ean" class="text-caption grey--text" style="font-size: 0.7rem;">
                             Modelo: {{ item.publication?.sku || item.publication?.ean || '-' }}
@@ -550,7 +550,7 @@
 
                       <v-divider class="my-2"></v-divider>
 
-                      <!-- Descuento o recargo -->
+                      <!-- Descuento -->
                       <div class="d-flex justify-space-between mb-1" v-if="radioGroupTransfer === 0">
                         <span class="text-caption green--text text--darken-2">Descuento Transferencia</span>
                         <span class="text-caption font-weight-medium green--text text--darken-2">
@@ -558,13 +558,6 @@
                         </span>
                       </div>
                       
-                      <div class="d-flex justify-space-between mb-1" v-else-if="radioGroupDues === 0 && totalPrice(productCartState.shopping_cart_items) > totalPriceOnePayment(productCartState.shopping_cart_items)">
-                        <span class="text-caption grey--text text--darken-2">Plan de Cuotas</span>
-                        <span class="text-caption font-weight-medium grey--text text--darken-2">
-                          +${{ (totalPrice(productCartState.shopping_cart_items) - totalPriceOnePayment(productCartState.shopping_cart_items)) | currency }}
-                        </span>
-                      </div>
-
                       <v-divider class="my-2" v-if="radioGroupTransfer === 0 || radioGroupDues === 0"></v-divider>
 
                       <!-- Total -->
@@ -1670,6 +1663,16 @@ export default {
         }, 0);
       }
       return priceTotal;
+    },
+
+    getItemDisplayPrice(item) {
+      if (!item || !item.publication || !item.publication.price) return 0;
+      if (this.radioGroupDues === 0) {
+        return item.publication.price.pvp_18_installments || item.publication.price.pvp || 0;
+      }
+      // For bank transfer, the discount is shown as a separate subtrahend, 
+      // so we use standard PVP for the unit-price display to keep it clear.
+      return item.publication.price.pvp || 0;
     },
 
     async goToEmailTransfer() {
