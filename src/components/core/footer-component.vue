@@ -596,7 +596,8 @@ export default {
     goToContact(name) {
       switch (name) {
         case "Contacto":
-          const url = process.env.VUE_APP_CHECKOUT;
+          const envCheckout = process.env.VUE_APP_CHECKOUT;
+          const url = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
           window.open(`${url}/contact`);
           break;
         case "Foro":

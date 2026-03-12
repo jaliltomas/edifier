@@ -723,7 +723,8 @@ export default {
     },
 
     goToContact() {
-      const url = process.env.VUE_APP_CHECKOUT;
+      const envCheckout = process.env.VUE_APP_CHECKOUT;
+      const url = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
       location.href = `${url}/contact`;
     },
 
@@ -731,7 +732,9 @@ export default {
       if (url == "showRoom") {
         this.$router.push({ name: "showRoom" });
       } else {
-        location.href = url;
+        const envCheckout = process.env.VUE_APP_CHECKOUT;
+        const baseUrl = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
+        location.href = `${baseUrl}/${url}`;
       }
     },
 

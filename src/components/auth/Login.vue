@@ -169,7 +169,7 @@ export default {
         this.loading_verification = true;
         const request = {
           email: this.email_verifiction,
-          url_base: process.env.VUE_APP_CHECKOUT,
+          url_base: (process.env.VUE_APP_CHECKOUT && process.env.VUE_APP_CHECKOUT !== 'undefined') ? process.env.VUE_APP_CHECKOUT : window.location.origin,
           store_id: 3,
         };
         const response = await this.$store.dispatch(

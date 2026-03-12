@@ -62,6 +62,42 @@ export default {
   },
 
   created() {
+    // Intentar romper el iframe si estamos dentro del popup de Mercado Pago
+    if (window !== window.top || window.name === 'MP-Checkout') {
+      console.log("Detectado iframe/popup, intentando cerrar modal y romper breakout...");
+      
+      const status = this.$route.query?.status;
+      const resultData = {
+        type: "mp-checkout-result",
+        success: status === 'approved' || status === 'pending',
+        query: this.$route.query
+      };
+
+      // 1. Notificar al padre (Cart.vue) para que cierre el diálogo de forma controlada
+      try {
+        window.parent.postMessage(resultData, "*");
+      } catch (e) {
+        console.error("Error enviando postMessage:", e);
+      }
+      
+      // 2. Fallback agresivo: Forzar a la ventana superior a navegar a esta misma URL
+      // Esto "rompe" el iframe y carga la página de notificación en la ventana principal
+      setTimeout(() => {
+        try {
+          if (window.top && window.top.location) {
+            window.top.location.href = window.location.href;
+          }
+        } catch (e) {
+          // Si hay error de seguridad al acceder a window.top, lo dejamos pasar
+          // ya que el postMessage es la vía principal.
+          console.warn("No se pudo forzar window.top.location:", e);
+        }
+      }, 300);
+      
+      // Detener ejecución si estamos en iframe para evitar loops de carga
+      return;
+    }
+
     if (this.$route.query?.preference_id) {
       this.HandlerGetAutorize();
     }

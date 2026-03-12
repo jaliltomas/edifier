@@ -558,7 +558,6 @@
                         </span>
                       </div>
                       
-                      <v-divider class="my-2" v-if="radioGroupTransfer === 0 || radioGroupDues === 0"></v-divider>
 
                       <!-- Total -->
                       <div class="d-flex justify-space-between">
@@ -1023,7 +1022,7 @@ export default {
         this.loading_verification = true;
         const request = {
           email: this.email_verifiction,
-          url_base: process.env.VUE_APP_CHECKOUT,
+          url_base: process.env.VUE_APP_CHECKOUT || window.location.origin,
           store_id: 3
         };
         await this.$store.dispatch("auth/RECOVERY_PASSWORD", request);
@@ -1337,11 +1336,15 @@ export default {
         }
 
         this.loadingCheckout = true;
+        const envCheckout = process.env.VUE_APP_CHECKOUT;
+        const baseUrl = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
+        console.log(">>> HandlerCheckout - baseUrl:", baseUrl);
+        
         const request = {
           shopping_cart_id: this.productCartState.id,
-          route_success: `${process.env.VUE_APP_CHECKOUT}/checkout_notification`,
-          route_failure: `${process.env.VUE_APP_CHECKOUT}/checkout_notification`,
-          route_pending: `${process.env.VUE_APP_CHECKOUT}/checkout_notification`,
+          route_success: `${baseUrl}/checkout_notification`,
+          route_failure: `${baseUrl}/checkout_notification`,
+          route_pending: `${baseUrl}/checkout_notification`,
           store_pickup: this.radioGroup == 0 ? true : false,
           addresse_id:
             this.radioGroup == 1
@@ -1359,6 +1362,11 @@ export default {
           "products/CHECKOUT_DO",
           request
         );
+        console.log(">>> HandlerCheckout - response:", response);
+        
+        if (!response.data || !response.data.data || !response.data.data.url) {
+          throw new Error("La respuesta del servidor no contiene una URL de pago válida.");
+        }
         
         // En mobile, abrir en nueva ventana para permitir que MercadoPago redirija a la app
         if (this.isMobile) {
@@ -1384,7 +1392,8 @@ export default {
           this.alertPerfil = error.response.data.error.details;
           this.showSelectDelivery = !this.showSelectDelivery;
         } else {
-            console.log(error);
+          console.error(">>> Error en HandlerCheckout:", error);
+          this.$snotify.error(error.message || "Error al iniciar el pago", "Error");
         }
       } finally {
         this.loadingCheckout = false;
@@ -1392,7 +1401,6 @@ export default {
     },
 
     handleCheckoutMessage(event) {
-      if (event.origin !== window.location.origin) return;
       const data = event.data || {};
       if (data.type === "mp-checkout-result") {
         if (data.success) {
