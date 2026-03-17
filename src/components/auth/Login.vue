@@ -127,6 +127,7 @@ import InformationComponent from "./AuthUtils/InformationComponent.vue";
 import loginCardComponent from "./AuthUtils/loginCardComponent.vue";
 import RegisterCardComponent from "./AuthUtils/RegisterCardComponent.vue";
 import VerificationAccountComponet from "./AuthUtils/Dialogs/VerificationAccountComponet.vue";
+import { buildCheckoutUrl } from "../../utils/checkout";
 export default {
   components: {
     "information-component": InformationComponent,
@@ -169,7 +170,7 @@ export default {
         this.loading_verification = true;
         const request = {
           email: this.email_verifiction,
-          url_base: (process.env.VUE_APP_CHECKOUT && process.env.VUE_APP_CHECKOUT !== 'undefined') ? process.env.VUE_APP_CHECKOUT : window.location.origin,
+          url_base: buildCheckoutUrl(),
           store_id: 3,
         };
         const response = await this.$store.dispatch(

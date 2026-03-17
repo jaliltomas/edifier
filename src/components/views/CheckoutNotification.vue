@@ -105,6 +105,14 @@ export default {
   },
 
   methods: {
+    postMessageToParent(payload) {
+      try {
+        window.parent?.postMessage(payload, "*");
+      } catch (error) {
+        console.log("checkout-notification-postmessage", error);
+      }
+    },
+
     async HandlerGetAutorize() {
       try {
         this.loadingAutorize = true;
@@ -130,6 +138,10 @@ export default {
           this.showMPError(response.data);
         }
       } catch (error) {
+        this.postMessageToParent({
+          type: "checkout-error",
+          query: this.$route.query
+        });
         this.notifyParent("error");
         Swal.fire({
           width: 550,
@@ -247,11 +259,7 @@ export default {
       }
 
       // PostMessage para comunicación con iframe (Chrome/Windows/Android)
-      try {
-        window.parent?.postMessage(resultData, window.location.origin);
-      } catch (error) {
-        console.log("mp-checkout-result-notify", error);
-      }
+      this.postMessageToParent(resultData);
 
       // Si estamos en una ventana abierta con window.open, intentar cerrarla después de mostrar el resultado
       // Solo si fue abierta desde otra ventana y el pago fue exitoso

@@ -60,9 +60,40 @@ export default {
       return this.$store.getters["activeSearchValue"];
     },
   },
+  watch: {
+    $route() {
+      this.notifyEmbeddedNavigation();
+    },
+  },
+  mounted() {
+    this.notifyEmbeddedNavigation();
+  },
   methods: {
     activeSearchFun() {
       this.$store.commit("activeSearch");
+    },
+
+    notifyEmbeddedNavigation() {
+      if (window === window.top) {
+        return;
+      }
+
+      if (this.$route.name === "checkout_notifiction") {
+        return;
+      }
+
+      try {
+        window.parent.postMessage(
+          {
+            type: "embedded-store-navigation",
+            href: window.location.href,
+            routeName: this.$route.name,
+          },
+          "*"
+        );
+      } catch (error) {
+        console.log("embedded-store-navigation", error);
+      }
     },
 
     async searchProduct() {

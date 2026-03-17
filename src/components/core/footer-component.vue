@@ -467,6 +467,8 @@
 </template>
 
 <script>
+import { buildCheckoutUrl } from "../../utils/checkout";
+
 export default {
   data() {
     return {
@@ -596,9 +598,7 @@ export default {
     goToContact(name) {
       switch (name) {
         case "Contacto":
-          const envCheckout = process.env.VUE_APP_CHECKOUT;
-          const url = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
-          window.open(`${url}/contact`);
+          window.open(buildCheckoutUrl("contact"));
           break;
         case "Foro":
           window.open("http://www.edifierla.com/foro-latam/");

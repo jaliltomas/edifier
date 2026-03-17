@@ -21,7 +21,7 @@
             color="#00A0E9"
             class="py-2"
           >
-            <span :class="{'font-weight-bold text-primary': e1 === paymentStep}" style="font-size: 0.8rem;">Pago</span>
+            <span :class="{'font-weight-bold text-primary': e1 === paymentStep}" style="font-size: 0.8rem;">Forma de pago</span>
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step
@@ -648,8 +648,10 @@
             <div class="checkout-frame-wrapper">
               <iframe
                 v-if="checkoutUrl"
+                ref="checkoutFrame"
                 class="checkout-frame"
                 :src="checkoutUrl"
+                @load="handleCheckoutFrameLoad"
                 frameborder="0"
                 allowfullscreen
                 allow="payment; geolocation; microphone; camera; midi; encrypted-media"
@@ -684,6 +686,10 @@ import CartAddressForm from "./utils/CartAddressForm.vue";
 import CartProfileForm from "./utils/CartProfileForm.vue";
 import LoginCardComponent from "../auth/AuthUtils/loginCardComponent.vue";
 import RegisterCardComponent from "../auth/AuthUtils/RegisterCardComponent.vue";
+import {
+  buildCheckoutUrl,
+  buildMercadoPagoReturnConfig
+} from "../../utils/checkout";
 
 export default {
   components: {
@@ -756,6 +762,8 @@ export default {
       // Embedded checkout
       checkoutDialog: false,
       checkoutUrl: "",
+      lastCheckoutFrameUrl: "",
+      checkoutFrameCrossOriginLogged: false,
 
       // Inline auth flow
       showLoginCard: false,  // Mostrar registro directo en checkout
@@ -1022,7 +1030,7 @@ export default {
         this.loading_verification = true;
         const request = {
           email: this.email_verifiction,
-          url_base: process.env.VUE_APP_CHECKOUT || window.location.origin,
+          url_base: buildCheckoutUrl(),
           store_id: 3
         };
         await this.$store.dispatch("auth/RECOVERY_PASSWORD", request);
@@ -1336,15 +1344,18 @@ export default {
         }
 
         this.loadingCheckout = true;
-        const envCheckout = process.env.VUE_APP_CHECKOUT;
-        const baseUrl = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
+        const { notificationUrl, autoReturn, backUrls } =
+          buildMercadoPagoReturnConfig();
+        const baseUrl = buildCheckoutUrl();
         console.log(">>> HandlerCheckout - baseUrl:", baseUrl);
         
         const request = {
           shopping_cart_id: this.productCartState.id,
-          route_success: `${baseUrl}/checkout_notification`,
-          route_failure: `${baseUrl}/checkout_notification`,
-          route_pending: `${baseUrl}/checkout_notification`,
+          route_success: notificationUrl,
+          route_failure: notificationUrl,
+          route_pending: notificationUrl,
+          auto_return: autoReturn,
+          back_urls: backUrls,
           store_pickup: this.radioGroup == 0 ? true : false,
           addresse_id:
             this.radioGroup == 1
@@ -1378,6 +1389,7 @@ export default {
           // En desktop, usar el modal con iframe
           this.checkoutUrl = response.data.data.url;
           this.checkoutDialog = true;
+          this.startCheckoutPolling();
         }
 
       } catch (error) {
@@ -1393,7 +1405,15 @@ export default {
           this.showSelectDelivery = !this.showSelectDelivery;
         } else {
           console.error(">>> Error en HandlerCheckout:", error);
-          this.$snotify.error(error.message || "Error al iniciar el pago", "Error");
+          console.error(
+            ">>> Error en HandlerCheckout - response:",
+            error.response?.data
+          );
+          const backendMessage =
+            error.response?.data?.error?.err_message ||
+            error.response?.data?.error?.message ||
+            error.message;
+          this.$snotify.error(backendMessage || "Error al iniciar el pago", "Error");
         }
       } finally {
         this.loadingCheckout = false;
@@ -1402,17 +1422,79 @@ export default {
 
     handleCheckoutMessage(event) {
       const data = event.data || {};
+      if (data.type === "embedded-store-navigation") {
+        console.log("[checkout iframe] embedded navigation:", data.href);
+        this.closeCheckoutDialog();
+        return;
+      }
+
+      if (data.type === "checkout-error") {
+        console.log("[checkout iframe] checkout error");
+        this.closeCheckoutDialog();
+        return;
+      }
+
       if (data.type === "mp-checkout-result") {
         if (data.success) {
           this.$store.commit("cart/CLEAN_CART");
         }
-        this.checkoutDialog = false;
-        this.checkoutUrl = "";
+        this.closeCheckoutDialog();
         if (data.query) {
           this.$router.push({
             name: "checkout_notifiction",
             query: data.query
           });
+        }
+      }
+    },
+
+    handleCheckoutFrameLoad() {
+      this.inspectCheckoutFrame();
+    },
+
+    inspectCheckoutFrame() {
+      if (!this.checkoutDialog) {
+        return;
+      }
+
+      const iframe = this.$refs.checkoutFrame;
+      if (!iframe || !iframe.contentWindow) {
+        return;
+      }
+
+      try {
+        const iframeUrl = iframe.contentWindow.location.href;
+        if (!iframeUrl || iframeUrl === "about:blank") {
+          return;
+        }
+
+        if (iframeUrl !== this.lastCheckoutFrameUrl) {
+          console.log("[checkout iframe] url:", iframeUrl);
+          this.lastCheckoutFrameUrl = iframeUrl;
+          this.checkoutFrameCrossOriginLogged = false;
+        }
+
+        if (/mercadopago/i.test(iframeUrl)) {
+          return;
+        }
+
+        const iframeLocation = new URL(iframeUrl);
+        const nextUrl =
+          `${iframeLocation.pathname}${iframeLocation.search}${iframeLocation.hash}`;
+        const currentUrl =
+          `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+        this.closeCheckoutDialog();
+
+        if (nextUrl !== currentUrl) {
+          window.location.href = iframeUrl;
+        }
+      } catch (error) {
+        if (!this.checkoutFrameCrossOriginLogged) {
+          console.log(
+            "[checkout iframe] cross-origin navigation; current URL is not readable"
+          );
+          this.checkoutFrameCrossOriginLogged = true;
         }
       }
     },
@@ -1446,8 +1528,14 @@ export default {
     },
 
     closeCheckoutDialog() {
+      if (this.checkoutPollInterval) {
+        clearInterval(this.checkoutPollInterval);
+        this.checkoutPollInterval = null;
+      }
       this.checkoutDialog = false;
       this.checkoutUrl = "";
+      this.lastCheckoutFrameUrl = "";
+      this.checkoutFrameCrossOriginLogged = false;
     },
 
     HandlerCloseAcceptProduct() {
@@ -1796,9 +1884,12 @@ export default {
       
       // Poll cada 2 segundos para verificar si el checkout se completó
       this.checkoutPollInterval = setInterval(() => {
+        this.inspectCheckoutFrame();
+
         const checkoutResult = localStorage.getItem('checkout_completed');
         if (checkoutResult) {
           clearInterval(this.checkoutPollInterval);
+          this.checkoutPollInterval = null;
           const result = JSON.parse(checkoutResult);
           localStorage.removeItem('checkout_completed');
           localStorage.removeItem('pending_checkout_cart_id');
@@ -1814,12 +1905,13 @@ export default {
             query: result.query
           });
         }
-      }, 2000);
+      }, 500);
       
       // Detener el polling después de 10 minutos (por si el usuario abandona)
       setTimeout(() => {
         if (this.checkoutPollInterval) {
           clearInterval(this.checkoutPollInterval);
+          this.checkoutPollInterval = null;
           localStorage.removeItem('pending_checkout_cart_id');
         }
       }, 600000);

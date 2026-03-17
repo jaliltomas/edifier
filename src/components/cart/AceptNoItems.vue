@@ -106,6 +106,8 @@
 </template>
 
 <script>
+import { buildMercadoPagoReturnConfig } from "../../utils/checkout";
+
 export default {
   props: {
     data: {
@@ -232,11 +234,15 @@ export default {
     async HandlerCheckout(shopping_cart_id) {
       try {
         this.loadingCart = true;
+        const { notificationUrl, autoReturn, backUrls } =
+          buildMercadoPagoReturnConfig();
         const request = {
           shopping_cart_id: shopping_cart_id,
-          route_success: "https://multimarca.flextd.com/checkout_notification",
-          route_failure: "https://multimarca.flextd.com/checkout_notification",
-          route_pending: "https://multimarca.flextd.com/checkout_notification",
+          route_success: notificationUrl,
+          route_failure: notificationUrl,
+          route_pending: notificationUrl,
+          auto_return: autoReturn,
+          back_urls: backUrls,
           store_pickup: this.pickup,
           addresse_id: this.address,
           warehouse_id: "",

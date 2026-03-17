@@ -478,6 +478,8 @@
   </v-container>
 </template>
 <script>
+import { buildCheckoutUrl } from "../../utils/checkout";
+
 export default {
   data() {
     return {
@@ -723,18 +725,14 @@ export default {
     },
 
     goToContact() {
-      const envCheckout = process.env.VUE_APP_CHECKOUT;
-      const url = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
-      location.href = `${url}/contact`;
+      location.href = buildCheckoutUrl("contact");
     },
 
     goToMenu(url) {
       if (url == "showRoom") {
         this.$router.push({ name: "showRoom" });
       } else {
-        const envCheckout = process.env.VUE_APP_CHECKOUT;
-        const baseUrl = (envCheckout && envCheckout !== 'undefined') ? envCheckout : window.location.origin;
-        location.href = `${baseUrl}/${url}`;
+        location.href = buildCheckoutUrl(url);
       }
     },
 
