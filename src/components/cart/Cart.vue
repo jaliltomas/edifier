@@ -1439,7 +1439,7 @@ export default {
           this.$store.commit("cart/CLEAN_CART");
         }
         this.closeCheckoutDialog();
-        if (data.query) {
+        if (data.success && data.query) {
           this.$router.push({
             name: "checkout_notifiction",
             query: data.query

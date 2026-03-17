@@ -52,49 +52,26 @@
 
 <script>
 import Swal from "sweetalert2";
+
 export default {
   data() {
     return {
       loadingAutorize: false,
       isValid: false,
-      messageNotification: "",
+      messageNotification: ""
     };
   },
 
   created() {
-    // Intentar romper el iframe si estamos dentro del popup de Mercado Pago
-    if (window !== window.top || window.name === 'MP-Checkout') {
-      console.log("Detectado iframe/popup, intentando cerrar modal y romper breakout...");
-      
+    if (window !== window.top || window.name === "MP-Checkout") {
       const status = this.$route.query?.status;
       const resultData = {
         type: "mp-checkout-result",
-        success: status === 'approved' || status === 'pending',
+        success: status === "approved" || status === "pending",
         query: this.$route.query
       };
 
-      // 1. Notificar al padre (Cart.vue) para que cierre el diálogo de forma controlada
-      try {
-        window.parent.postMessage(resultData, "*");
-      } catch (e) {
-        console.error("Error enviando postMessage:", e);
-      }
-      
-      // 2. Fallback agresivo: Forzar a la ventana superior a navegar a esta misma URL
-      // Esto "rompe" el iframe y carga la página de notificación en la ventana principal
-      setTimeout(() => {
-        try {
-          if (window.top && window.top.location) {
-            window.top.location.href = window.location.href;
-          }
-        } catch (e) {
-          // Si hay error de seguridad al acceder a window.top, lo dejamos pasar
-          // ya que el postMessage es la vía principal.
-          console.warn("No se pudo forzar window.top.location:", e);
-        }
-      }, 300);
-      
-      // Detener ejecución si estamos en iframe para evitar loops de carga
+      this.postMessageToParent(resultData);
       return;
     }
 
@@ -122,16 +99,13 @@ export default {
           request
         );
 
-
-
         if (response.data.message == "approved") {
           this.isValid = true;
           this.messageNotification =
-            "<p>Enviamos un email con la factura y detalles de la operación</p><p style='margin-top:5px'>En 24hs hábiles vas a recibir un correo con los datos de envío.</p>";
+            "<p>Enviamos un email con la factura y detalles de la operacion</p><p style='margin-top:5px'>En 24hs habiles vas a recibir un correo con los datos de envio.</p>";
           this.$store.commit("cart/CLEAN_CART");
-          // Asegurar limpieza completa de localStorage
-          localStorage.removeItem('guest_cart');
-          localStorage.removeItem('pending_checkout_cart_id');
+          localStorage.removeItem("guest_cart");
+          localStorage.removeItem("pending_checkout_cart_id");
           this.notifyParent("approved");
         } else {
           this.notifyParent(response.data.message);
@@ -146,16 +120,17 @@ export default {
         Swal.fire({
           width: 550,
           icon: "warning",
-          title: "¡Oh Oh ha ocurrido un error!",
+          title: "Oh Oh ha ocurrido un error!",
           html: "<p>Ha ocurrido un error con tu compra por favor intenta de nuevo</p>",
           showConfirmButton: true,
           confirmButtonColor: "#80c35d",
-          confirmButtonText: "Oki doki",
+          confirmButtonText: "Oki doki"
         });
       } finally {
         this.loadingAutorize = false;
       }
     },
+
     showMPError(response) {
       let messageTitle = "";
       let messageBody = "";
@@ -168,45 +143,45 @@ export default {
         case "pending_contingency":
           messageTitle = "Pago pendiente";
           messageBody = `<p>Estamos procesando tu pago.</p>
-          <p>No te preocupes, menos de 2 días hábiles te avisaremos por e-mail si se acreditó.</p>`;
+          <p>No te preocupes, menos de 2 dias habiles te avisaremos por e-mail si se acredito.</p>`;
           break;
         case "pending_review_manual":
           messageTitle = "Pago pendiente";
           messageBody = `<p>Estamos procesando tu pago.</p>
-          <p>No te preocupes, menos de 2 días hábiles te avisaremos por e-mail si se acreditó o si necesitamos más información.</p>`;
+          <p>No te preocupes, menos de 2 dias habiles te avisaremos por e-mail si se acredito o si necesitamos mas informacion.</p>`;
           break;
         case "cc_rejected_bad_filled_card_number":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>Revisa el número de tarjeta.</p>`;
+          messageBody = "<p>Revisa el numero de tarjeta.</p>";
           break;
         case "cc_rejected_bad_filled_date":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>Revisa la fecha de vencimiento.</p>`;
+          messageBody = "<p>Revisa la fecha de vencimiento.</p>";
           break;
         case "cc_rejected_bad_filled_other":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>Revisa los datos.</p>`;
+          messageBody = "<p>Revisa los datos.</p>";
           break;
         case "cc_rejected_bad_filled_security_code":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>Revisa el código de seguridad de la tarjeta.</p>`;
+          messageBody = "<p>Revisa el codigo de seguridad de la tarjeta.</p>";
           break;
         case "cc_rejected_blacklist":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>No pudimos procesar tu pago.</p>`;
+          messageBody = "<p>No pudimos procesar tu pago.</p>";
           break;
         case "cc_rejected_call_for_authorize":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>Debes autorizar ante el metodo de pago.</p>`;
+          messageBody = "<p>Debes autorizar ante el metodo de pago.</p>";
           break;
         case "cc_rejected_card_disabled":
           messageTitle = "Pago Rechazado.";
           messageBody = `<p>Llama a tu metodo de pago para activar tu tarjeta o usa otro medio de pago.</p>
-          <p>El teléfono está al dorso de tu tarjeta.</p>`;
+          <p>El telefono esta al dorso de tu tarjeta.</p>`;
           break;
         case "cc_rejected_card_error":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>No pudimos procesar tu pago.</p>`;
+          messageBody = "<p>No pudimos procesar tu pago.</p>";
           break;
         case "cc_rejected_duplicated_payment":
           messageTitle = "Pago Rechazado.";
@@ -225,12 +200,12 @@ export default {
           break;
         case "cc_rejected_max_attempts":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>Llegaste al límite de intentos permitidos.</p>
+          messageBody = `<p>Llegaste al limite de intentos permitidos.</p>
           <p>Elige otra tarjeta u otro medio de pago.</p>`;
           break;
         case "cc_rejected_other_reason":
           messageTitle = "Pago Rechazado.";
-          messageBody = `<p>No seprocesó el pago.</p>`;
+          messageBody = "<p>No se proceso el pago.</p>";
           break;
       }
       Swal.fire({
@@ -239,7 +214,7 @@ export default {
         title: messageTitle,
         html: messageBody,
         showConfirmButton: true,
-        confirmButtonColor: "#80c35d",
+        confirmButtonColor: "#80c35d"
       });
     },
 
@@ -251,25 +226,19 @@ export default {
         query: this.$route.query
       };
 
-      // Guardar en localStorage para comunicación entre pestañas (Safari/iOS)
       try {
-        localStorage.setItem('checkout_completed', JSON.stringify(resultData));
-      } catch (e) {
-        console.log("localStorage error", e);
+        localStorage.setItem("checkout_completed", JSON.stringify(resultData));
+      } catch (error) {
+        console.log("localStorage error", error);
       }
 
-      // PostMessage para comunicación con iframe (Chrome/Windows/Android)
       this.postMessageToParent(resultData);
 
-      // Si estamos en una ventana abierta con window.open, intentar cerrarla después de mostrar el resultado
-      // Solo si fue abierta desde otra ventana y el pago fue exitoso
       if (status === "approved" && window.opener) {
-        setTimeout(() => {
-          // No cerrar automáticamente, dejar que el usuario vea el mensaje
-        }, 2000);
+        setTimeout(() => {}, 2000);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
