@@ -263,7 +263,7 @@
                           <v-icon :color="radioGroupDues === 0 ? '#00A0E9' : 'grey lighten-1'" class="mb-1">mdi-credit-card-clock-outline</v-icon>
                           <span class="text-body-2 font-weight-bold black--text">6 Cuotas</span>
                           <span class="caption grey--text text-center" style="font-size: 0.7rem;">Fijas</span>
-                                                     <span class="text-body-2 font-weight-bold black--text text-center" style="line-height: 1.1;"><span style="font-size: 0.6rem; color: #666">(vía MercadoPago)</span></span>
+                                                     <span class="text-body-2 font-weight-bold black--text text-center" style="line-height: 1.1;"><span style="font-size: 0.6rem; color: #666">(vía Mercado Pago)</span></span>
 
                         </v-card>
                       </v-col>
