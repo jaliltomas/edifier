@@ -39,7 +39,7 @@
                   class="mx-0 cursor-pointer"
                   @click="
                     HandlerSocialLink(
-                      'https://www.youtube.com/channel/UCL3TSzB0rmeBxL0PMkPA18w'
+                      'https://www.youtube.com/@Edifier_Argentina'
                     )
                   "
                 >
@@ -425,7 +425,7 @@
       <div class="mt-10 background-footer">
         <v-container>
           <span style="color: #67696b">
-            © EDIFIER 2021 Todos los derechos reservados
+            © EDIFIER 2026 Todos los derechos reservados
             <span class="ml-md-15">Política de privacidad</span>
             <span
               style="cursor: pointer"
