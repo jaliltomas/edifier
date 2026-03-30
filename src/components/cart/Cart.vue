@@ -488,11 +488,7 @@
                       rounded
                       small
                       :loading="loadingCheckout"
-                      :disabled="
-                        radioGroup == null ||
-                        (radioGroup == 1 && (!guestHasAddress && !statusQuote || (isAuth && userAddress.length === 0) || errorGetQuoute)) ||
-                        (radioGroup == 0 && (canBuyWarehouse == null || !selectedWharehouse))
-                      "
+                      :disabled="isDeliveryNextDisabled"
                       @click="handleDeliveryNext()"
                       color="#14A7EB"
                       class="white--text px-6 shadow-blue text-capitalize font-weight-bold"
@@ -899,10 +895,28 @@ export default {
       return this.$store.getters['auth/HAS_API_TOKEN'];
     },
 
-    // Para guests, siempre consideramos que tienen dirección si completaron el formulario inline
-    guestHasAddress() {
-      // Si hay dirección seleccionada (idAddress) o si es retiro en tienda, consideramos que hay dirección
-      return this.radioGroup === 0 || (this.idAddress !== null && this.statusQuote);
+    showInlineAddressForm() {
+      return this.radioGroup === 1 && (!this.userAddress || this.userAddress.length === 0);
+    },
+
+    isDeliveryNextDisabled() {
+      if (this.radioGroup == null) {
+        return true;
+      }
+
+      if (this.radioGroup == 0) {
+        return this.canBuyWarehouse == null || !this.selectedWharehouse;
+      }
+
+      if (this.showInlineAddressForm) {
+        return false;
+      }
+
+      if (!this.idAddress) {
+        return true;
+      }
+
+      return (!this.freeShipping && !this.statusQuote) || this.errorGetQuoute;
     },
 
     // Datos de envío para pasar al formulario de registro (solo si eligió envío a domicilio)

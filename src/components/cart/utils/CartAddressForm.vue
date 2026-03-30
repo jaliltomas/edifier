@@ -132,6 +132,7 @@ export default {
         }
         
         this.$emit('address-added', addressData);
+        return true;
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status == 422) {
@@ -139,6 +140,7 @@ export default {
         } else {
           this.$snotify.error("Error al registrar la dirección", "Error.");
         }
+        return false;
       } finally {
         this.loading = false;
       }
@@ -146,8 +148,7 @@ export default {
     async validateAndSave() {
       const isValid = await this.$refs.obs.validate();
       if (!isValid) return false;
-      await this.HandlerRegister();
-      return true;
+      return await this.HandlerRegister();
     },
   },
 };
