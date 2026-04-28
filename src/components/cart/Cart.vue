@@ -692,6 +692,7 @@ import {
   buildItems,
   CURRENCY
 } from "../../utils/googleAnalytics";
+import { getStoredClickIds } from "../../utils/googleAdsAttribution";
 
 export default {
   components: {
@@ -1417,7 +1418,8 @@ export default {
           store_id: 3,
           payment_type: this.payments_type,
           default_installments: this.default_installments,
-          quote: this.radioGroup == 0 ? 0 : this.quote
+          quote: this.radioGroup == 0 ? 0 : this.quote,
+          google_ads: getStoredClickIds()
         };
 
         const response = await this.$store.dispatch(
@@ -1757,7 +1759,8 @@ export default {
           addresse_id: id,
           warehouse_id:
             this.radioGroup == 0 ? Number(this.selectedWharehouse) : null,
-          quote: this.radioGroup == 0 ? 0 : this.quote
+          quote: this.radioGroup == 0 ? 0 : this.quote,
+          google_ads: getStoredClickIds()
         };
 
         const response = await this.$store.dispatch(

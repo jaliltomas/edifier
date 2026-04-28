@@ -46,6 +46,7 @@
 <script>
 import NavComponent from "./components/core/nav-component";
 import FooterComponent from "./components/core/footer-component";
+import { captureClickIds } from "./utils/googleAdsAttribution";
 export default {
   components: {
     "nav-component": NavComponent,
@@ -66,6 +67,7 @@ export default {
     },
   },
   mounted() {
+    captureClickIds();
     this.notifyEmbeddedNavigation();
   },
   methods: {
