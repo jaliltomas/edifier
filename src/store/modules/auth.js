@@ -1,4 +1,5 @@
 import { users, store, product } from "../../services";
+import { initWithEmail } from "../../utils/metaPixel";
 
 const state = {
   token: null,
@@ -23,6 +24,11 @@ const mutations = {
     state.user = payload;
     localStorage.setItem('store_id', payload.store_id);
     localStorage.setItem('zipcode', payload.zipcode);
+    if (payload && payload.email && payload.email !== 'guest@edifier.com.ar') {
+      initWithEmail(payload.email).catch(err =>
+        console.warn('initWithEmail failed', err)
+      );
+    }
   },
 
   CLEAR_DATA: (state) => {

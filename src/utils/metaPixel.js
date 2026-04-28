@@ -69,12 +69,36 @@ function trackCustom(eventName, data) {
   }
 }
 
-function initWithEmail(email) {
+async function sha256Hex(text) {
+  const subtle =
+    (typeof globalThis !== 'undefined' &&
+      globalThis.crypto &&
+      globalThis.crypto.subtle) ||
+    null;
+  if (!subtle) return null;
+  try {
+    const buf = new TextEncoder().encode(text);
+    const digest = await subtle.digest('SHA-256', buf);
+    const bytes = new Uint8Array(digest);
+    let out = '';
+    for (let i = 0; i < bytes.length; i++) {
+      const h = bytes[i].toString(16);
+      out += h.length === 1 ? '0' + h : h;
+    }
+    return out;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function initWithEmail(email) {
   if (!fbqAvailable()) return;
   if (!email || typeof email !== 'string') return;
   const trimmed = email.trim().toLowerCase();
   if (!trimmed) return;
-  window.fbq('init', PIXEL_ID, { em: trimmed });
+  const em = await sha256Hex(trimmed);
+  if (!em) return;
+  window.fbq('init', PIXEL_ID, { em });
 }
 
 module.exports = {
@@ -85,8 +109,10 @@ module.exports = {
   trackStandard,
   trackCustom,
   initWithEmail,
+  sha256Hex,
 };
 module.exports.cleanPrice = cleanPrice;
 module.exports.trackStandard = trackStandard;
 module.exports.trackCustom = trackCustom;
 module.exports.initWithEmail = initWithEmail;
+module.exports.sha256Hex = sha256Hex;

@@ -3,9 +3,15 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { cleanPrice, trackStandard, trackCustom, initWithEmail } = require(
+const nodeCrypto = require('node:crypto');
+
+const { cleanPrice, trackStandard, trackCustom, initWithEmail, sha256Hex } = require(
   '../src/utils/metaPixel'
 );
+
+function expectedSha256(text) {
+  return nodeCrypto.createHash('sha256').update(text).digest('hex');
+}
 
 test('cleanPrice: argentine formatted strings', () => {
   assert.equal(cleanPrice('$178.490'), 178490);
@@ -60,7 +66,22 @@ function withFakeFbq(t, run) {
   const originalWindow = global.window;
   global.window = { fbq: (...args) => calls.push(args) };
   try {
-    run(calls);
+    return run(calls);
+  } finally {
+    if (originalWindow === undefined) {
+      delete global.window;
+    } else {
+      global.window = originalWindow;
+    }
+  }
+}
+
+async function withFakeFbqAsync(t, run) {
+  const calls = [];
+  const originalWindow = global.window;
+  global.window = { fbq: (...args) => calls.push(args) };
+  try {
+    await run(calls);
   } finally {
     if (originalWindow === undefined) {
       delete global.window;
@@ -124,20 +145,27 @@ test('trackCustom: omits payload arg when empty', () => {
   });
 });
 
-test('initWithEmail: lowercases and trims before sending advanced matching', () => {
-  withFakeFbq(null, calls => {
-    initWithEmail('  Foo@Example.COM  ');
-    assert.deepEqual(calls, [['init', '2190799084462246', { em: 'foo@example.com' }]]);
+test('sha256Hex: matches node:crypto for canonical inputs', async () => {
+  assert.equal(await sha256Hex('foo@example.com'), expectedSha256('foo@example.com'));
+  assert.equal(await sha256Hex(''), expectedSha256(''));
+});
+
+test('initWithEmail: lowercases, trims, and sha256-hashes before fbq init', async () => {
+  await withFakeFbqAsync(null, async calls => {
+    await initWithEmail('  Foo@Example.COM  ');
+    assert.deepEqual(calls, [
+      ['init', '2190799084462246', { em: expectedSha256('foo@example.com') }],
+    ]);
   });
 });
 
-test('initWithEmail: ignored when email is empty / invalid', () => {
-  withFakeFbq(null, calls => {
-    initWithEmail('');
-    initWithEmail(null);
-    initWithEmail(undefined);
-    initWithEmail('   ');
-    initWithEmail(123);
+test('initWithEmail: ignored when email is empty / invalid', async () => {
+  await withFakeFbqAsync(null, async calls => {
+    await initWithEmail('');
+    await initWithEmail(null);
+    await initWithEmail(undefined);
+    await initWithEmail('   ');
+    await initWithEmail(123);
     assert.deepEqual(calls, []);
   });
 });
