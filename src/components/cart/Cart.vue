@@ -686,6 +686,7 @@ import {
   buildCheckoutUrl,
   buildMercadoPagoReturnConfig
 } from "../../utils/checkout";
+import { cleanPrice, trackStandard, trackCustom } from "../../utils/metaPixel";
 
 export default {
   components: {
@@ -795,7 +796,7 @@ export default {
     if (this.isAuth) {
       this.HandlerGetAddress();
     }
-    window.fbq("trackCustom", "CartView");
+    this.HandlerTrackCartView();
   },
 
   mounted() {
@@ -1358,6 +1359,32 @@ export default {
         }
 
         this.loadingCheckout = true;
+
+        const items = this.productCartState?.shopping_cart_items || [];
+        const numItems = items.reduce(
+          (acc, it) => acc + (it.original_quantity || 0),
+          0
+        );
+        const contentIds = items
+          .map(it => it.publication_id || it.publication?.id)
+          .filter(Boolean)
+          .map(String);
+        const contents = items.map(it => ({
+          id: String(it.publication_id || it.publication?.id || ""),
+          quantity: it.original_quantity || 0
+        }));
+        const checkoutValue = cleanPrice(
+          (this.totalPrice(items) || this.totalAmount) +
+            (this.radioGroup === 1 ? this.quote : 0)
+        );
+        trackStandard("InitiateCheckout", {
+          value: checkoutValue,
+          num_items: numItems,
+          content_ids: contentIds,
+          content_type: "product",
+          contents
+        });
+
         const { notificationUrl, autoReturn, backUrls } =
           buildMercadoPagoReturnConfig();
         const baseUrl = buildCheckoutUrl();
@@ -1755,6 +1782,26 @@ export default {
         }, 0);
       }
       return priceTotal;
+    },
+
+    HandlerTrackCartView() {
+      const items = this.productCartState?.shopping_cart_items || [];
+      const numItems = items.reduce(
+        (acc, it) => acc + (it.original_quantity || 0),
+        0
+      );
+      const value = cleanPrice(this.totalPriceOnePayment(items));
+      const contentIds = items
+        .map(it => it.publication_id || it.publication?.id)
+        .filter(Boolean)
+        .map(String);
+      trackCustom("CartView", {
+        currency: "ARS",
+        value,
+        num_items: numItems,
+        content_ids: contentIds,
+        content_type: "product"
+      });
     },
 
     totalPrice(cart_items) {

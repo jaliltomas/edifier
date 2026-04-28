@@ -334,6 +334,7 @@ import ImageBackground from "./utils/ImageBackground";
 import ProductDetailsPrices from "./utils/products/ProductDetailsPrices";
 import { isValidUmbral } from "@/utils/validateUmbral.js";
 import AvailabilityList from "./utils/products/AvailabilityList.vue";
+import { cleanPrice, trackStandard, trackCustom } from "@/utils/metaPixel";
 
 export default {
   components: {
@@ -378,7 +379,7 @@ export default {
   },
 
   async created() {
-    window.fbq("trackCustom", "ProductDetailsView");
+    trackCustom("ProductDetailsView");
     this.HandlerGetProducts(this.id);
 
     if (this.isAuth) {
@@ -387,6 +388,21 @@ export default {
         "products/CHAZKI_VALIDATE"
       );
       this.responseChazki = responseChazki.data.data;
+    }
+  },
+
+  watch: {
+    dataProduct(newProduct) {
+      if (this._viewContentSent) return;
+      if (!newProduct || !newProduct.id) return;
+      this._viewContentSent = true;
+      const price = newProduct.price || {};
+      trackStandard("ViewContent", {
+        content_ids: [String(newProduct.id)],
+        content_type: "product",
+        content_name: newProduct.keywords || "",
+        value: cleanPrice(price.pvp)
+      });
     }
   },
 
@@ -636,6 +652,16 @@ export default {
         }
         
         this.$store.commit("cart/TOTAL_AMOUNT", { items: currentCart.shopping_cart_items });
+
+        const unitPrice = cleanPrice(this.dataProduct?.price?.pvp);
+        trackStandard("AddToCart", {
+          content_ids: [String(this.dataProduct.id)],
+          content_type: "product",
+          content_name: this.dataProduct.keywords || "",
+          contents: [{ id: String(this.dataProduct.id), quantity: this.quantity }],
+          value: unitPrice * this.quantity
+        });
+
         this.messageProductAdd = true;
         this.snackbar = true;
       } catch (error) {
