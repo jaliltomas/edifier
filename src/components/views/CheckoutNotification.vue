@@ -58,6 +58,7 @@ import {
   trackCustom,
   EDIFIER_STORE_ID
 } from "@/utils/metaPixel";
+import { pushEcommerce, CURRENCY } from "@/utils/googleAnalytics";
 
 export default {
   data() {
@@ -103,38 +104,73 @@ export default {
         const storeId = meta.store_id;
         if (storeId != null && Number(storeId) !== EDIFIER_STORE_ID) return;
 
-        const dedupKey = "meta_purchase_fired_" + String(paymentId);
-        try {
-          if (window.sessionStorage.getItem(dedupKey)) return;
-        } catch (e) {
-          // ignore storage errors
-        }
-
         const value = cleanPrice(meta.total_amount);
         if (!value) return;
 
-        const eventID = "purchase_" + String(paymentId);
-        const payload = {
-          value,
-          content_type: "product",
-          order_id: String(paymentId)
-        };
-        if (meta.external_reference) {
-          payload.external_reference = String(meta.external_reference);
-        }
-        if (Array.isArray(meta.content_ids) && meta.content_ids.length) {
-          payload.content_ids = meta.content_ids.map(String);
-        }
-        if (meta.num_items != null) {
-          payload.num_items = meta.num_items;
-        }
+        const externalReference =
+          meta.external_reference || query.external_reference;
+        const paymentType = query.payment_type || "unknown";
 
-        trackStandard("Purchase", payload, { eventID });
-
+        // --- Meta Pixel (Path A) -------------------------------------------
+        const metaDedupKey = "meta_purchase_fired_" + String(paymentId);
+        let metaAlreadyFired = false;
         try {
-          window.sessionStorage.setItem(dedupKey, String(Date.now()));
+          metaAlreadyFired = !!window.sessionStorage.getItem(metaDedupKey);
         } catch (e) {
           // ignore storage errors
+        }
+
+        if (!metaAlreadyFired) {
+          const eventID = "purchase_" + String(paymentId);
+          const payload = {
+            value,
+            content_type: "product",
+            order_id: String(paymentId)
+          };
+          if (externalReference) {
+            payload.external_reference = String(externalReference);
+          }
+          if (Array.isArray(meta.content_ids) && meta.content_ids.length) {
+            payload.content_ids = meta.content_ids.map(String);
+          }
+          if (meta.num_items != null) {
+            payload.num_items = meta.num_items;
+          }
+
+          trackStandard("Purchase", payload, { eventID });
+
+          try {
+            window.sessionStorage.setItem(metaDedupKey, String(Date.now()));
+          } catch (e) {
+            // ignore storage errors
+          }
+        }
+
+        // --- Google (GA4 via dataLayer) (Path A) ---------------------------
+        // Independent dedup key so a partial failure on one surface doesn't
+        // suppress the other on retry.
+        const googleDedupKey = "google_purchase_fired_" + String(paymentId);
+        let googleAlreadyFired = false;
+        try {
+          googleAlreadyFired = !!window.sessionStorage.getItem(googleDedupKey);
+        } catch (e) {
+          // ignore storage errors
+        }
+
+        if (!googleAlreadyFired) {
+          pushEcommerce("purchase", {
+            transaction_id: String(externalReference || paymentId),
+            value,
+            currency: CURRENCY,
+            payment_type: paymentType,
+            items: Array.isArray(meta.items) ? meta.items : []
+          });
+
+          try {
+            window.sessionStorage.setItem(googleDedupKey, String(Date.now()));
+          } catch (e) {
+            // ignore storage errors
+          }
         }
       } catch (error) {
         console.log("firePurchasePixel error", error);
