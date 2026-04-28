@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- dataLayer init: must run before the GTM snippet so any early
+         pushes (e.g. consent, user_id, gclid capture) survive even if
+         GTM hasn't booted yet. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+    </script>
     <!-- Google Tag Manager -->
     <script>
       (function(w, d, s, l, i) {
