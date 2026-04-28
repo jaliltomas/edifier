@@ -52,6 +52,12 @@
 
 <script>
 import Swal from "sweetalert2";
+import {
+  cleanPrice,
+  trackStandard,
+  trackCustom,
+  EDIFIER_STORE_ID
+} from "@/utils/metaPixel";
 
 export default {
   data() {
@@ -78,10 +84,63 @@ export default {
     if (this.$route.query?.preference_id) {
       this.HandlerGetAutorize();
     }
-    window.fbq("trackCustom", "CheckoutNotificationView");
+    trackCustom("CheckoutNotificationView");
   },
 
   methods: {
+    firePurchasePixel(answerData) {
+      try {
+        const query = this.$route.query || {};
+        const meta = (answerData && answerData.meta_pixel) || {};
+
+        const collectionStatus =
+          meta.collection_status || query.collection_status || query.status;
+        if (collectionStatus !== "approved") return;
+
+        const paymentId = meta.payment_id || query.payment_id;
+        if (!paymentId) return;
+
+        const storeId = meta.store_id;
+        if (storeId != null && Number(storeId) !== EDIFIER_STORE_ID) return;
+
+        const dedupKey = "meta_purchase_fired_" + String(paymentId);
+        try {
+          if (window.sessionStorage.getItem(dedupKey)) return;
+        } catch (e) {
+          // ignore storage errors
+        }
+
+        const value = cleanPrice(meta.total_amount);
+        if (!value) return;
+
+        const eventID = "purchase_" + String(paymentId);
+        const payload = {
+          value,
+          content_type: "product",
+          order_id: String(paymentId)
+        };
+        if (meta.external_reference) {
+          payload.external_reference = String(meta.external_reference);
+        }
+        if (Array.isArray(meta.content_ids) && meta.content_ids.length) {
+          payload.content_ids = meta.content_ids.map(String);
+        }
+        if (meta.num_items != null) {
+          payload.num_items = meta.num_items;
+        }
+
+        trackStandard("Purchase", payload, { eventID });
+
+        try {
+          window.sessionStorage.setItem(dedupKey, String(Date.now()));
+        } catch (e) {
+          // ignore storage errors
+        }
+      } catch (error) {
+        console.log("firePurchasePixel error", error);
+      }
+    },
+
     postMessageToParent(payload) {
       try {
         window.parent?.postMessage(payload, "*");
@@ -103,6 +162,7 @@ export default {
           this.isValid = true;
           this.messageNotification =
             "<p>Enviamos un email con la factura y detalles de la operacion</p><p style='margin-top:5px'>En 24hs habiles vas a recibir un correo con los datos de envio.</p>";
+          this.firePurchasePixel(response.data);
           this.$store.commit("cart/CLEAN_CART");
           localStorage.removeItem("guest_cart");
           localStorage.removeItem("pending_checkout_cart_id");

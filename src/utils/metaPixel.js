@@ -2,6 +2,7 @@
 
 const PIXEL_ID = '2190799084462246';
 const CURRENCY = 'ARS';
+const EDIFIER_STORE_ID = 3;
 
 function cleanPrice(input) {
   if (input === null || input === undefined || input === '') return 0;
@@ -79,6 +80,7 @@ function initWithEmail(email) {
 module.exports = {
   PIXEL_ID,
   CURRENCY,
+  EDIFIER_STORE_ID,
   cleanPrice,
   trackStandard,
   trackCustom,
