@@ -687,6 +687,11 @@ import {
   buildMercadoPagoReturnConfig
 } from "../../utils/checkout";
 import { cleanPrice, trackStandard, trackCustom } from "../../utils/metaPixel";
+import {
+  pushEcommerce,
+  buildItems,
+  CURRENCY
+} from "../../utils/googleAnalytics";
 
 export default {
   components: {
@@ -1383,6 +1388,11 @@ export default {
           content_ids: contentIds,
           content_type: "product",
           contents
+        });
+        pushEcommerce("begin_checkout", {
+          currency: CURRENCY,
+          value: checkoutValue,
+          items: buildItems(items)
         });
 
         const { notificationUrl, autoReturn, backUrls } =
