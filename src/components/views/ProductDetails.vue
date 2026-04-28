@@ -667,12 +667,24 @@ export default {
         this.$store.commit("cart/TOTAL_AMOUNT", { items: currentCart.shopping_cart_items });
 
         const unitPrice = cleanPrice(this.dataProduct?.price?.pvp);
+        const addedQuantity = this.quantity;
+        const totalValue = unitPrice * addedQuantity;
         trackStandard("AddToCart", {
           content_ids: [String(this.dataProduct.id)],
           content_type: "product",
           content_name: this.dataProduct.keywords || "",
-          contents: [{ id: String(this.dataProduct.id), quantity: this.quantity }],
-          value: unitPrice * this.quantity
+          contents: [{ id: String(this.dataProduct.id), quantity: addedQuantity }],
+          value: totalValue
+        });
+        pushEcommerce("add_to_cart", {
+          currency: CURRENCY,
+          value: totalValue,
+          items: [
+            buildItem(this.dataProduct, {
+              quantity: addedQuantity,
+              price: unitPrice
+            })
+          ]
         });
 
         this.messageProductAdd = true;
