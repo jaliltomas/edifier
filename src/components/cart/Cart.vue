@@ -1812,6 +1812,11 @@ export default {
         content_ids: contentIds,
         content_type: "product"
       });
+      pushEcommerce("view_cart", {
+        currency: CURRENCY,
+        value,
+        items: buildItems(items)
+      });
     },
 
     totalPrice(cart_items) {
