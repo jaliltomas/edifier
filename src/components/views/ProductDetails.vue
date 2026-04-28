@@ -335,6 +335,11 @@ import ProductDetailsPrices from "./utils/products/ProductDetailsPrices";
 import { isValidUmbral } from "@/utils/validateUmbral.js";
 import AvailabilityList from "./utils/products/AvailabilityList.vue";
 import { cleanPrice, trackStandard, trackCustom } from "@/utils/metaPixel";
+import {
+  pushEcommerce,
+  buildItem,
+  CURRENCY
+} from "@/utils/googleAnalytics";
 
 export default {
   components: {
@@ -397,11 +402,19 @@ export default {
       if (!newProduct || !newProduct.id) return;
       this._viewContentSent = true;
       const price = newProduct.price || {};
+      const value = cleanPrice(price.pvp);
       trackStandard("ViewContent", {
         content_ids: [String(newProduct.id)],
         content_type: "product",
         content_name: newProduct.keywords || "",
-        value: cleanPrice(price.pvp)
+        value
+      });
+      pushEcommerce("view_item", {
+        currency: CURRENCY,
+        value,
+        items: [
+          buildItem(newProduct, { quantity: 1 })
+        ]
       });
     }
   },
